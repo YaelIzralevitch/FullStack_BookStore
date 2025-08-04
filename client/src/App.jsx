@@ -1,35 +1,53 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import CompleteRegistrationPage from './pages/CompleteRegistrationPage';
+import HomePage from './pages/HomePage';
+import TodosPage from './pages/TodosPage';
+import PostsPage from './pages/PostsPage';
+import PostPage from './pages/PostPage';
+import AlbumsPage from './pages/AlbumsPage';
+import HomeLayout from './components/HomeLayout';
+import PhotosPage from './pages/PhotosPage';
+import ProtectedRoute from './components/ProtectedRoute';
+import ErrorPage from './pages/ErrorPage';
 
+function App() {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+         
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/complete-registration" element={<CompleteRegistrationPage />} />
+
+          <Route path="/home"
+            element={
+              <ProtectedRoute>
+                <HomeLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<HomePage />} />
+            <Route path="todos" element={<TodosPage />} />
+            <Route path="posts" element={<PostsPage />} />
+            <Route path="posts/:postId" element={<PostPage />} />
+            <Route path="albums" element={<AlbumsPage />} />
+            <Route path="albums/:albumId/photos" element={<PhotosPage />} />
+          </Route>
+          <Route path='*' element={<ErrorPage />} />
+       </Routes>
+    
+    
+      </BrowserRouter>
+    </AuthProvider>
+  );
 }
 
-export default App
+export default App;
