@@ -1,22 +1,22 @@
 import { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import AuthContext from '../contexts/AuthContext';
-import { getUserByUsername } from '../api/api';
+import { getUserByEmail } from '../services/api';
+import { } from '../../utils/localStorage';
 
 const LoginPage = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
   
-  const { login } = useContext(AuthContext);
+  const { login, loading, setLoading } = useContext(AuthContext);
   const navigate = useNavigate();
   
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     // Check for empty fields
-    if (!username.trim() || !password.trim()) {
+    if (!email.trim() || !password.trim()) {
       setError('Please fill in all fields');
       return;
     }
@@ -26,7 +26,7 @@ const LoginPage = () => {
     
     try {
       // Check if user exists
-      const user = await getUserByUsername(username);
+      const user = await getUserByEmail(email);
       
       if (!user) {
         setError('Username does not exist');
@@ -62,14 +62,14 @@ const LoginPage = () => {
         
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="username">Username</label>
+            <label htmlFor="username">Email</label>
             <input
               type="text"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
-              autoComplete="username"
+              autoComplete="email"
             />
           </div>
           
