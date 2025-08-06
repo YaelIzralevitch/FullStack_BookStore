@@ -9,8 +9,9 @@ const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   
-  const { login, loading, setLoading } = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
   const navigate = useNavigate();
   
   const handleSubmit = async (e) => {
@@ -29,13 +30,13 @@ const LoginPage = () => {
     }
 
     catch (err) {
-       setError(err.message || 'Login failed. Please try again.');
+      setError(err.message || 'Login failed. Please try again.');
     }
     finally {
-       setLoading(false);
+      setLoading(false);
    }
   };
-  
+
   return (
     <div className="login-container">
       <div className="login-form">
