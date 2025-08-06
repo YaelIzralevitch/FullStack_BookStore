@@ -2,7 +2,7 @@
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
+  
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
@@ -11,6 +11,21 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --primary-color: #4a6fa5;
+  --primary-light: #d0e0fa;
+  --primary-dark: #3a5a88;
+  --danger-color: #dc3545;
+  --success-color: #28a745;
+  --warning-color: #daa402;
+  --gray-light: #e9ecef;
+  --gray-medium: #ced4da;
+  --gray-dark: #6c757d;
+  --light-color: #f8f9fa;
+  --light-blue-color: #eef4ff;
+  --radius: 6px;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --transition: all 0.2s ease-in-out;
 }
 
 a {
@@ -23,10 +38,12 @@ a:hover {
 }
 
 body {
+  width: 100vw;
+  height: 100vh;
   margin: 0;
   display: flex;
   place-items: center;
-  min-width: 320px;
+  min-width: 100vw;
   min-height: 100vh;
 }
 
