@@ -18,22 +18,22 @@ const LoginPage = () => {
     
     setError('');
     setLoading(true);
-    
+    try
+    {
       // Check if user exists
       const res = await Login({ email, password });
-
-      if (!res.success) {
-        // שגיאה – הצגת ההודעה מהשרת
-        setError(res.message);
-
-      } else {
-        // Successful login
-        console.log('Login successful:', res);
-        login(res.user);
-        navigate('/home');
+      // Successful login
+      console.log('Login successful:', res);
+      login(res.user);
+      navigate('/home');
     }
 
-    setLoading(false);
+    catch (err) {
+       setError(err.message || 'Login failed. Please try again.');
+    }
+    finally {
+       setLoading(false);
+   }
   };
   
   return (
@@ -47,7 +47,7 @@ const LoginPage = () => {
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <input
-              type="text"
+              type="email"
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}

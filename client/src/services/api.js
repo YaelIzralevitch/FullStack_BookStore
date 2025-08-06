@@ -1,4 +1,5 @@
 //import axios from 'axios';
+import { getAuthToken, setAuthToken } from '../utils/localStorage'; 
 const API_URL = 'http://localhost:3001/api';
 
 // פונקציה גנרית לביצוע בקשות GET
@@ -13,18 +14,29 @@ export const fetchData = async (endpoint) => {
   }
 };
 
-// פונקציה גנרית לביצוע בקשות POST
+// פונקציה גנרית לביצוע בקשות POST עם טיפול בשגיאות
 export const postData = async (endpoint, data) => {
   try {
+    const token = getAuthToken();
     const res = await fetch(`${API_URL}/${endpoint}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json',
+        ...(token && { Authorization: `Bearer ${token}` }),
+      },
       body: JSON.stringify(data),
     });
-    if (!res.ok) throw new Error(`POST ${endpoint} failed`);
-    return await res.json();
+    
+    const responseData = await res.json();
+    
+    // אם הסטטוס קוד לא בסדר, זרוק שגיאה עם המסר מהשרת
+    if (!res.ok) {
+      throw new Error(responseData.message || `POST ${endpoint} failed`);
+    }
+    
+    return responseData;
   } catch (error) {
     console.error(`Error posting to ${endpoint}:`, error);
+    // זרוק את השגיאה הלאה כדי שהקומפוננט יוכל לטפל בה
     throw error;
   }
 };
@@ -62,7 +74,22 @@ export const deleteData = async (endpoint, id) => {
 // ======= פונקציות ספציפיות =======
 
 //התחברות והרשמה
-export const Login = async (userData) => await postData('auth/login', userData);
+export const Login = async (userData) =>{
+  const response = await postData('auth/login', userData);
+
+  if (response.success && response.token) {
+    setAuthToken(response.token);
+  }
+
+  return response;
+} 
+
+export const Register = async (userData) => await postData('auth/register', userData);
+
+
+
+
+
 
 // משתמשים
 export const getUsers = () => fetchData('users');

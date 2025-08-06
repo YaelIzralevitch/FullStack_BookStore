@@ -14,19 +14,31 @@ export const removeUser = () => {
   localStorage.removeItem('user');
 };
 
-// Creates a cookie with the specified name, valid for 24 hours
-export const setCookie = (name) => {
-    const date = new Date();
-    date.setTime(date.getTime() + (1 * 24 * 60 * 60 * 1000));
-    document.cookie = `${name}=true; expires=${date.toUTCString()}; path=/`;
-}
+export const setAuthToken = (token) => {
+  localStorage.setItem('authToken', token);
+};
 
-// Checks if a cookie with the specified name exists
-export const getCookie = (name) => {
-    const cookies = document.cookie.split("; ");
-    for (const cookie of cookies) {
-        const [key, _ ] = cookie.split("=");
-        if (key === name) return true;
-    }
+// קבלת הטוקן מlocalStorage
+export const getAuthToken = () => {
+  return localStorage.getItem('authToken');
+};
+
+// הסרת הטוקן
+export const removeAuthToken = () => {
+  localStorage.removeItem('authToken');
+};
+
+// בדיקה האם הטוקן תקף (לא פג תוקף)
+export const isTokenValid = () => {
+  const token = getAuthToken();
+  if (!token) return false;
+  
+  try {
+    // פענוח הטוקן לבדיקת תאריך התפוגה
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const now = Date.now() / 1000;
+    return payload.exp > now;
+  } catch {
     return false;
-}
+  }
+};

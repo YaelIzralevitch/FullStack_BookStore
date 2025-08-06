@@ -7,9 +7,9 @@ const { validateRegister, validateLogin } = require("../middleware/auth.validati
 router.post("/register", validateRegister, async (req, res) => {
   try {
     await authService.register(req.body);
-    res.send({ success: true, message: "Registered" });
+    res.json({ success: true, message: "Registered successfully" });
   } catch (e) {
-    res.status(500).send({ success: false, message: e.message });
+    res.status(500).json({ success: false, message: e.message });
   }
 });
 
@@ -18,21 +18,17 @@ router.post("/login", validateLogin, async (req, res) => {
   try {
     const result = await authService.login(req.body);
     if (result.code !== 200)
-      return res.status(result.code).send({ success:false, message: result.msg });
+      return res.status(result.code).json({ success:false, message: result.msg });
 
-    res.cookie('token', result.token, {
-      httpOnly: true,
-      maxAge: 24*60*60*1000
+   res.json({ 
+      success: true, 
+      message: "Logged in successfully", 
+      user: result.user,
+      token: result.token 
     });
-    res.send({ success: true, message: "Logged in", user: result.user });
   } catch (e) {
-    res.status(500).send({ success: false, message: e.message});
+    res.status(500).json({ success: false, message: e.message});
   }
-});
-
-router.post("/logout", (req, res) => {
-  res.clearCookie("token");
-  res.send({ success: true, message: "Logged out" });
 });
 
 module.exports = router;
