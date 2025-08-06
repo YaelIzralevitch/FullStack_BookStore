@@ -9,7 +9,7 @@ async function login({ email, password }) {
 
   if (user) {
     // משתמש רגיל - בודקים סיסמא מ-user_passwords
-    const sec = await authController.getSecurity(user.id);
+    const sec = await authController.getUserSecurity(user.id);
     if (sec.is_locked && new Date() < new Date(sec.locked_until)) {
       return { code: 403, msg: "Account locked. Try later" };
     }

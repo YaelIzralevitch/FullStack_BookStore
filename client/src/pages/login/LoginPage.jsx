@@ -1,8 +1,9 @@
 import { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import AuthContext from '../contexts/AuthContext';
-import { Login } from '../services/api';
+import AuthContext from '../../contexts/AuthContext';
+import { Login } from '../../services/api';
 import { } from '../../utils/localStorage';
+import './LoginPage.css'; 
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -43,7 +44,7 @@ const LoginPage = () => {
         
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="username">Email</label>
+            <label htmlFor="email">Email</label>
             <input
               type="text"
               id="email"

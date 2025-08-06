@@ -3,7 +3,7 @@ import './App.css'
 
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
-import LoginPage from './pages/LoginPage';
+import LoginPage from './pages/login/LoginPage';
 /*
 import RegisterPage from './pages/RegisterPage';
 import CompleteRegistrationPage from './pages/CompleteRegistrationPage';

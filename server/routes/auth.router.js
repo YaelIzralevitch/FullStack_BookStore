@@ -18,7 +18,7 @@ router.post("/login", validateLogin, async (req, res) => {
   try {
     const result = await authService.login(req.body);
     if (result.code !== 200)
-      return res.status(result.code).send({ success:false, message: result.msg });
+      return res.status(result.code).send({ success:false, message: result.msg, user: result.user });
 
     res.cookie('token', result.token, {
       httpOnly: true,
@@ -26,7 +26,7 @@ router.post("/login", validateLogin, async (req, res) => {
     });
     res.send({ success: true, message: "Logged in" });
   } catch (e) {
-    res.status(500).send({ success: false, message: e.message, user: result.user });
+    res.status(500).send({ success: false, message: e.message});
   }
 });
 
