@@ -1,9 +1,8 @@
 
 import './App.css'
-
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
-import LoginPage from './pages/login/LoginPage';
+import LoginPage from './pages/login/loginPage.jsx';
 /*
 import RegisterPage from './pages/RegisterPage';
 import CompleteRegistrationPage from './pages/CompleteRegistrationPage';

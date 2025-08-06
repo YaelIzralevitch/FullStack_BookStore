@@ -28,6 +28,7 @@ const LoginPage = () => {
 
       } else {
         // Successful login
+        console.log('Login successful:', res);
         login(res.user);
         navigate('/home');
     }
