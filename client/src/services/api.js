@@ -1,5 +1,7 @@
+import { saveUser } from '../utils/localStorage'
+
 //import axios from 'axios';
-const API_URL = 'http://localhost:3001'; // כתובת ה־JSON Server
+const API_URL = 'http://localhost:3001/api';
 
 // פונקציה גנרית לביצוע בקשות GET
 export const fetchData = async (endpoint) => {
@@ -60,6 +62,9 @@ export const deleteData = async (endpoint, id) => {
 };
 
 // ======= פונקציות ספציפיות =======
+
+//התחברות והרשמה
+export const Login = async (userData) => await postData('auth/login', userData);
 
 // משתמשים
 export const getUsers = () => fetchData('users');

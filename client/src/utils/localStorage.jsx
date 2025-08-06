@@ -1,7 +1,6 @@
 // שמירת המשתמש ב-localStorage
 export const saveUser = (user) => {
   localStorage.setItem('user', JSON.stringify(user));
-  return user;
 };
 
 // קבלת המשתמש מ-localStorage

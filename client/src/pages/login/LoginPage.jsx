@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import AuthContext from '../contexts/AuthContext';
-import { getUserByEmail } from '../services/api';
+import { Login } from '../services/api';
 import { } from '../../utils/localStorage';
 
 const LoginPage = () => {
@@ -15,41 +15,22 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Check for empty fields
-    if (!email.trim() || !password.trim()) {
-      setError('Please fill in all fields');
-      return;
-    }
-    
     setError('');
     setLoading(true);
     
-    try {
       // Check if user exists
-      const user = await getUserByEmail(email);
-      
-      if (!user) {
-        setError('Username does not exist');
-        setLoading(false);
-        return;
-      }
-      
-      // Check password against user's 'website' field
-      if (user.website !== password) {
-        setError('Incorrect password');
-        setLoading(false);
-        return;
-      }
-      
-      // Successful login
-      login(user);
-      navigate('/home');
-      
-    } catch (error) {
-      console.error('Login error:', error);
-      setError('Login error, please try again later');
+      const res = await Login({ email, password });
+
+      if (!res.success) {
+        // שגיאה – הצגת ההודעה מהשרת
+        setError(res.message);
+
+      } else {
+        // Successful login
+        login(res.user);
+        navigate('/home');
     }
-    
+
     setLoading(false);
   };
   

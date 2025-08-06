@@ -27,7 +27,12 @@ async function login({ email, password }) {
 
     await authController.resetSecurity(user.id);
     const token = jwt.sign({ id: user.id, role: user.role }, SECRET, { expiresIn: "24h" });
-    return { code: 200, token };
+    return {
+      code: 200,
+      token,
+      user,
+      msg: "Login successfully"
+    };
   }
 
   // לא נמצא בכלל
@@ -35,11 +40,11 @@ async function login({ email, password }) {
 }
 
 async function register(data) {
-  // הנתון data כולל את כל שדות המשתמש + password
-  return await authController.createUser(data);
+    await authController.createUser(data);
+    return { code: 200, msg: "Registered successfully"};
 }
 
 module.exports = {
-  register,  // רושמים רק משתמשים רגילים - מנהלים כנראה לא נרשמים כאן
+  register,
   login
 };
