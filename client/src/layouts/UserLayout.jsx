@@ -1,16 +1,41 @@
-import React from 'react';
-import { Outlet, Link } from 'react-router-dom';
+import { useContext } from 'react';
+import { Outlet} from "react-router-dom";
+import AuthContext from '../contexts/AuthContext';
+//import NavMenu from '../components/NavMenu';
 
 function UserLayout() {
-  return (
-    <div>
-      <h2>Book Store</h2>
-      <nav>
-        <Link to="/">Home</Link> | <Link to="/cart">Cart</Link>
-      </nav>
-      <hr />
-      <Outlet />
-    </div>
+
+    const { currentUser } = useContext(AuthContext);
+
+    return (
+    <>
+     <header className="header">
+      <div className="header-user">
+
+        <img className="logo" src="/src/assets/" alt="Logo" />
+        
+        <h1>Hello, {currentUser?.name}</h1>
+
+        <NavSearch />
+
+        <NavMenu />
+
+        <NavCart />
+
+      </div>
+
+      </header>
+
+      <main className='home-Outlet-container'>
+        <Outlet />
+      </main>
+
+      <footer className="footer">
+        <p>© 2025 BookStore. All rights reserved.</p>
+        
+      </footer>
+      
+      </>
   );
 }
 

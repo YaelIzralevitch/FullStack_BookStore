@@ -20,7 +20,11 @@ function AppRoutes() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/home" element={<UserLayout />}>
           <Route index element={<HomePage />} />
-          {/* <Route path="cart" element={<Cart />} /> */}
+          <Route path="cart" element={<CartPage />} />
+          <Route path="ordersHistory" element={<OrdersHistoryPage />} />
+          <Route path="userDetails/:userID" element={<UserDetailsPage />} />
+          <Route path='categories/:category' element={<BooksPage />} />
+          <Route path='categories/:category/books/:bookID' element={<BookDetailsPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
@@ -34,7 +38,8 @@ function AppRoutes() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/dashboard" element={<AdminLayout />}>
           <Route index element={<DashboardPage />} />
-          {/* Add admin routes here */}
+          <Route path="stockManagement" element={<StockManagementPage />} />
+          <Route path='orders' element={<OrdersPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
