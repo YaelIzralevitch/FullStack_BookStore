@@ -1,7 +1,9 @@
 import { useContext } from 'react';
 import { Outlet} from "react-router-dom";
 import AuthContext from '../contexts/AuthContext';
-//import NavMenu from '../components/NavMenu';
+import NavSearch from '../components/NavSearch';
+import NavMenu from '../components/NavMenu/NavMenu';
+import NavCart from '../components/NavCart';
 
 function UserLayout() {
 
@@ -15,7 +17,7 @@ function UserLayout() {
         <img className="logo" src="/src/assets/" alt="Logo" />
         
         <h1>Hello, {currentUser?.name}</h1>
-
+        
         <NavSearch />
 
         <NavMenu />
