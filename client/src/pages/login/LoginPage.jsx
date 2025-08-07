@@ -19,12 +19,18 @@ const LoginPage = () => {
     
     setError('');
     setLoading(true);
+
+    if (!email.trim() || !password.trim()) {
+      setError('Please fill in all fields');
+      return;
+    }
+
     try
     {
       // Check if user exists
       const res = await Login({ email, password });
+      
       // Successful login
-      console.log('Login successful:', res);
       login(res.user);
       navigate('/home');
     }

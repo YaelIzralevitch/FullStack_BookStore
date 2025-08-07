@@ -3,8 +3,8 @@ import './App.css'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import LoginPage from './pages/login/loginPage.jsx';
+import RegisterPage from './pages/register/RegisterPage.jsx';
 /*
-import RegisterPage from './pages/RegisterPage';
 import CompleteRegistrationPage from './pages/CompleteRegistrationPage';
 import HomePage from './pages/HomePage';
 import TodosPage from './pages/TodosPage';
@@ -25,6 +25,7 @@ function App() {
          
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
           
        </Routes>
     

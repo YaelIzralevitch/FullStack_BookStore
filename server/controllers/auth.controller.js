@@ -1,34 +1,45 @@
 const pool = require("../config/db");
 const bcrypt = require("bcryptjs");
 
-async function createUser({ first_name, last_name, phone, email, city, street, house_number, password }) {
-    try {
-  // הוספת משתמש לטבלת users
-    const [result] = await pool.query(
-        `INSERT INTO users (first_name, last_name, phone, email, city, street, house_number) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-        [first_name, last_name, phone, email, city, street, house_number]
+async function createUser({ first_name, last_name, phone, email, password }) {
+  const connection = await pool.getConnection(); // יוצרים חיבור ייחודי לטרנזאקציה
+  try {
+    await connection.beginTransaction();
+
+    // הוספת משתמש
+    const [result] = await connection.query(
+      `INSERT INTO users (first_name, last_name, phone, email) VALUES (?, ?, ?, ?)`,
+      [first_name, last_name, phone, email]
     );
     const userId = result.insertId;
 
-    // הוספת סיסמה לטבלת user_passwords
+    // הוספת סיסמה
     const hashed = await bcrypt.hash(password, 10);
-    await pool.query(
-        `INSERT INTO user_passwords (user_id, password_hash) VALUES (?, ?)`,
-        [userId, hashed]
-  );
+    await connection.query(
+      `INSERT INTO user_passwords (user_id, password_hash) VALUES (?, ?)`,
+      [userId, hashed]
+    );
 
-  // הוספת רשומה בטבלת האבטחה
-  await pool.query(
-    `INSERT INTO user_login_security (user_id, failed_attempts, is_locked) VALUES (?, ?, ?)`,
-    [userId, 0, 0]
-  );
+    // הוספת אבטחה
+    await connection.query(
+      `INSERT INTO user_login_security (user_id, failed_attempts, is_locked) VALUES (?, ?, ?)`,
+      [userId, 0, 0]
+    );
 
-  return userId;
-} catch (err) {
+    // הכל הצליח - מבצעים commit
+    await connection.commit();
+    return userId;
+  } catch (err) {
+    // קרתה שגיאה - מבצעים rollback
+    await connection.rollback();
     console.error('ERROR IN createUser:', err);
     throw err;
+  } finally {
+    // משחררים את החיבור חזרה לבריכה
+    connection.release();
   }
 }
+
 
 async function findUserByEmail(email) {
   try {
