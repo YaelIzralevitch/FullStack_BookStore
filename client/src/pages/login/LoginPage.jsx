@@ -32,7 +32,12 @@ const LoginPage = () => {
       
       // Successful login
       login(res.user);
-      navigate('/home');
+      if (res.user.role === 'admin') {
+        navigate('/dashboard');
+      }
+      else if (res.user.role === 'client') {  
+        navigate('/home');
+      }
     }
 
     catch (err) {
