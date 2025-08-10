@@ -1,0 +1,177 @@
+
+.user-details-container {
+  max-width: 800px;
+  width: 100%;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+  border: 1px solid #e5e7eb;
+}
+
+.user-details-container h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  border-bottom: 2px solid #f3f4f6;
+  padding-bottom: 1rem;
+}
+
+/* הודעות שגיאה והצלחה */
+.error-message {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.success-message {
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #16a34a;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+/* כפתורים */
+.btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-right: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-success {
+  background-color: #059669;
+  color: white;
+}
+
+.btn-success:hover:not(:disabled) {
+  background-color: #047857;
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background-color: #6b7280;
+  color: white;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: #4b5563;
+  transform: translateY(-1px);
+}
+
+/* תצוגת פרטי משתמש */
+.user-details {
+  margin-top: 1.5rem;
+}
+
+.user-details p {
+  margin: 0.75rem 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+}
+
+.user-details strong {
+  color: #374151;
+  font-weight: 600;
+  min-width: 120px;
+  margin-right: 0.5rem;
+}
+
+.user-details p:not(:has(strong)) {
+  color: #6b7280;
+  margin-left: 120px;
+}
+
+/* טופס עריכה */
+.edit-user-form {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.edit-user-form input {
+  padding: 0.75rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+  background-color: #ffffff;
+}
+
+.edit-user-form input:focus {
+  outline: none;
+  border-color: #059669;
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+}
+
+.edit-user-form input::placeholder {
+  color: #9ca3af;
+}
+
+/* כפתור ניהול כרטיס אשראי */
+.user-details button {
+  background-color: #3b82f6;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 1rem;
+}
+
+.user-details button:hover {
+  background-color: #2563eb;
+  transform: translateY(-1px);
+}
+
+/* רספונסיבי */
+@media (max-width: 768px) {
+  .user-details-container {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+  
+  .user-details-container h1 {
+    font-size: 1.5rem;
+  }
+  
+  .user-details p {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .user-details strong {
+    min-width: unset;
+    margin-bottom: 0.25rem;
+  }
+  
+  .user-details p:not(:has(strong)) {
+    margin-left: 0;
+    margin-top: -0.5rem;
+  }
+}

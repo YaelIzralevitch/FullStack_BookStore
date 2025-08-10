@@ -1,0 +1,226 @@
+
+/* רקע חצי שקוף */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+}
+
+/* הפופאפ עצמו */
+.credit-card-popup {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  position: relative;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* כפתור סגירה */
+.close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+/* כותרות */
+.credit-card-popup h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1.5rem;
+  padding-right: 2rem; /* מקום לכפתור הסגירה */
+}
+
+.credit-card-popup h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 1rem;
+}
+
+/* הודעות */
+.error-message {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.success-message {
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #16a34a;
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+/* כרטיס שמור */
+.saved-card {
+  background: linear-gradient(135deg, #9aa9e8 0%, #d2b4f0 100%);
+  color: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+.saved-card p {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 0 0 1rem 0;
+  letter-spacing: 2px;
+  color: black;
+}
+
+/* טופס */
+.credit-card-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.credit-card-form input {
+  padding: 0.75rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+  background-color: #ffffff;
+}
+
+.credit-card-form input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.credit-card-form input:disabled {
+  background-color: #f9fafb;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+.credit-card-form input::placeholder {
+  color: #9ca3af;
+}
+
+/* מספר כרטיס אשראי */
+input[placeholder="0000-0000-0000"] {
+  font-family: 'Courier New', monospace;
+  letter-spacing: 1px;
+}
+
+/* כפתורים */
+.popup-btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 0.5rem;
+}
+
+.popup-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-add {
+  background-color: #059669;
+  color: white;
+  width: 100%;
+}
+
+.btn-add:hover:not(:disabled) {
+  background-color: #047857;
+  transform: translateY(-1px);
+}
+
+.btn-delete {
+  background-color: #dc2626;
+  color: white;
+}
+
+.btn-delete:hover:not(:disabled) {
+  background-color: #b91c1c;
+  transform: translateY(-1px);
+}
+
+/* טעינה */
+.loading {
+  text-align: center;
+  color: #6b7280;
+  font-style: italic;
+  padding: 1rem;
+}
+
+/* רספונסיבי */
+@media (max-width: 480px) {
+  .credit-card-popup {
+    padding: 1.5rem;
+    margin: 1rem;
+    width: calc(100% - 2rem);
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .credit-card-popup h2 {
+    font-size: 1.25rem;
+    padding-right: 2rem;
+  }
+}

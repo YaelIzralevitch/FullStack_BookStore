@@ -5,7 +5,13 @@ const API_URL = 'http://localhost:3001/api';
 // פונקציה גנרית לביצוע בקשות GET
 export const fetchData = async (endpoint) => {
   try {
-    const res = await fetch(`${API_URL}/${endpoint}`);
+    const token = getAuthToken();
+    const headers = {};
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+    
+    const res = await fetch(`${API_URL}/${endpoint}`, { headers });
     if (!res.ok) throw new Error(`GET ${endpoint} failed`);
     return await res.json();
   } catch (error) {
@@ -20,7 +26,8 @@ export const postData = async (endpoint, data) => {
     const token = getAuthToken();
     const res = await fetch(`${API_URL}/${endpoint}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json',
+      headers: { 
+        'Content-Type': 'application/json',
         ...(token && { Authorization: `Bearer ${token}` }),
       },
       body: JSON.stringify(data),
@@ -44,9 +51,15 @@ export const postData = async (endpoint, data) => {
 // פונקציה גנרית לביצוע בקשות PUT
 export const updateData = async (endpoint, id, data) => {
   try {
+    const token = getAuthToken();
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+    
     const res = await fetch(`${API_URL}/${endpoint}/${id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify(data),
     });
     if (!res.ok) throw new Error(`PUT ${endpoint}/${id} failed`);
@@ -58,15 +71,22 @@ export const updateData = async (endpoint, id, data) => {
 };
 
 // פונקציה גנרית לביצוע בקשות DELETE
-export const deleteData = async (endpoint, id) => {
+export const deleteData = async (endpoint) => {
   try {
-    const res = await fetch(`${API_URL}/${endpoint}/${id}`, {
+    const token = getAuthToken();
+    const headers = {};
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+    
+    const res = await fetch(`${API_URL}/${endpoint}`, {
       method: 'DELETE',
+      headers,
     });
-    if (!res.ok) throw new Error(`DELETE ${endpoint}/${id} failed`);
+    if (!res.ok) throw new Error(`DELETE ${endpoint} failed`);
     return res.json();
   } catch (error) {
-    console.error(`Error deleting ${endpoint}/${id}:`, error);
+    console.error(`Error deleting ${endpoint}:`, error);
     throw error;
   }
 };
@@ -86,12 +106,31 @@ export const Login = async (userData) =>{
 
 export const Register = async (userData) => await postData('auth/register', userData);
 
-
-
-
-
+// כרטיסי אשראי
+export const getUserCreditCard = async (userId) => await fetchData(`cards/${userId}`);
+export const deleteUserCreditCard = async (userId) => await deleteData(`cards/${userId}`);
+export const addUserCreditCard = async (userId, cardData) => await postData(`cards/${userId}`, cardData);
 
 // משתמשים
+export const updateUserDetails = async (userId, userData) => await updateData('users', userId, userData);
+
+
+// קטגוריות
+export const getCategories = () => fetchData('categories');
+export const getCategoryById = (id) => fetchData(`categories/${id}`);
+export const createCategory = (data) => postData('categories', data);
+export const updateCategory = (id, data) => updateData('categories', id, data);
+export const deleteCategory = (id) => deleteData('categories', id);
+
+
+// ספרים
+export const getBooksByCategoryId = (categoryId) => fetchData(`books/category/${categoryId}`);
+export const getBookById = (bookId) => fetchData(`books/${bookId}`)
+
+
+
+
+
 export const getUsers = () => fetchData('users');
 export const getUserById = (userId) => fetchData(`users/${userId}`);
 export const getUserByEmail = async (email) => {

@@ -4,6 +4,9 @@ import LoginPage from '../pages/login/loginPage.jsx';
 import RegisterPage from '../pages/register/RegisterPage.jsx';
 import UserLayout from '../layouts/UserLayout.jsx';
 import HomePage from '../pages/user/home/HomePage.jsx';
+import UserDetailsPage from '../pages/user/userDetails/UserDetailsPage.jsx';
+import CategoryBooksPage from '../pages/user/books/CategoryBooksPage.jsx';
+import BookDetailsPage from '../pages/user/bookDetails/BookDetailsPage.jsx';
 // import Cart from '../pages/user/Cart';
 import AdminLayout from '../layouts/AdminLayout.jsx';
 import DashboardPage from '../pages/admin/DashboardPage.jsx';
@@ -20,12 +23,12 @@ function AppRoutes() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/home" element={<UserLayout />}>
           <Route index element={<HomePage />} />
+          <Route path="userDetails/:userID" element={<UserDetailsPage />} />
+          <Route path="categories/:categoryId" element={<CategoryBooksPage />} /> 
+          <Route path="categories/:categoryId/books/:bookId" element={<BookDetailsPage />} />
           {/* 
           <Route path="cart" element={<CartPage />} />
           <Route path="ordersHistory" element={<OrdersHistoryPage />} />
-          <Route path="userDetails/:userID" element={<UserDetailsPage />} />
-          <Route path='categories/:category' element={<BooksPage />} />
-          <Route path='categories/:category/books/:bookID' element={<BookDetailsPage />} />
           */}
         </Route>
         <Route path="*" element={<Navigate to="/login" replace />} />

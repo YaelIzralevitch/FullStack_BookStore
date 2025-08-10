@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const SECRET = 'MySecretKey'; // כדאי להעביר ל-.env
 
-function auth(req, res, next) {
+function authenticate(req, res, next) {
   // קבלת הטוקן מheader Authorization
   const authHeader = req.headers.authorization;
   const token = authHeader && authHeader.startsWith('Bearer ') 
@@ -13,8 +13,8 @@ function auth(req, res, next) {
   }
 
   try {
-    const user = jwt.verify(token, SECRET);
-    req.user = user;
+    const decoded  = jwt.verify(token, SECRET);
+    req.user = decoded;
     next();
   } catch (error) {
     return res.status(403).json({ success: false, message: "Invalid or expired token" });
@@ -29,4 +29,20 @@ function requireAdmin(req, res, next) {
   next();
 }
 
-module.exports = { auth, requireAdmin };
+function authorizeOwner(req, res, next) {
+  
+  const requestedUserId = parseInt(req.params.userId);
+  const currentUserId = req.user.id; // מהטוקן
+  
+  if (currentUserId !== requestedUserId) {
+    return res.status(403).json({ message: "Access denied" });
+  }
+  
+  next();
+}
+
+module.exports = { 
+    authenticate, 
+    requireAdmin,
+    authorizeOwner
+};
