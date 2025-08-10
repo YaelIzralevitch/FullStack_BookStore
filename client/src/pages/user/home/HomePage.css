@@ -1,0 +1,25 @@
+.categories-page {
+  padding: 20px;
+  text-align: center;
+  background-color: rgb(239, 233, 245);
+}
+
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 80px;
+  justify-items: center;
+  margin-top: 70px;
+}
+
+@media (max-width: 900px) {
+  .categories-grid {
+    grid-template-columns: repeat(2, 1fr); /* בשטחים קטנים יותר 2 עמודות */
+  }
+}
+
+@media (max-width: 500px) {
+  .categories-grid {
+    grid-template-columns: 1fr; /* בנייד עמודה אחת */
+  }
+}
