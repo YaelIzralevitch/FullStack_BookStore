@@ -11,6 +11,7 @@ import BookDetailsPage from '../pages/user/bookDetails/BookDetailsPage.jsx';
 import AdminLayout from '../layouts/AdminLayout.jsx';
 import DashboardPage from '../pages/admin/DashboardPage.jsx';
 import AuthContext from '../contexts/AuthContext.jsx';
+import ErrorPage from '../pages/ErrorPage.jsx';
 
 function AppRoutes() {
   const { currentUser } = useContext(AuthContext);
@@ -19,8 +20,6 @@ function AppRoutes() {
   if (currentUser?.role === 'client') {
     return (
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
         <Route path="/home" element={<UserLayout />}>
           <Route index element={<HomePage />} />
           <Route path="userDetails/:userID" element={<UserDetailsPage />} />
@@ -31,7 +30,7 @@ function AppRoutes() {
           <Route path="ordersHistory" element={<OrdersHistoryPage />} />
           */}
         </Route>
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={<ErrorPage />} />
       </Routes>
     );
   }
@@ -39,8 +38,6 @@ function AppRoutes() {
   if (currentUser?.role === 'admin') {
     return (
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
         <Route path="/dashboard" element={<AdminLayout />}>
           <Route index element={<DashboardPage />} />
           {/*
@@ -48,7 +45,7 @@ function AppRoutes() {
           <Route path='orders' element={<OrdersPage />} />
           */}
         </Route>
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={<ErrorPage />} />
       </Routes>
     );
   }
@@ -58,7 +55,7 @@ function AppRoutes() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={<ErrorPage />} />
       </Routes>
     );
 }

@@ -22,6 +22,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setCurrentUser(null);
     localStorage.removeItem('user');
+    localStorage.removeItem('authToken'); // הסרת הטוקן בעת התנתקות
   };
 
 

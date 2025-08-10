@@ -20,9 +20,9 @@ function UserLayout() {
         
         <NavSearch />
 
-        <NavMenu />
+        <NavMenu userId={currentUser.id}/>
 
-        <NavCart />
+        <NavCart userId={currentUser.id}/>
 
       </div>
 

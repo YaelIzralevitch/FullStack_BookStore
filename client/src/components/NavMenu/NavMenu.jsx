@@ -1,17 +1,23 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import AuthContext from '../../contexts/AuthContext';
 import './NavMenu.css';
-function NavMenu() {
+
+function NavMenu({ userId }) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState('Home');
   const dropdownRef = useRef(null);
 
   const navigationOptions = [
     { label: 'Home', value: '/home', icon: '🏠' },
-    { label: 'Shopping cart', value: '/', icon: '📚' },
-    { label: 'Previous orders', value: '/', icon: '📖' },
-    { label: 'Personal profile', value: '/', icon: '🔬' },
+    { label: 'Shopping cart', value: '/home', icon: '📚' },
+    { label: 'Previous orders', value: '/home', icon: '📖' },
+    { label: 'Personal profile', value: `/home/userDetails/${userId}`, icon: '🔬' },
     { label: 'Logout', value: '/login', icon: '🏛️' },
   ];
+
+  const { logout } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -28,9 +34,7 @@ function NavMenu() {
   const handleOptionClick = (option) => {
     setSelectedOption(option.label);
     setIsOpen(false);
-    // Here you would typically navigate to the route
-    console.log('Navigating to:', option.value);
-    // For React Router: navigate(option.value);
+    navigate(option.value);
   };
 
   return (
@@ -53,7 +57,7 @@ function NavMenu() {
           <div
             key={option.value}
             className={`dropdown-item ${selectedOption === option.label ? 'selected' : ''}`}
-            onClick={() => handleOptionClick(option)}
+            onClick={option.label !== 'Logout' ? () => handleOptionClick(option) :  logout}
           >
             <span className="item-icon">{option.icon}</span>
             <span className="item-label">{option.label}</span>
