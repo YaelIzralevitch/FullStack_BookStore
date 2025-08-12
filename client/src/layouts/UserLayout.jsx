@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { Outlet} from "react-router-dom";
 import AuthContext from '../contexts/AuthContext';
-import NavSearch from '../components/NavSearch';
+import NavSearch from '../components/NavSearch/NavSearch';
 import NavMenu from '../components/NavMenu/NavMenu';
 import NavCart from '../components/NavCart';
 

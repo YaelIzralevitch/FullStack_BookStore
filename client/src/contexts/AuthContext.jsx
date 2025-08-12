@@ -23,6 +23,7 @@ export const AuthProvider = ({ children }) => {
     setCurrentUser(null);
     localStorage.removeItem('user');
     localStorage.removeItem('authToken'); // הסרת הטוקן בעת התנתקות
+    localStorage.removeItem('cart'); // הסרת העגלה בעת התנתקות
   };
 
 

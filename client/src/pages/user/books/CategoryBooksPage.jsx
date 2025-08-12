@@ -8,6 +8,7 @@ function CategoryBooksPage() {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [sortOption, setSortOption] = useState('');
 
   useEffect(() => {
     async function fetchBooks() {
@@ -15,7 +16,6 @@ function CategoryBooksPage() {
         setLoading(true);
         const response = await getBooksByCategoryId(categoryId);
         setBooks(response.data || []);
-        console.log('Books in category:', response.data);
       } catch (err) {
         setError('Error loading books');
         console.error(err);
@@ -25,6 +25,24 @@ function CategoryBooksPage() {
     }
     fetchBooks();
   }, [categoryId]);
+
+  const handleSortChange = (e) => {
+    const option = e.target.value;
+    setSortOption(option);
+
+    let sortedBooks = [...books];
+    if (option === 'az') {
+      sortedBooks.sort((a, b) => a.title.localeCompare(b.title));
+    } else if (option === 'za') {
+      sortedBooks.sort((a, b) => b.title.localeCompare(a.title));
+    } else if (option === 'priceLowHigh') {
+      sortedBooks.sort((a, b) => a.price - b.price);
+    } else if (option === 'priceHighLow') {
+      sortedBooks.sort((a, b) => b.price - a.price);
+    }
+
+    setBooks(sortedBooks);
+  };
 
   if (loading) return <p>Loading books...</p>;
   if (error) return <p>{error}</p>;
@@ -37,6 +55,18 @@ function CategoryBooksPage() {
   return (
     <div className="books-page">
       <h2>Category's Books</h2>
+      
+      <div className="sort-container">
+        <label>Sort by: </label>
+        <select value={sortOption} onChange={handleSortChange}>
+          <option value="">Select</option>
+          <option value="az">Title: A → Z</option>
+          <option value="za">Title: Z → A</option>
+          <option value="priceLowHigh">Price: Low → High</option>
+          <option value="priceHighLow">Price: High → Low</option>
+        </select>
+      </div>
+
       <div className="books-grid">
         {books.map((book) => (
           <Link

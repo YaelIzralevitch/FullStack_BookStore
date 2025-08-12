@@ -69,3 +69,21 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
+
+.sort-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.sort-container label {
+  font-weight: bold;
+}
+
+.sort-container select {
+  padding: 5px 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+

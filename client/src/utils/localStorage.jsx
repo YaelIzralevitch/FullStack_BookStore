@@ -42,3 +42,41 @@ export const isTokenValid = () => {
     return false;
   }
 };
+
+
+
+// Cart management
+
+export function getCart() {
+  const cart = localStorage.getItem('cart');
+  return cart ? JSON.parse(cart) : [];
+}
+
+export function saveCart(cart) {
+  localStorage.setItem('cart', JSON.stringify(cart));
+}
+
+
+export function addToCart(book, quantity = 1) {
+  const cart = getCart();
+  const existingBook = cart.find(item => item.bookId === book.bookId);
+  
+  if (existingBook) {
+    existingBook.quantity += quantity;
+  } else {
+    cart.push({ ...book, quantity });
+  }
+  
+  saveCart(cart);
+}
+
+
+export function removeFromCart(bookId) {
+  const cart = getCart().filter(item => item.bookId !== bookId);
+  saveCart(cart);
+}
+
+export function clearCart() {
+  localStorage.removeItem('cart');
+}
+
