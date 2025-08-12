@@ -7,7 +7,8 @@ import HomePage from '../pages/user/home/HomePage.jsx';
 import UserDetailsPage from '../pages/user/userDetails/UserDetailsPage.jsx';
 import CategoryBooksPage from '../pages/user/books/CategoryBooksPage.jsx';
 import BookDetailsPage from '../pages/user/bookDetails/BookDetailsPage.jsx';
-// import Cart from '../pages/user/Cart';
+import OrdersHistoryPage from '../pages/user/ordersHistory/OrdersHistoryPage.jsx';
+import CartPage from '../pages/user/cart/CartPage.jsx';
 import AdminLayout from '../layouts/AdminLayout.jsx';
 import DashboardPage from '../pages/admin/DashboardPage.jsx';
 import AuthContext from '../contexts/AuthContext.jsx';
@@ -25,10 +26,8 @@ function AppRoutes() {
           <Route path="userDetails/:userID" element={<UserDetailsPage />} />
           <Route path="categories/:categoryId" element={<CategoryBooksPage />} /> 
           <Route path="categories/:categoryId/books/:bookId" element={<BookDetailsPage />} />
-          {/* 
-          <Route path="cart" element={<CartPage />} />
           <Route path="ordersHistory" element={<OrdersHistoryPage />} />
-          */}
+          <Route path="cart" element={<CartPage />} />
         </Route>
         <Route path="*" element={<ErrorPage />} />
       </Routes>

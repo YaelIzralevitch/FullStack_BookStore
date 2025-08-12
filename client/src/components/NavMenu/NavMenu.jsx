@@ -10,8 +10,8 @@ function NavMenu({ userId }) {
 
   const navigationOptions = [
     { label: 'Home', value: '/home', icon: '🏠' },
-    { label: 'Shopping cart', value: '/home', icon: '📚' },
-    { label: 'Previous orders', value: '/home', icon: '📖' },
+    { label: 'Shopping cart', value: '/home/cart', icon: '📚' },
+    { label: 'Previous orders', value: '/home/ordersHistory', icon: '📖' },
     { label: 'Personal profile', value: `/home/userDetails/${userId}`, icon: '🔬' },
     { label: 'Logout', value: '/login', icon: '🏛️' },
   ];
@@ -57,7 +57,7 @@ function NavMenu({ userId }) {
           <div
             key={option.value}
             className={`dropdown-item ${selectedOption === option.label ? 'selected' : ''}`}
-            onClick={option.label !== 'Logout' ? () => handleOptionClick(option) :  logout}
+            onClick={option.label !== 'Logout' ? () => handleOptionClick(option) :  () => { logout(); navigate(option.value); } }
           >
             <span className="item-icon">{option.icon}</span>
             <span className="item-label">{option.label}</span>

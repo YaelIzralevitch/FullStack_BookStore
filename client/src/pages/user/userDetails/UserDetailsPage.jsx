@@ -156,13 +156,34 @@ function UserDetailsPage() {
             </div>
             ) : (
             <form className="edit-user-form">
-                <input type="text" value={editedUser.first_name} onChange={(e) => handleUserInputChange('first_name', e.target.value)}/>
-                <input type="text" value={editedUser.last_name} onChange={(e) => handleUserInputChange('last_name', e.target.value)}/>
-                <input type="email" value={editedUser.email} onChange={(e) => handleUserInputChange('email', e.target.value)}/>
-                <input type="tel" value={editedUser.phone} onChange={(e) => handleUserInputChange('phone', e.target.value)}/>
-                <input type="text" value={editedUser.city} onChange={(e) => handleUserInputChange('city', e.target.value)}/>
-                <input type="text" value={editedUser.street} onChange={(e) => handleUserInputChange('street', e.target.value)}/>
-                <input type="text" value={editedUser.house_number} onChange={(e) => handleUserInputChange('house_number', e.target.value)}/>
+                <div className="form-group">
+                    <label htmlFor="first_name">First Name</label>
+                    <input id='first_name' type="text" value={editedUser.first_name} onChange={(e) => handleUserInputChange('first_name', e.target.value)}/>
+                </div>
+                <div className="form-group">
+                    <label htmlFor="last_name">Last Name</label>
+                    <input id="last_name" type="text" value={editedUser.last_name} onChange={(e) => handleUserInputChange('last_name', e.target.value)}/>
+                </div>
+                <div className="form-group">
+                    <label htmlFor="email">Email</label>
+                    <input id="email" type="email" value={editedUser.email} onChange={(e) => handleUserInputChange('email', e.target.value)}/>
+                </div>
+                <div className="form-group">
+                    <label htmlFor="phone">Phone</label>
+                    <input id="phone" type="tel" value={editedUser.phone} onChange={(e) => handleUserInputChange('phone', e.target.value)}/>
+                </div>
+                <div className="form-group">
+                    <label htmlFor="city">City</label>
+                    <input id="city" type="text" value={editedUser.city} onChange={(e) => handleUserInputChange('city', e.target.value)}/>
+                </div>
+                <div className="form-group">
+                    <label htmlFor="street">Street</label>
+                    <input id="street" type="text" value={editedUser.street} onChange={(e) => handleUserInputChange('street', e.target.value)}/>
+                </div>
+                <div className="form-group">
+                    <label htmlFor="house_number">House Number</label>
+                    <input id="house_number" type="text" value={editedUser.house_number} onChange={(e) => handleUserInputChange('house_number', e.target.value)}/>
+                </div>
             </form>
             )}
         </div>

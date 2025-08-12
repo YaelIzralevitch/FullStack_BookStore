@@ -109,7 +109,7 @@ function CreditCardPopup({ userId, setShowCreditCardPopup }) {
         {savedCard ? (
           <div className="saved-card">
             <h3>Saved Credit Card</h3>
-            <p>{`**** **** **** ${savedCard.lastFourDigits || savedCard}`}</p>
+            <p className='card-number'>{`**** **** **** ${savedCard.lastFourDigits || savedCard}`}</p>
             <button className="popup-btn btn-delete" onClick={handleDelete} disabled={loading}>
               {loading ? 'Deleting...' : 'Delete'}
             </button>

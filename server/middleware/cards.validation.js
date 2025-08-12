@@ -1,42 +1,45 @@
-
-
 /**
  * ולידציה לכרטיס אשראי חדש (כל השדות נדרשים)
  */
 function validateCreditCardAdd(req, res, next) {
   const { cardNumber, cardExpairy, cardCvv } = req.body;
 
+  // קריאה לפונקציית הולידציה
+  const result = validateCardDetails(cardNumber, cardExpairy, cardCvv);
+
+  if (!result.valid) {
+    return res.status(400).json({ 
+      success: false,
+      message: result.message 
+    }); // מחזיר את התגובה במקרה של שגיאה
+  }
+
+  // הוספת הנתונים הנקיים ל-request
+  req.body.cardNumber = result.cleanCardNumber;
+
+  next();
+}
+
+function validateCardDetails(cardNumber, cardExpairy, cardCvv) {
   // בדיקה שכל השדות קיימים
   if (!cardNumber || !cardExpairy || !cardCvv) {
-    return res.status(400).json({ 
-      success: false, 
-      message: "All credit card fields are required: cardNumber, cardExpairy, cardCvv" 
-    });
+    return { valid: false, message: "All credit card fields are required: cardNumber, cardExpairy, cardCvv" };
   }
 
   // ולידציה של מספר כרטיס
   const cleanCardNumber = cardNumber.replace(/[\s\-]/g, ''); // הסרת רווחים וקווים
   if (!/^\d{13,19}$/.test(cleanCardNumber)) {
-    return res.status(400).json({ 
-      success: false, 
-      message: "Card number must be 13-19 digits" 
-    });
+    return { valid: false, message: "Card number must be 13-19 digits" };
   }
 
   // בדיקת Luhn algorithm (אלגוריתם לוהן) לוולידציה של מספר כרטיס
   if (!isValidCardNumber(cleanCardNumber)) {
-    return res.status(400).json({ 
-      success: false, 
-      message: "Invalid card number" 
-    });
+    return { valid: false, message: "Invalid card number" };
   }
 
   // ולידציה של תאריך תפוגה (MM/YY)
   if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(cardExpairy)) {
-    return res.status(400).json({ 
-      success: false, 
-      message: "Expiry date must be in MM/YY format" 
-    });
+    return { valid: false, message: "Expiry date must be in MM/YY format" };
   }
 
   // בדיקה שתאריך התפוגה לא עבר
@@ -44,24 +47,15 @@ function validateCreditCardAdd(req, res, next) {
   const expiryDate = new Date(2000 + parseInt(year), parseInt(month) - 1);
   const now = new Date();
   if (expiryDate < now) {
-    return res.status(400).json({ 
-      success: false, 
-      message: "Card has expired" 
-    });
+    return { valid: false, message: "Card has expired" };
   }
 
   // ולידציה של CVV
   if (!/^\d{3,4}$/.test(cardCvv)) {
-    return res.status(400).json({ 
-      success: false, 
-      message: "CVV must be 3-4 digits" 
-    });
+    return { valid: false, message: "CVV must be 3-4 digits" };
   }
 
-  // הוספת הנתונים הנקיים ל-request
-  req.body.cardNumber = cleanCardNumber;
-
-  next();
+  return { valid: true, cleanCardNumber };
 }
 
 
@@ -91,5 +85,6 @@ function isValidCardNumber(cardNumber) {
 }
 
 module.exports = {
-  validateCreditCardAdd
+  validateCreditCardAdd,
+  validateCardDetails
 };

@@ -102,6 +102,159 @@
 }
 
 /* כרטיס שמור */
+/* CSS לעיצוב כרטיס אשראי */
+
+.saved-card {
+  /* גודל וצורה של כרטיס אשראי אמיתי */
+  width: 320px;
+  height: 200px;
+  border-radius: 16px;
+  padding: 1.5rem;
+  position: relative;
+  margin-left: 5rem;
+  
+  /* גרדיינט יפה שנראה כמו כרטיס אשראי */
+  background: linear-gradient(135deg, #8c9be2 0%, #9e76c7 100%);
+  box-shadow: 
+    0 8px 32px rgba(102, 126, 234, 0.37),
+    0 4px 16px rgba(0, 0, 0, 0.1);
+  
+  /* אפקטים נוספים */
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(13px);
+  -webkit-backdrop-filter: blur(13px);
+  
+  /* טקסט */
+  color: white;
+  
+  /* פלקס לארגון התוכן */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.saved-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 12px 40px rgba(102, 126, 234, 0.5),
+    0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* הוספת דקורציה דמוית שבב */
+.saved-card::before {
+  content: '';
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 40px;
+  height: 30px;
+  background: linear-gradient(45deg, #ffd700, #ffed4a);
+  border-radius: 4px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* דקורציה נוספת - חלקים של שבב */
+.saved-card::after {
+  content: '';
+  position: absolute;
+  top: 1.7rem;
+  right: 1.7rem;
+  width: 26px;
+  height: 18px;
+  background: linear-gradient(45deg, #e6ac00, #d4a300);
+  border-radius: 2px;
+}
+
+/* כותרת */
+.saved-card h3 {
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin: 0;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  opacity: 0.9;
+  text-align: left;
+}
+
+/* מספר הכרטיס */
+.saved-card .card-number {
+  font-family: 'Courier New', monospace;
+  font-size: 1.0rem;
+  font-weight: 600;
+  letter-spacing: 4px;
+  margin: 1rem 0;
+  text-align: center;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  line-height: 1.2;
+  color: #2a2929;
+}
+
+/* כפתור המחיקה */
+.saved-card .popup-btn.btn-delete {
+  align-self: flex-end;
+  padding: 0.5rem 1rem;
+  background: rgba(220, 38, 38, 0.9);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.saved-card .popup-btn.btn-delete:hover:not(:disabled) {
+  background: rgba(185, 28, 28, 0.95);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(220, 38, 38, 0.3);
+}
+
+.saved-card .popup-btn.btn-delete:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ווריאציות צבע לכרטיסים שונים */
+.saved-card.visa {
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+}
+
+.saved-card.mastercard {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+}
+
+.saved-card.amex {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+}
+
+/* רספונסיבי */
+@media (max-width: 480px) {
+  .saved-card {
+    width: 280px;
+    height: 175px;
+    padding: 1.25rem;
+  }
+  
+  .saved-card p {
+    font-size: 1.2rem;
+    letter-spacing: 3px;
+  }
+  
+  .saved-card::before {
+    width: 35px;
+    height: 25px;
+  }
+  
+  .saved-card::after {
+    width: 22px;
+    height: 15px;
+  }
+}
+/*
 .saved-card {
   background: linear-gradient(135deg, #9aa9e8 0%, #d2b4f0 100%);
   color: white;
@@ -117,6 +270,7 @@
   letter-spacing: 2px;
   color: black;
 }
+  */
 
 /* טופס */
 .credit-card-form {

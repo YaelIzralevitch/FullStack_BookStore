@@ -128,6 +128,16 @@ export const getBooksByCategoryId = (categoryId) => fetchData(`books/category/${
 export const getBookById = (bookId) => fetchData(`books/${bookId}`)
 
 
+// הזמנות
+export const getUserOrderHistory = async (userId) => await fetchData(`orders/user/${userId}`);
+export const getOrderDetails = async (orderId, userId) => await fetchData(`orders/${orderId}/user/${userId}`);
+export const createOrder = async (orderData, paymentData) => await postData('orders/checkout', { orderData, paymentData });
+
+// חיפוש
+export const searchBooksAndCategories = (query) => fetchData(`search?query=${encodeURIComponent(query)}`);
+
+
+
 
 
 
