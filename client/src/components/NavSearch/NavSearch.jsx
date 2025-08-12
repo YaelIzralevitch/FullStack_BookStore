@@ -23,7 +23,7 @@ function NavSearch() {
   };
 
   const debouncedSearch = useCallback(
-    debounce((value) => fetchResults(value), 300),
+    debounce((value) => fetchResults(value), 500),
     []
   );
 

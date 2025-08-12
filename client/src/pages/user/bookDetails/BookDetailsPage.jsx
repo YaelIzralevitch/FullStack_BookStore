@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext} from 'react';
 import { useParams } from 'react-router-dom';
+import CartContext from '../../../contexts/CartContext';
 import { getBookById } from '../../../services/api';
-import { addToCart } from '../../../utils/localStorage';    
+//import { addToCart } from '../../../utils/localStorage';
+    
 import './BookDetailsPage.css';
 
 function BookDetailsPage() {
@@ -10,6 +12,7 @@ function BookDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const { addToCart } = useContext(CartContext);
 
   useEffect(() => {
     async function fetchBook() {
@@ -37,11 +40,7 @@ function BookDetailsPage() {
  
   const handleAddToCart = () => {
     addToCart({
-      bookId: book.id,
-      title: book.title,
-      author: book.author,
-      price: parseInt(book.price, 10), 
-      image_url: book.image_url
+      ...book, price: parseFloat(book.price)
     }, quantity); 
     alert(`Added ${quantity} "${book.title}" to cart!`);
   };

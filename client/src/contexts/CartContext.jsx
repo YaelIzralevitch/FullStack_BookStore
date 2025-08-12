@@ -29,6 +29,8 @@ export const CartProvider = ({ children }) => {
     });
   };
 
+  
+
   const removeFromCart = (bookId) => {
     setCartItems(prevItems => prevItems.filter(item => item.bookId !== bookId));
   };
