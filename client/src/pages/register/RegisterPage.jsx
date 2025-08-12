@@ -24,6 +24,7 @@ const RegisterPage = () => {
     // Check for empty fields
     if (!email.trim() || !password.trim() || !passwordVerify.trim() || !first_name.trim() || !last_name.trim() || !phone.trim()) {
       setError('Please fill in all fields');
+      setLoading(false);
       return;
     }
     
@@ -101,7 +102,6 @@ const RegisterPage = () => {
               value={first_name}
               onChange={(e) => setFirst_name(e.target.value)}
               disabled={loading}
-              required
             />
           </div>
 
@@ -114,7 +114,6 @@ const RegisterPage = () => {
               value={last_name}
               onChange={(e) => setLast_name(e.target.value)}
               disabled={loading}
-              required
             />
           </div>
 
