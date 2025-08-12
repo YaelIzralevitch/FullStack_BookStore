@@ -1,0 +1,146 @@
+/* AdminLayout.css */
+
+.header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header-user {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.logo {
+  height: 50px;
+  width: auto;
+}
+
+.header-user h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  flex: 1;
+  text-align: center;
+}
+
+/* Admin Navigation */
+.admin-nav {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.admin-nav-btn {
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  white-space: nowrap;
+}
+
+.admin-nav-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.admin-nav-btn.active {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  font-weight: 600;
+}
+
+.admin-nav-btn.logout-btn {
+  background: rgba(220, 38, 38, 0.8);
+  border-color: rgba(220, 38, 38, 0.9);
+}
+
+.admin-nav-btn.logout-btn:hover {
+  background: rgba(185, 28, 28, 0.9);
+  border-color: rgba(185, 28, 28, 1);
+}
+
+/* Main Content */
+.home-Outlet-container {
+  min-height: calc(100vh - 140px); /* מחסיר גובה header ו-footer */
+  padding: 2rem;
+  background: #f8fafc;
+}
+
+/* Footer */
+.footer {
+  background: #1f2937;
+  color: #9ca3af;
+  text-align: center;
+  padding: 1.5rem;
+  margin-top: auto;
+}
+
+.footer p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .header {
+    padding: 1rem;
+  }
+
+  .header-user {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .header-user h1 {
+    font-size: 1.25rem;
+    order: 1;
+  }
+
+  .logo {
+    order: 0;
+    height: 40px;
+  }
+
+  .admin-nav {
+    order: 2;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .admin-nav-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .home-Outlet-container {
+    padding: 1rem;
+    min-height: calc(100vh - 180px);
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-nav {
+    width: 100%;
+  }
+
+  .admin-nav-btn {
+    flex: 1;
+    min-width: 0;
+    padding: 0.5rem 0.75rem;
+  }
+}

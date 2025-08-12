@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const booksService = require('../services/books.service');
+const { authenticate } = require("../middleware/auth.middleware");
 
 // GET /api/books/category/:categoryId
-router.get('/category/:categoryId', async (req, res) => {
+router.get('/category/:categoryId', authenticate, async (req, res) => {
   try {
     const { categoryId } = req.params;
     const books = await booksService.getBooksByCategory(categoryId);
@@ -14,7 +15,7 @@ router.get('/category/:categoryId', async (req, res) => {
 });
 
 
-router.get('/:bookId', async (req, res) => {
+router.get('/:bookId', authenticate, async (req, res) => {
   try {
     const { bookId } = req.params;
     const book = await booksService.getBookById(bookId);

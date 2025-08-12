@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const searchService = require('../services/navSearch.service');
+const { authenticate } = require("../middleware/auth.middleware");
 
 
-router.get('/', async (req, res) => {
+router.get('/', authenticate, async (req, res) => {
   try {
     const { query } = req.query;
     if (!query || query.trim() === '') {

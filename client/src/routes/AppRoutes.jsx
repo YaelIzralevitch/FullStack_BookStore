@@ -9,8 +9,10 @@ import CategoryBooksPage from '../pages/user/books/CategoryBooksPage.jsx';
 import BookDetailsPage from '../pages/user/bookDetails/BookDetailsPage.jsx';
 import OrdersHistoryPage from '../pages/user/ordersHistory/OrdersHistoryPage.jsx';
 import CartPage from '../pages/user/cart/CartPage.jsx';
-import AdminLayout from '../layouts/AdminLayout.jsx';
-import DashboardPage from '../pages/admin/DashboardPage.jsx';
+import AdminLayout from '../layouts/adminLayout/AdminLayout.jsx';
+import DashboardPage from '../pages/admin/dashboard/DashboardPage.jsx';
+import StockManagementPage from '../pages/admin/stockManagement/StockManagementPage.jsx';
+import OrdersPage from '../pages/admin/orders/OrdersPage.jsx';
 import AuthContext from '../contexts/AuthContext.jsx';
 import ErrorPage from '../pages/ErrorPage.jsx';
 
@@ -39,10 +41,8 @@ function AppRoutes() {
       <Routes>
         <Route path="/dashboard" element={<AdminLayout />}>
           <Route index element={<DashboardPage />} />
-          {/*
           <Route path="stockManagement" element={<StockManagementPage />} />
           <Route path='orders' element={<OrdersPage />} />
-          */}
         </Route>
         <Route path="*" element={<ErrorPage />} />
       </Routes>

@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const categoriesService = require("../services/categories.service");
+const { authenticate } = require("../middleware/auth.middleware");
 
 // GET /api/categories
-router.get("/", async (req, res) => {
+router.get("/", authenticate, async (req, res) => {
   try {
     const categories = await categoriesService.listCategories();
     res.json({ success: true, data: categories });
@@ -13,7 +14,7 @@ router.get("/", async (req, res) => {
 });
 
 // GET /api/categories/:id
-router.get("/:id", async (req, res) => {
+router.get("/:id", authenticate, async (req, res) => {
   try {
     const category = await categoriesService.getCategory(req.params.id);
     if (!category) {
