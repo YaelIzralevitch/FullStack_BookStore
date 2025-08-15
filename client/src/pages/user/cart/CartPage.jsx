@@ -23,7 +23,7 @@ function CartPage() {
   const formatPrice = (price) => `$${parseFloat(price).toFixed(2)}`;
 
   const handleQuantityChange = (bookId, change) => {
-    const item = cartItems.find(item => item.bookId === bookId);
+    const item = cartItems.find(item => item.id === bookId);
     if (item) {
       const newQuantity = item.quantity + change;
       if (newQuantity > 0) {
@@ -65,7 +65,7 @@ function CartPage() {
     clearCart();
     setShowPaymentPopup(false);
     setSuccessMessage(`Payment successful! Order #${paymentData.orderId} has been created.`);
-    setTimeout(() => setSuccessMessage(''), 3000);
+    setTimeout(() => setSuccessMessage(''), 5000);
   };
 
   if (cartItems.length === 0) {
@@ -98,7 +98,7 @@ function CartPage() {
           
           <div className="cart-items">
             {cartItems.map((item) => (
-              <div key={item.bookId} className="cart-item">
+              <div key={item.id} className="cart-item">
                 <div className="item-image">
                   {item.image_url ? (
                     <img 
@@ -124,14 +124,14 @@ function CartPage() {
                 <div className="quantity-controls">
                   <button 
                     className="quantity-btn"
-                    onClick={() => handleQuantityChange(item.bookId, -1)}
+                    onClick={() => handleQuantityChange(item.id, -1)}
                   >
                     -
                   </button>
                   <span className="quantity">{item.quantity}</span>
                   <button 
                     className="quantity-btn"
-                    onClick={() => handleQuantityChange(item.bookId, 1)}
+                    onClick={() => handleQuantityChange(item.id, 1)}
                   >
                     +
                   </button>
@@ -143,7 +143,7 @@ function CartPage() {
 
                 <button 
                   className="remove-btn"
-                  onClick={() => removeFromCart(item.bookId)}
+                  onClick={() => removeFromCart(item.id)}
                   title="Remove from cart"
                 >
                   ×
@@ -180,7 +180,6 @@ function CartPage() {
                   type="text"
                   value={shippingAddress.street}
                   onChange={(e) => handleAddressChange('street', e.target.value)}
-                  placeholder="123 Main Street"
                 />
               </div>
 
@@ -191,7 +190,6 @@ function CartPage() {
                     type="text"
                     value={shippingAddress.city}
                     onChange={(e) => handleAddressChange('city', e.target.value)}
-                    placeholder="New York"
                   />
                 </div>
                 <div className="form-group">
@@ -200,7 +198,6 @@ function CartPage() {
                     type="text"
                     value={shippingAddress.house_number}
                     onChange={(e) => handleAddressChange('house_number', e.target.value)}
-                    placeholder="Apt 4B"
                   />
                 </div>
               </div>

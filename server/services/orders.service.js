@@ -86,8 +86,53 @@ async function getOrderDetails(orderId, userId) {
   }
 }
 
+
+/**
+ * קבלת כל ההזמנות (לאדמין)
+ */
+async function getAllOrdersForAdmin(options) {
+  try {
+    const result = await ordersController.getAllOrders(options);
+    
+    return {
+      code: 200,
+      data: result,
+      msg: `Found ${result.totalCount} orders`
+    };
+  } catch (error) {
+    console.error('ERROR IN getAllOrdersForAdmin service:', error);
+    return { 
+      code: 500, 
+      msg: error.message || "Failed to retrieve orders" 
+    };
+  }
+}
+
+/**
+ * עדכון סטטוס הזמנה (לאדמין)
+ */
+async function updateOrderStatus(orderId, newStatus) {
+  try {
+    const result = await ordersController.updateOrderStatus(orderId, newStatus);
+    
+    return {
+      code: 200,
+      data: result,
+      msg: "Order status updated successfully"
+    };
+  } catch (error) {
+    console.error('ERROR IN updateOrderStatus service:', error);
+    return { 
+      code: 500, 
+      msg: error.message || "Failed to update order status" 
+    };
+  }
+}
+
 module.exports = {
   getUserOrderHistory,
   getOrderDetails,
-  createOrderWithPayment
+  createOrderWithPayment,
+  getAllOrdersForAdmin,
+  updateOrderStatus
 };

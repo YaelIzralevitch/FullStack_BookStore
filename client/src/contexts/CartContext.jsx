@@ -15,11 +15,11 @@ export const CartProvider = ({ children }) => {
 
   const addToCart = (book, quantity = 1) => {
     setCartItems(prevItems => {
-      const existingItem = prevItems.find(item => item.bookId === book.id);
+      const existingItem = prevItems.find(item => item.id === book.id);
       
       if (existingItem) {
         return prevItems.map(item =>
-          item.bookId === book.id
+          item.id === book.id
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );
@@ -29,10 +29,8 @@ export const CartProvider = ({ children }) => {
     });
   };
 
-  
-
   const removeFromCart = (bookId) => {
-    setCartItems(prevItems => prevItems.filter(item => item.bookId !== bookId));
+    setCartItems(prevItems => prevItems.filter(item => item.id !== bookId));
   };
 
   const updateQuantity = (bookId, newQuantity) => {
@@ -43,7 +41,7 @@ export const CartProvider = ({ children }) => {
 
     setCartItems(prevItems =>
       prevItems.map(item =>
-        item.bookId === bookId
+        item.id === bookId
           ? { ...item, quantity: newQuantity }
           : item
       )

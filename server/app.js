@@ -9,6 +9,7 @@ const categoriesRouter = require("./routes/categories.router");
 const booksRouter = require('./routes/books.router');
 const ordersRouter = require('./routes/orders.routes');
 const searchRouter = require('./routes/navSearch.router');
+const dashboardRoutes = require('./routes/dashboard.routes');
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use("/api/categories", categoriesRouter);
 app.use('/api/books', booksRouter);
 app.use('/api/orders', ordersRouter);
 app.use('/api/search', searchRouter);
+app.use('/api/dashboard', dashboardRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

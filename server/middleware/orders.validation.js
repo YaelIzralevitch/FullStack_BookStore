@@ -25,7 +25,7 @@ function validateOrderCreation(req, res, next) {
   for (let i = 0; i < orderData.items.length; i++) {
     const item = orderData.items[i];
     
-    if (!item.bookId || typeof item.bookId !== 'number') {
+    if (!item.id || typeof item.id !== 'number') {
       return res.status(400).json({
         success: false,
         message: `Invalid book ID for item ${i + 1}`

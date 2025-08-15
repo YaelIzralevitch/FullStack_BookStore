@@ -137,37 +137,42 @@ export const createOrder = async (orderData, paymentData) => await postData('ord
 export const searchBooksAndCategories = (query) => fetchData(`search?query=${encodeURIComponent(query)}`);
 
 
-
-
-
-
-export const getUsers = () => fetchData('users');
-export const getUserById = (userId) => fetchData(`users/${userId}`);
-export const getUserByEmail = async (email) => {
-  try {
-    const res = await fetch(`${API_URL}/users?email=${email}`);
-    if (!res.ok) throw new Error(`GET users by email failed`);
-    const data = await res.json();
-    return data[0];
-  } catch (error) {
-    console.error('Error fetching user by username:', error);
-    throw error;
-  }
+//מנהל
+export const getDashboardData = async (year) => {
+  const endpoint = year ? `dashboard?year=${year}` : 'dashboard';
+  return await fetchData(endpoint);
 };
-export const createUser = (userData) => postData('users', userData);
+export const getAvailableYears = async () => await fetchData('dashboard/years');
 
-// משימות
-export const getTodosByUserId = (userId) => fetchData(`todos?userId=${userId}`);
-export const createTodo = (todoData) => postData('todos', todoData);
-export const updateTodo = (todoId, todoData) => updateData('todos', todoId, todoData);
-export const deleteTodo = (todoId) => deleteData('todos', todoId);
 
-// פוסטים
-export const getPostsByUserId = (userId) => fetchData(`posts?userId=${userId}`);
-export const getPostById = (postId) => fetchData(`posts/${postId}`);
-export const createPost = (data) => postData('posts', data);
-export const updatePost = (postId, postData) => updateData('posts', postId, postData);
-export const deletePost = (postId) => deleteData('posts', postId);
+// הזמנות מנהל
+export const getAllOrdersForAdmin = async (params = {}) => {
+  const searchParams = new URLSearchParams();
+  
+  Object.keys(params).forEach(key => {
+    if (params[key]) {
+      searchParams.append(key, params[key]);
+    }
+  });
+  
+  const endpoint = searchParams.toString() ? `orders/admin?${searchParams}` : 'orders/admin';
+  return await fetchData(endpoint);
+};
+export const updateOrderStatus = async (orderId, status) => await updateData('orders/admin', `${orderId}/status`, { status });
+export const getOrderDetailsForAdmin = async (orderId) => await fetchData(`orders/admin/${orderId}`);
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // תגובות
 export const getCommentsByPostId = (postId) => fetchData(`comments?postId=${postId}`);

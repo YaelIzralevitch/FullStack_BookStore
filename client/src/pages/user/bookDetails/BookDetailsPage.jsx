@@ -20,6 +20,7 @@ function BookDetailsPage() {
         setLoading(true);
         const response = await getBookById(bookId);
         setBook(response.data);
+      // eslint-disable-next-line no-unused-vars
       } catch (err) {
         setError('Error loading book details');
       } finally {
