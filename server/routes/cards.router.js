@@ -6,14 +6,14 @@ const { validateCreditCardAdd } = require("../middleware/cards.validation");
 
 /**
  * קבלת פרטי כרטיס אשראי
- * GET /api/users/:userId
+ * GET /api/cards/:userId
  */
 router.get("/:userId", authenticate, authorizeOwner, async (req, res) => {
   try {
 
     const userId = parseInt(req.params.userId);
 
-    const result = await cardsService.getUserCreditCard(userId);
+    const result = await cardsService.getUserSavedCard(userId);
 
     if (result.code !== 200) {
       return res.status(result.code).json({ 
@@ -38,14 +38,14 @@ router.get("/:userId", authenticate, authorizeOwner, async (req, res) => {
 
 /**
  * הוספת כרטיס אשראי
- * POST /api/users/:userId
+ * POST /api/cards/:userId
  */
 router.post("/:userId", authenticate, authorizeOwner, validateCreditCardAdd, async (req, res) => {
   try {
     const userId = parseInt(req.params.userId);
-    const creditCardData = req.body;
+    const paymentMethodId  = req.body.paymentMethodId;
 
-    const result = await cardsService.addUserCreditCard(userId, creditCardData);
+    const result = await cardsService.saveUserCreditCard(userId, paymentMethodId );
     
     if (result.code !== 200) {
       return res.status(result.code).json({ 
@@ -69,7 +69,7 @@ router.post("/:userId", authenticate, authorizeOwner, validateCreditCardAdd, asy
 
 /**
  * מחיקת כרטיס אשראי
- * DELETE /api/users/:userId
+ * DELETE /api/cards/:userId
  */
 router.delete("/:userId", authenticate, authorizeOwner, async (req, res) => {
   try {

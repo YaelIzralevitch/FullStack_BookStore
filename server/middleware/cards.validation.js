@@ -1,25 +1,20 @@
 /**
- * ולידציה לכרטיס אשראי חדש (כל השדות נדרשים)
+ * ולידציה לכרטיס אשראי חדש
  */
 function validateCreditCardAdd(req, res, next) {
-  const { cardNumber, cardExpairy, cardCvv } = req.body;
+  const { paymentMethodId } = req.body;
 
-  // קריאה לפונקציית הולידציה
-  const result = validateCardDetails(cardNumber, cardExpairy, cardCvv);
-
-  if (!result.valid) {
-    return res.status(400).json({ 
+  if (!paymentMethodId || typeof paymentMethodId !== 'string') {
+    return res.status(400).json({
       success: false,
-      message: result.message 
-    }); // מחזיר את התגובה במקרה של שגיאה
+      message: 'Invalid or missing paymentMethodId'
+    });
   }
-
-  // הוספת הנתונים הנקיים ל-request
-  req.body.cardNumber = result.cleanCardNumber;
 
   next();
 }
 
+/*
 function validateCardDetails(cardNumber, cardExpairy, cardCvv) {
   // בדיקה שכל השדות קיימים
   if (!cardNumber || !cardExpairy || !cardCvv) {
@@ -57,7 +52,7 @@ function validateCardDetails(cardNumber, cardExpairy, cardCvv) {
 
   return { valid: true, cleanCardNumber };
 }
-
+*/
 
 /**
  * פונקציה עזר לוולידציה של מספר כרטיס אשראי לפי אלגוריתם לוהן
@@ -86,5 +81,5 @@ function isValidCardNumber(cardNumber) {
 
 module.exports = {
   validateCreditCardAdd,
-  validateCardDetails
+  //validateCardDetails
 };

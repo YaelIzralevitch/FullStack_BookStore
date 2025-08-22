@@ -1,17 +1,19 @@
 // components/PaymentPopup.jsx
 import { useState, useEffect, useContext } from 'react';
+import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 import AuthContext from '../../contexts/AuthContext';
-import { getUserCreditCard, addUserCreditCard, createOrder } from '../../services/api';
+import { getUserCreditCard, createOrder } from '../../services/api';
 import './PaymentPopup.css';
 
-function PaymentPopup({ orderData, onClose, onSuccess }) {
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+
+function PaymentForm({ orderData, onClose, onSuccess }) {
+  const stripe = useStripe();
+  const elements = useElements();
   const [savedCard, setSavedCard] = useState(null);
   const [useNewCard, setUseNewCard] = useState(false);
   const [saveCard, setSaveCard] = useState(false);
-  
-  const [cardNumber, setCardNumber] = useState('');
-  const [cardExpairy, setCardExpairy] = useState('');
-  const [cardCvv, setCardCvv] = useState('');
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -47,6 +49,11 @@ function PaymentPopup({ orderData, onClose, onSuccess }) {
   const formatPrice = (price) => `$${parseFloat(price).toFixed(2)}`;
 
   const handlePayment = async () => {
+    if (!stripe || !elements) {
+      setError('Stripe is not loaded yet. Please try again.');
+      return;
+    }
+
     try {
       setError('');
       setProcessing(true);
@@ -56,35 +63,34 @@ function PaymentPopup({ orderData, onClose, onSuccess }) {
       if (savedCard && !useNewCard) {
         // שימוש בכרטיס שמור
         paymentData = {
-          savedCard: true
+          useSavedCard: true,
+          saveNewCard: false
         };
       } else {
         // שימוש בכרטיס חדש
-        if (!cardNumber || !cardExpairy || !cardCvv) {
-          setError('Please fill in all payment fields');
+        const cardElement = elements.getElement(CardElement);
+
+        if (!cardElement) {
+          setError('Please enter card details');
+          return;
+        }
+
+        // צור Payment Method עם Stripe
+        const { error, paymentMethod } = await stripe.createPaymentMethod({
+          type: 'card',
+          card: cardElement,
+        });
+
+        if (error) {
+          setError(error.message);
           return;
         }
 
         paymentData = {
-          savedCard: false,
-          cardNumber,
-          cardExpairy,
-          cardCvv
+          useSavedCard: false,
+          saveNewCard: saveCard,
+          paymentMethodId: paymentMethod.id
         };
-
-        // שמירת כרטיס אם נבחר
-        if (saveCard) {
-          try {
-            await addUserCreditCard(currentUser.id, {
-              cardNumber,
-              cardExpairy,
-              cardCvv
-            });
-          } catch (saveError) {
-            console.error('Error saving card:', saveError);
-            // ממשיכים עם התשלום גם אם שמירת הכרטיס נכשלה
-          }
-        }
       }
 
       // ביצוע התשלום
@@ -101,6 +107,26 @@ function PaymentPopup({ orderData, onClose, onSuccess }) {
     } finally {
       setProcessing(false);
     }
+  };
+
+  const cardElementOptions = {
+    style: {
+      base: {
+        fontSize: '16px',
+        color: '#424770',
+        fontFamily: 'system-ui, -apple-system, sans-serif',
+        '::placeholder': {
+          color: '#aab7c4',
+        },
+        padding: '12px',
+      },
+      invalid: {
+        color: '#9e2146',
+      },
+    },
+    hidePostalCode: true,
+    wallets: { applePay: false, googlePay: false },
+    disableLink: true,
   };
 
   return (
@@ -131,7 +157,9 @@ function PaymentPopup({ orderData, onClose, onSuccess }) {
                     checked={!useNewCard}
                     onChange={() => setUseNewCard(false)}
                   />
-                  <span>Use saved card **** **** **** {savedCard.lastFourDigits || savedCard}</span>
+                  <span>
+                    Use saved card {savedCard.card_brand?.toUpperCase()} **** **** **** {savedCard.card_last_four || savedCard.lastFourDigits || savedCard}
+                  </span>
                 </label>
               </div>
             )}
@@ -150,51 +178,23 @@ function PaymentPopup({ orderData, onClose, onSuccess }) {
             {useNewCard && (
               <div className="new-card-form">
                 <div className="form-group">
-                  <label>Card Number</label>
-                  <input
-                    type="text"
-                    value={cardNumber}
-                    onChange={(e) => setCardNumber(e.target.value)}
-                    placeholder="1234 5678 9012 3456"
-                    disabled={processing}
-                  />
+                  <label>Card Details</label>
+                  <div className="stripe-card-element">
+                    <CardElement options={cardElementOptions} />
+                  </div>
                 </div>
 
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Expiry Date</label>
+                <div className="save-card-option">
+                  <label className="checkbox-label">
                     <input
-                      type="text"
-                      value={cardExpairy}
-                      onChange={(e) => setCardExpairy(e.target.value)}
-                      placeholder="MM/YY"
+                      type="checkbox"
+                      checked={saveCard}
+                      onChange={(e) => setSaveCard(e.target.checked)}
                       disabled={processing}
                     />
-                  </div>
-                  <div className="form-group">
-                    <label>CVV</label>
-                    <input
-                      type="text"
-                      value={cardCvv}
-                      onChange={(e) => setCardCvv(e.target.value)}
-                      placeholder="123"
-                      disabled={processing}
-                    />
-                  </div>
+                    <span>Save this card for future purchases</span>
+                  </label>
                 </div>
-                {saveCard && (
-                    <div className="save-card-option">
-                    <label className="checkbox-label">
-                        <input
-                        type="checkbox"
-                        checked={saveCard}
-                        onChange={(e) => setSaveCard(e.target.checked)}
-                        disabled={processing}
-                        />
-                        <span>Save this card for future purchases</span>
-                    </label>
-                    </div>
-                    )}
               </div>
             )}
 
@@ -209,7 +209,7 @@ function PaymentPopup({ orderData, onClose, onSuccess }) {
               <button
                 className="payment-btn pay-btn"
                 onClick={handlePayment}
-                disabled={processing}
+                disabled={processing || !stripe}
               >
                 {processing ? 'Processing...' : `Pay ${formatPrice(orderData.totalPrice)}`}
               </button>
@@ -218,6 +218,19 @@ function PaymentPopup({ orderData, onClose, onSuccess }) {
         )}
       </div>
     </div>
+  );
+}
+
+// הקומפוננטה הראשית עם Elements Provider
+function PaymentPopup({ orderData, onClose, onSuccess }) {
+  return (
+    <Elements stripe={stripePromise}>
+      <PaymentForm 
+        orderData={orderData}
+        onClose={onClose}
+        onSuccess={onSuccess}
+      />
+    </Elements>
   );
 }
 

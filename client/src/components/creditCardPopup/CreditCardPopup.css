@@ -254,23 +254,6 @@
     height: 15px;
   }
 }
-/*
-.saved-card {
-  background: linear-gradient(135deg, #9aa9e8 0%, #d2b4f0 100%);
-  color: white;
-  padding: 1.5rem;
-  border-radius: 12px;
-  margin-bottom: 1rem;
-}
-
-.saved-card p {
-  font-size: 1.1rem;
-  font-weight: 500;
-  margin: 0 0 1rem 0;
-  letter-spacing: 2px;
-  color: black;
-}
-  */
 
 /* טופס */
 .credit-card-form {
@@ -359,6 +342,20 @@ input[placeholder="0000-0000-0000"] {
   color: #6b7280;
   font-style: italic;
   padding: 1rem;
+}
+
+/* Stripe Card Element */
+.stripe-card-element {
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  padding: 12px;
+  background-color: white;
+  transition: border-color 0.2s ease;
+}
+
+.stripe-card-element:focus-within {
+  border-color: #4285f4;
+  box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1);
 }
 
 /* רספונסיבי */

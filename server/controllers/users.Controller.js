@@ -2,10 +2,11 @@ const pool = require("../config/db");
 
 async function getUserById(userId) {
   try {
-    const [[user]] = await pool.query(
+    const [rows] = await pool.query(
       'SELECT id, first_name, last_name, email, phone, city, street, house_number, role FROM users WHERE id = ?',
       [userId]
     );
+    const user = rows[0];
 
     if (!user) {
       throw new Error('User not found');

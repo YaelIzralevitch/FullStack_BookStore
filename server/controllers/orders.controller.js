@@ -50,25 +50,6 @@ async function createOrder(userId, orderData) {
   }
 }
 
-/**
- * עיבוד תשלום (מפוברק)
- */
-async function processPayment(paymentData) {
-  // סימולציה של עיבוד תשלום
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      // 95% הצלחה, 5% כישלון (לצורך בדיקה)
-      const success = Math.random() > 0.05;
-      
-      resolve({
-        success,
-        transactionId: success ? `TXN_${Date.now()}_${Math.random().toString(36).substr(2, 9)}` : null,
-        message: success ? 'Payment processed successfully' : 'Payment failed. Please try again.'
-      });
-    }, 2000); // דמוי 2 שניות עיבוד
-  });
-}
-
 
 /**
  * קבלת כל ההזמנות של משתמש עם פרטי הספרים
@@ -300,7 +281,6 @@ module.exports = {
   getUserOrders,
   getOrderById, 
   createOrder,
-  processPayment,
   getAllOrders,
   updateOrderStatus
 };

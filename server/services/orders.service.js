@@ -1,21 +1,32 @@
 const ordersController = require("../controllers/orders.controller");
+const cardsController = require("../controllers/cards.controller");
+const usersController = require("../controllers/users.controller");
 
 
 /**
  * יצירת הזמנה חדשה עם תשלום
  */
-async function createOrderWithPayment(userId, orderData, paymentData) {
+async function createOrderWithStripePayment(userId, orderData, paymentData) {
   try {
-    // עיבוד התשלום
-    const paymentResult = await ordersController.processPayment(paymentData);
+
+    const user = await usersController.getUserById(userId);
+    const userEmail = user.email;
+    
+    // עיבוד התשלום עם Stripe
+    const paymentResult = await cardsController.processStripePayment(
+      userId,
+      userEmail, 
+      orderData.totalPrice, 
+      paymentData
+    );
     
     if (!paymentResult.success) {
       return {
         code: 400,
-        msg: paymentResult.message
+        msg: paymentResult.message || "Payment failed"
       };
     }
-
+    
     // יצירת ההזמנה
     const orderResult = await ordersController.createOrder(userId, orderData);
 
@@ -23,16 +34,16 @@ async function createOrderWithPayment(userId, orderData, paymentData) {
       code: 200,
       data: {
         orderId: orderResult.orderId,
-        transactionId: paymentResult.transactionId
+        paymentIntentId: paymentResult.paymentIntentId,
       },
-      msg: "Order created and payment processed successfully"
+      msg: "Order created and payment processed successfully with Stripe"
     };
 
   } catch (error) {
-    console.error('ERROR IN createOrderWithPayment service:', error);
+    console.error('ERROR IN createOrderWithStripePayment service:', error);
     return { 
       code: 500, 
-      msg: error.message || "Failed to create order" 
+      msg: error.message || "Failed to create order with Stripe" 
     };
   }
 }
@@ -132,7 +143,7 @@ async function updateOrderStatus(orderId, newStatus) {
 module.exports = {
   getUserOrderHistory,
   getOrderDetails,
-  createOrderWithPayment,
+  createOrderWithStripePayment,
   getAllOrdersForAdmin,
   updateOrderStatus
 };

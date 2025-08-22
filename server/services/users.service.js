@@ -1,4 +1,4 @@
-const usersController = require("../controllers/users.Controller");
+const usersController = require("../controllers/users.controller");
 
 /**
  * קבלת פרטי משתמש

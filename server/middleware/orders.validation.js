@@ -1,9 +1,9 @@
-const { validateCardDetails } = require('./cards.validation.js');
+
 /**
  * ולידציה ליצירת הזמנה
  */
 function validateOrderCreation(req, res, next) {
-  const { orderData, paymentData } = req.body;
+  const { orderData } = req.body;
 
   // בדיקת נתוני הזמנה
   if (!orderData) {
@@ -105,36 +105,8 @@ function validateOrderCreation(req, res, next) {
     });
   }
 
-  // בדיקת נתוני תשלום
-  if (!paymentData) {
-    return res.status(400).json({
-      success: false,
-      message: "Payment data is required"
-    });
-  }
-
-  if (typeof paymentData.savedCard !== 'boolean') {
-    return res.status(400).json({
-      success: false,
-      message: "savedCard field is required and must be boolean"
-    });
-  }
-
-    if (!paymentData.savedCard) {
-        // תשלום עם כרטיס חדש
-        const validate = validateCardDetails(paymentData.cardNumber, paymentData.cardExpairy, paymentData.cardCvv);
-        if (!validate.valid) {
-            return res.status(400).json({ 
-                    success: false,
-                    message: validate.message 
-                    }); // מחזיר את התגובה במקרה של שגיאה
-        }
-        req.body.paymentData.cardNumber = validate.cleanCardNumber;
-    }
-
   // קריאה ל-middleware של ולידציית תשלום
   req.orderData = orderData;
-  req.paymentData = paymentData;
   
   next();
 }
@@ -156,7 +128,61 @@ function validateOrderId(req, res, next) {
   next();
 }
 
+/**
+ * ולידציה לנתוני תשלום Stripe
+ */
+function validatePaymentData(req, res, next) {
+  const { paymentData } = req.body;
+
+  if (!paymentData) {
+    return res.status(400).json({
+      success: false,
+      message: "Payment data is required"
+    });
+  }
+
+  // בדיקה שיש שדה useSavedCard
+  if (typeof paymentData.useSavedCard !== 'boolean') {
+    return res.status(400).json({
+      success: false,
+      message: "useSavedCard field is required and must be boolean"
+    });
+  }
+
+  if (paymentData.useSavedCard === false) {
+    // תשלום עם כרטיס חדש - צריך paymentMethodId
+    if (!paymentData.paymentMethodId || typeof paymentData.paymentMethodId !== 'string') {
+      return res.status(400).json({
+        success: false,
+        message: "paymentMethodId is required for new card payments"
+      });
+    }
+
+    // בדיקה שה-paymentMethodId נראה תקין (מתחיל ב-pm_)
+    if (!paymentData.paymentMethodId.startsWith('pm_')) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid payment method ID format"
+      });
+    }
+
+    // בדיקה של saveNewCard
+    if (typeof paymentData.saveNewCard !== 'boolean') {
+      return res.status(400).json({
+        success: false,
+        message: "saveNewCard field must be boolean"
+      });
+    }
+  }
+
+  req.paymentData = paymentData;
+
+  next();
+}
+
+
 module.exports = {
   validateOrderCreation,
-  validateOrderId
+  validateOrderId,
+  validatePaymentData
 };

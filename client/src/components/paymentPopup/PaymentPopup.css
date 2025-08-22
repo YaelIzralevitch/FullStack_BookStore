@@ -265,6 +265,27 @@
   transform: none !important;
 }
 
+.stripe-card-element {
+  padding: 0.75rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 6px;
+  background-color: #ffffff;
+  transition: border-color 0.2s ease;
+}
+
+.stripe-card-element:focus-within {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.stripe-card-element .StripeElement--invalid {
+  border-color: #dc2626;
+}
+
+.stripe-card-element .StripeElement--focus {
+  border-color: #3b82f6;
+}
+
 /* Responsive */
 @media (max-width: 480px) {
   .payment-popup {

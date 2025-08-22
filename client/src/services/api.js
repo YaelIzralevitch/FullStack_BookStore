@@ -109,7 +109,7 @@ export const Register = async (userData) => await postData('auth/register', user
 // כרטיסי אשראי
 export const getUserCreditCard = async (userId) => await fetchData(`cards/${userId}`);
 export const deleteUserCreditCard = async (userId) => await deleteData(`cards/${userId}`);
-export const addUserCreditCard = async (userId, cardData) => await postData(`cards/${userId}`, cardData);
+export const saveUserCreditCard = async (userId, cardData) => await postData(`cards/${userId}`, cardData);
 
 // משתמשים
 export const updateUserDetails = async (userId, userData) => await updateData('users', userId, userData);
@@ -160,65 +160,3 @@ export const getAllOrdersForAdmin = async (params = {}) => {
 };
 export const updateOrderStatus = async (orderId, status) => await updateData('orders/admin', `${orderId}/status`, { status });
 export const getOrderDetailsForAdmin = async (orderId) => await fetchData(`orders/admin/${orderId}`);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// תגובות
-export const getCommentsByPostId = (postId) => fetchData(`comments?postId=${postId}`);
-export const createComment = (commentData) => postData('comments', commentData);
-export const deleteCommentsByPostId = async (postId) => {
-  try {
-    const comments = await getCommentsByPostId(postId);
-    
-    // מחיקה של כל תגובה בלולאה
-    await Promise.all(
-      comments.map(comment =>
-        deleteData('comments', comment.id)
-      )
-    );
-  } catch (error) {
-    console.error(`Error deleting comments for post ${postId}:`, error);
-    throw error;
-  }
-};
-
-
-// תמונות
-export const getPhotosByAlbumIdPaged = async (albumId, page = 1, limit = 15) => {
-
-  const start = (page - 1) * limit;
-  const res = await fetch(`${API_URL}/photos?albumId=${albumId}&_start=${start}&_limit=${limit}`);
-  if (!res.ok) throw new Error('Failed to fetch paged photos');
-  
-  return res.json();
-};
-
-
-export const getPhotosByAlbumId = (albumId) => fetchData(`photos?albumId=${albumId}`);
-
-export const deletePhotosByAlbumId = async (albumId) => {
-  try {
-    const photos = await getPhotosByAlbumId(albumId);
-    
-    // מחיקה של כל תגובה בלולאה
-    await Promise.all(
-      photos.map(photo =>
-        deleteData('photos', photo.id)
-      )
-    );
-  } catch (error) {
-    console.error(`Error deleting photos for album ${albumId}:`, error);
-    throw error;
-  }
-};

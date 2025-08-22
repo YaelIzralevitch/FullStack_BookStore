@@ -31,6 +31,7 @@ function AppRoutes() {
           <Route path="ordersHistory" element={<OrdersHistoryPage />} />
           <Route path="cart" element={<CartPage />} />
         </Route>
+        <Route path="/" element={<Navigate to="/home" replace />} />
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     );
@@ -44,6 +45,7 @@ function AppRoutes() {
           <Route path="stockManagement" element={<StockManagementPage />} />
           <Route path='orders' element={<OrdersPage />} />
         </Route>
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     );
@@ -54,6 +56,7 @@ function AppRoutes() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     );

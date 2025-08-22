@@ -1,11 +1,12 @@
 const cardsController = require("../controllers/cards.Controller");
+const usersController = require("../controllers/users.controller");
 
 /**
  * קבלת פרטי כרטיס אשראי
  */
-async function getUserCreditCard(userId) {
+async function getUserSavedCard(userId) {
   try {
-    const creditCard = await cardsController.getUserCreditCard(userId);
+    const creditCard = await cardsController.getUserSavedCard(userId);
 
     return {
       code: 200,
@@ -20,21 +21,20 @@ async function getUserCreditCard(userId) {
 /**
  * הוספת כרטיס אשראי
  */
-async function addUserCreditCard(userId, creditCardData) {
+async function saveUserCreditCard(userId, paymentMethodId ) {
   try {
 
-    await cardsController.addUserCreditCard(userId, {
-      cardNumber: creditCardData.cardNumber.replace(/\s/g, ''),
-      cardExpairy: creditCardData.cardExpairy,
-      cardCvv: creditCardData.cardCvv
-    });
+    const user = await usersController.getUserById(userId);
+    const userEmail = user.email; 
+
+    await cardsController.saveCard(userId, userEmail, paymentMethodId);
 
     return {
       code: 200,
       msg: "Credit card added successfully"
     };
   } catch (error) {
-    console.error('ERROR IN addUserCreditCard service:', error);
+    console.error('ERROR IN saveUserCreditCard service:', error);
     return { code: 500, msg: error.message || "Failed to add credit card" };
   }
 }
@@ -45,7 +45,7 @@ async function addUserCreditCard(userId, creditCardData) {
 async function deleteUserCreditCard(userId) {
   try {
 
-    await cardsController.deleteUserCreditCard(userId);
+    await cardsController.deleteUserCard(userId);
 
     return {
       code: 200,
@@ -58,7 +58,7 @@ async function deleteUserCreditCard(userId) {
 }
 
 module.exports = {
-  getUserCreditCard,
-  addUserCreditCard,
+  getUserSavedCard,
+  saveUserCreditCard,
   deleteUserCreditCard,
 };
