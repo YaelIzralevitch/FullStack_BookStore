@@ -22,8 +22,7 @@ async function getDashboardData(year = new Date().getFullYear()) {
         monthlyRevenue,
         categorySales,
         generalStats
-      },
-      msg: "Dashboard data retrieved successfully"
+      }
     };
   } catch (error) {
     console.error('ERROR IN getDashboardData service:', error);
@@ -43,8 +42,7 @@ async function getAvailableYears() {
     
     return {
       code: 200,
-      data: years,
-      msg: "Available years retrieved successfully"
+      data: years
     };
   } catch (error) {
     console.error('ERROR IN getAvailableYears service:', error);

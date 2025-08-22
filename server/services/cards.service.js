@@ -29,10 +29,7 @@ async function saveUserCreditCard(userId, paymentMethodId ) {
 
     await cardsController.saveCard(userId, userEmail, paymentMethodId);
 
-    return {
-      code: 200,
-      msg: "Credit card added successfully"
-    };
+    return { code: 200 };
   } catch (error) {
     console.error('ERROR IN saveUserCreditCard service:', error);
     return { code: 500, msg: error.message || "Failed to add credit card" };
@@ -47,10 +44,7 @@ async function deleteUserCreditCard(userId) {
 
     await cardsController.deleteUserCard(userId);
 
-    return {
-      code: 200,
-      msg: "Credit card deleted successfully"
-    };
+    return { code: 200 };
   } catch (error) {
     console.error('ERROR IN deleteUserCreditCard service:', error);
     return { code: 500, msg: error.message || "Failed to delete credit card" };

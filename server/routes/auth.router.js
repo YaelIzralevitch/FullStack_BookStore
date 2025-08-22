@@ -7,7 +7,7 @@ const { validateRegister, validateLogin } = require("../middleware/auth.validati
 router.post("/register", validateRegister, async (req, res) => {
   try {
     await authService.register(req.body);
-    res.json({ success: true, message: "Registered successfully" });
+    res.json({ success: true });
   } catch (e) {
     res.status(500).json({ success: false, message: e.message });
   }
@@ -22,7 +22,6 @@ router.post("/login", validateLogin, async (req, res) => {
 
    res.json({ 
       success: true, 
-      message: "Logged in successfully", 
       user: result.user,
       token: result.token 
     });

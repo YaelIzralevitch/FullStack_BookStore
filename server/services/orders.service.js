@@ -35,8 +35,7 @@ async function createOrderWithStripePayment(userId, orderData, paymentData) {
       data: {
         orderId: orderResult.orderId,
         paymentIntentId: paymentResult.paymentIntentId,
-      },
-      msg: "Order created and payment processed successfully with Stripe"
+      }
     };
 
   } catch (error) {
@@ -85,8 +84,7 @@ async function getOrderDetails(orderId, userId) {
 
     return {
       code: 200,
-      data: order,
-      msg: "Order details retrieved successfully"
+      data: order
     };
   } catch (error) {
     console.error('ERROR IN getOrderDetails service:', error);
@@ -107,8 +105,7 @@ async function getAllOrdersForAdmin(options) {
     
     return {
       code: 200,
-      data: result,
-      msg: `Found ${result.totalCount} orders`
+      data: result
     };
   } catch (error) {
     console.error('ERROR IN getAllOrdersForAdmin service:', error);
@@ -128,8 +125,7 @@ async function updateOrderStatus(orderId, newStatus) {
     
     return {
       code: 200,
-      data: result,
-      msg: "Order status updated successfully"
+      data: result
     };
   } catch (error) {
     console.error('ERROR IN updateOrderStatus service:', error);

@@ -51,7 +51,7 @@ async function updateUserDetails(userId, updateData) {
       throw new Error('User not found');
     }
 
-    return { success: true, message: 'Credit card updated successfully' };
+    return { success: true };
 
   } catch (err) {
     console.error('ERROR IN updateUserDetails:', err);

@@ -30,7 +30,6 @@ router.post("/checkout", authenticate, validateOrderCreation, validatePaymentDat
 
     res.json({
       success: true,
-      message: result.msg,
       data: result.data
     });
   } catch (error) {
@@ -61,7 +60,6 @@ router.get("/user/:userId", authenticate, authorizeOwner, async (req, res) => {
 
     res.json({
       success: true,
-      message: result.msg,
       data: result.data
     });
   } catch (error) {
@@ -93,7 +91,6 @@ router.get("/:orderId/user/:userId", authenticate, authorizeOwner, async (req, r
 
     res.json({
       success: true,
-      message: result.msg,
       data: result.data
     });
   } catch (error) {
@@ -152,7 +149,6 @@ router.get("/admin", authenticate, requireAdmin, async (req, res) => {
 
     res.json({
       success: true,
-      message: result.msg,
       data: result.data
     });
   } catch (error) {
@@ -183,7 +179,6 @@ router.get("/admin/:orderId", authenticate, requireAdmin, validateOrderId, async
 
     res.json({
       success: true,
-      message: result.msg,
       data: result.data
     });
   } catch (error) {
@@ -231,7 +226,6 @@ router.put("/admin/:orderId/status", authenticate, requireAdmin, validateOrderId
 
     res.json({
       success: true,
-      message: result.msg,
       data: result.data
     });
   } catch (error) {

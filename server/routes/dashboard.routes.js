@@ -21,7 +21,6 @@ router.get("/", authenticate, requireAdmin, validateYear, async (req, res) => {
 
     res.json({
       success: true,
-      message: result.msg,
       data: result.data
     });
   } catch (error) {
@@ -50,7 +49,6 @@ router.get("/years", authenticate, requireAdmin, async (req, res) => {
 
     res.json({
       success: true,
-      message: result.msg,
       data: result.data
     });
   } catch (error) {

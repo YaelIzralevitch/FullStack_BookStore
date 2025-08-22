@@ -24,7 +24,6 @@ router.put("/:userId", authenticate, authorizeOwner, validateUserUpdate, async (
 
     res.json({
       success: true,
-      message: result.msg
     });
   } catch (error) {
     console.error('ERROR IN PUT /users/:userId:', error);
@@ -54,7 +53,6 @@ router.get("/:userId", authenticate, authorizeOwner, async (req, res) => {
 
     res.json({
       success: true,
-      message: result.msg,
       data: result.data
     });
   } catch (error) {

@@ -24,7 +24,6 @@ router.get("/:userId", authenticate, authorizeOwner, async (req, res) => {
 
     res.json({
       success: true,
-      message: result.msg,
       data: result.data
     });
   } catch (error) {
@@ -56,7 +55,6 @@ router.post("/:userId", authenticate, authorizeOwner, validateCreditCardAdd, asy
 
     res.json({
       success: true,
-      message: result.msg
     });
   } catch (error) {
     console.error('ERROR IN POST /users/:userId:', error);
@@ -86,7 +84,6 @@ router.delete("/:userId", authenticate, authorizeOwner, async (req, res) => {
 
     res.json({
       success: true,
-      message: result.msg
     });
   } catch (error) {
     console.error('ERROR IN DELETE /users/:userId:', error);

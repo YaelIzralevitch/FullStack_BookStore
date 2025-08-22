@@ -11,9 +11,15 @@ export const fetchData = async (endpoint) => {
       headers.Authorization = `Bearer ${token}`;
     }
     
-    const res = await fetch(`${API_URL}/${endpoint}`, { headers });
-    if (!res.ok) throw new Error(`GET ${endpoint} failed`);
-    return await res.json();
+    const res = await fetch(`${API_URL}/${endpoint}`, { 
+      method: 'GET',
+      headers
+     });
+    const responseData = await res.json();
+
+    if (!res.ok) throw new Error(responseData.message || JSON.stringify(responseData)); 
+    return responseData;
+
   } catch (error) {
     console.error(`Error fetching ${endpoint}:`, error);
     throw error;
@@ -24,12 +30,14 @@ export const fetchData = async (endpoint) => {
 export const postData = async (endpoint, data) => {
   try {
     const token = getAuthToken();
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
     const res = await fetch(`${API_URL}/${endpoint}`, {
       method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        ...(token && { Authorization: `Bearer ${token}` }),
-      },
+      headers,
       body: JSON.stringify(data),
     });
     
@@ -62,8 +70,9 @@ export const updateData = async (endpoint, id, data) => {
       headers,
       body: JSON.stringify(data),
     });
-    if (!res.ok) throw new Error(`PUT ${endpoint}/${id} failed`);
-    return await res.json();
+    const responseData = await res.json();
+    if (!res.ok) throw new Error(responseData.message || `PUT ${endpoint} failed`);
+    return responseData;
   } catch (error) {
     console.error(`Error updating ${endpoint}/${id}:`, error);
     throw error;
@@ -83,8 +92,9 @@ export const deleteData = async (endpoint) => {
       method: 'DELETE',
       headers,
     });
-    if (!res.ok) throw new Error(`DELETE ${endpoint} failed`);
-    return res.json();
+    const responseData = await res.json();
+    if (!res.ok) throw new Error(responseData.message || `DELETE ${endpoint} failed`);
+    return responseData;
   } catch (error) {
     console.error(`Error deleting ${endpoint}:`, error);
     throw error;

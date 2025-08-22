@@ -83,22 +83,22 @@ async function getUserSecurity(userId) {
 }
 
 async function increaseFailOrLock(userId, currentFails) {
-    try {
-  if (currentFails + 1 >= 3) {
-    await pool.query(
-      `UPDATE user_login_security SET failed_attempts=0, is_locked=1,
-       locked_until=DATE_ADD(NOW(), INTERVAL 1 DAY) WHERE user_id=?`,
-      [userId]
-    );
-  } else {
-    await pool.query(
-      `UPDATE user_login_security SET failed_attempts=? WHERE user_id=?`,
-      [currentFails + 1, userId]
-    );
-  }
-} catch (err) {
-    console.error('ERROR IN increaseFailOrLock:', err);
-    throw err;
+  try {
+    if (currentFails + 1 >= 3) {
+      await pool.query(
+        `UPDATE user_login_security SET failed_attempts=0, is_locked=1,
+        locked_until=DATE_ADD(NOW(), INTERVAL 1 DAY) WHERE user_id=?`,
+        [userId]
+      );
+    } else {
+      await pool.query(
+        `UPDATE user_login_security SET failed_attempts=? WHERE user_id=?`,
+        [currentFails + 1, userId]
+      );
+    }
+  } catch (err) {
+      console.error('ERROR IN increaseFailOrLock:', err);
+      throw err;
   }
 }
 

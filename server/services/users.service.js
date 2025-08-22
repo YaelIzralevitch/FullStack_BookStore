@@ -28,7 +28,6 @@ async function updateUserDetails(userId, updateData) {
     return {
       code: 200,
       data: updatedUser,
-      msg: "User details updated successfully"
     };
   } catch (error) {
     console.error('ERROR IN updateUserDetails service:', error);

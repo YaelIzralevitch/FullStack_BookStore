@@ -38,8 +38,7 @@ async function createOrder(userId, orderData) {
 
     return {
       orderId,
-      status: 'success',
-      message: 'Order created successfully'
+      status: 'success'
     };
 
   } catch (error) {
@@ -267,8 +266,7 @@ async function updateOrderStatus(orderId, newStatus) {
     }
 
     return {
-      success: true,
-      message: 'Order status updated successfully'
+      success: true
     };
   } catch (error) {
     console.error('ERROR IN updateOrderStatus:', error);
