@@ -70,93 +70,8 @@ function BookPopup({ book, onClose, onSave, categories }) {
       <div className="modal-content two-columns">
         <h3>{formData.id ? 'Edit Book' : 'Add Book'}</h3>
 
-        <div className="form-grid">
-          {/* עמודה 1 */}
-          <div className="form-column">
-            <div className="form-group">
-              <label htmlFor="category_id">Category</label>
-              <select
-                id="category_id"
-                name="category_id"
-                value={formData.category_id || ''}
-                onChange={handleChange}
-              >
-                <option value="">-- Select Category --</option>
-                {categories.map(cat => (
-                  <option key={cat.id} value={cat.id}>{cat.name}</option>
-                ))}
-              </select>
-              {errors.category_id && <div className="error-text">{errors.category_id}</div>}
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="title">Title</label>
-              <input 
-                id="title"
-                name="title"
-                value={formData.title || ''}
-                onChange={handleChange}
-              />
-              {errors.title && <div className="error-text">{errors.title}</div>}
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="author">Author</label>
-              <input 
-                id="author"
-                name="author"
-                value={formData.author || ''}
-                onChange={handleChange}
-              />
-              {errors.author && <div className="error-text">{errors.author}</div>}
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="price">Price</label>
-              <input 
-                id="price"
-                name="price"
-                type="number"
-                value={formData.price ?? ''}
-                onChange={handleChange}
-              />
-              {errors.price && <div className="error-text">{errors.price}</div>}
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="stock_quantity">Stock Quantity</label>
-              <input 
-                id="stock_quantity"
-                name="stock_quantity"
-                type="number"
-                value={formData.stock_quantity ?? ''}
-                onChange={handleChange}
-              />
-              {errors.stock_quantity && <div className="error-text">{errors.stock_quantity}</div>}
-            </div>
-          </div>
-
-          {/* עמודה 2 */}
-          <div className="form-column">
-            <div className="form-group">
-              <label htmlFor="description">Description</label>
-              <textarea 
-                id="description"
-                name="description"
-                value={formData.description || ''}
-                onChange={handleChange}
-              />
-              {errors.description && <div className="error-text">{errors.description}</div>}
-            </div>
-
-            <div className="form-group image-preview-group">
-              <label htmlFor="image_url">Image URL</label>
-              <input 
-                id="image_url"
-                name="image_url"
-                value={formData.image_url || ''}
-                onChange={handleChange}
-              />
+        <div className="book-layout">
+          <div className="book-image-section">
               <div className="image-preview-container">
                 <div className="image-preview-wrapper">
                   {formData.image_url ? (
@@ -176,6 +91,96 @@ function BookPopup({ book, onClose, onSave, categories }) {
                   >
                     📖
                   </div>
+                </div>
+            </div>
+          </div>
+
+          <div className="book-fields-section">
+            <div className="form-grid">
+              {/* עמודה 1 */}
+              <div className="form-column">
+                <div className="form-group">
+                  <label htmlFor="category_id">Category</label>
+                  <select
+                    id="category_id"
+                    name="category_id"
+                    value={formData.category_id || ''}
+                    onChange={handleChange}
+                  >
+                    <option value="">-- Select Category --</option>
+                    {categories.map(cat => (
+                      <option key={cat.id} value={cat.id}>{cat.name}</option>
+                    ))}
+                  </select>
+                  {errors.category_id && <div className="error-text">{errors.category_id}</div>}
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="title">Title</label>
+                  <input 
+                    id="title"
+                    name="title"
+                    value={formData.title || ''}
+                    onChange={handleChange}
+                  />
+                  {errors.title && <div className="error-text">{errors.title}</div>}
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="author">Author</label>
+                  <input 
+                    id="author"
+                    name="author"
+                    value={formData.author || ''}
+                    onChange={handleChange}
+                  />
+                  {errors.author && <div className="error-text">{errors.author}</div>}
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="price">Price</label>
+                  <input 
+                    id="price"
+                    name="price"
+                    type="number"
+                    value={formData.price ?? ''}
+                    onChange={handleChange}
+                  />
+                  {errors.price && <div className="error-text">{errors.price}</div>}
+                </div>
+              </div>
+
+              {/* עמודה 2 */}
+              <div className="form-column">
+                <div className="form-group">
+                  <label htmlFor="stock_quantity">Stock Quantity</label>
+                  <input 
+                    id="stock_quantity"
+                    name="stock_quantity"
+                    type="number"
+                    value={formData.stock_quantity ?? ''}
+                    onChange={handleChange}
+                  />
+                  {errors.stock_quantity && <div className="error-text">{errors.stock_quantity}</div>}
+                </div>
+                <div className="form-group">
+                  <label htmlFor="description">Description</label>
+                  <textarea 
+                    id="description"
+                    name="description"
+                    value={formData.description || ''}
+                    onChange={handleChange}
+                  />
+                  {errors.description && <div className="error-text">{errors.description}</div>}
+                </div>
+                <div className="form-group">
+                  <label htmlFor="image_url">Image URL</label>
+                  <input 
+                    id="image_url"
+                    name="image_url"
+                    value={formData.image_url || ''}
+                    onChange={handleChange}
+                  />
                 </div>
               </div>
             </div>

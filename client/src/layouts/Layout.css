@@ -35,10 +35,18 @@
 }
 
 .logo {
-  height: 40px;
+  height: 60px;
   width: auto;
   border-radius: 6px;
+  cursor: pointer;
+  padding: 0;
+  overflow: hidden;
 }
+
+.logo:hover {
+    box-shadow: 4px 5px 8px rgba(0, 0, 0, 0.2);
+}
+
 
 .header h1 {
   color: var(--forest-green);
@@ -149,7 +157,6 @@
   }
   
   .admin-nav {
-    flex-wrap: wrap;
     gap: 8px;
   }
   
@@ -166,4 +173,90 @@
   .footer {
     padding: 16px;
   }
+}
+
+@media (max-width: 480px) {
+    .header-admin {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    /* עיצוב מיוחד עבור header-user במסכים קטנים */
+    .header-user {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        margin: 0 2%;
+    }
+
+    .logo {
+        height: 40px;
+        width: auto;
+        order: 1;
+        flex-shrink: 0;
+    }
+
+    .header-user h1 {
+        font-size: 16px;
+        order: 2;
+        flex: 1;
+        text-align: center;
+        min-width: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* עיצוב טוב יותר - יצירת grid layout */
+    .header-user {
+        display: grid;
+        grid-template-columns: auto 1fr auto auto;
+        gap: 12px 8px;
+        align-items: center;
+    }
+
+    .logo {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .header-user h1 {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: center;
+    }
+
+    .header-user > *:nth-child(4) { /* NavMenu */
+        grid-column: 3;
+        grid-row: 1;
+    }
+
+    .header-user > *:nth-child(5) { /* NavCart */
+        grid-column: 4;
+        grid-row: 1;
+    }
+
+    .header-user > *:nth-child(3) { /* NavSearch */
+        grid-column: 1 / -1;
+        grid-row: 2;
+    }
+
+    /* ניקוי עיצובים קודמים שלא רלוונטיים */
+    .header-logo-hello {
+        display: contents;
+    }
+
+    .header-logo-hello .logo {
+        margin-right: 0;
+    }
+
+    .admin-nav-btn.logout-btn {
+        position: static;
+        left: auto;
+    }
+
+    .admin-nav {
+        margin: 0;
+    }
 }

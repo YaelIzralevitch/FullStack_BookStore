@@ -135,6 +135,8 @@
   .dropdown-trigger {
     padding: 10px 14px;
     font-size: 13px;
+    width: 100%;
+    margin-right: 5px;
   }
   
   .dropdown-item {

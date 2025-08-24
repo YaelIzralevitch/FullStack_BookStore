@@ -1,15 +1,33 @@
-/* Book Popup Specific Styles - Extends CategoryPopup.css */
 
 .modal-content.two-columns {
   max-width: 900px;
   width: 95%;
 }
 
+/* Book Layout with Image on Left */
+.book-layout {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 32px;
+  align-items: start;
+  margin-bottom: 32px;
+}
+
+.book-image-section {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+}
+
+.book-fields-section {
+  display: flex;
+  flex-direction: column;
+}
+
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 32px;
-  margin-bottom: 32px;
+  gap: 24px;
 }
 
 .form-column {
@@ -19,7 +37,7 @@
 
 /* Override form-group margin for grid layout */
 .form-grid .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 /* Description textarea in second column */
@@ -28,7 +46,7 @@
   resize: vertical;
 }
 
-/* Image Preview Group */
+/* Image Preview Group for Books */
 .image-preview-group {
   display: flex;
   flex-direction: column;
@@ -41,8 +59,8 @@
 }
 
 .image-preview-wrapper {
-  width: 160px;
-  height: 220px;
+  width: 200px;
+  height: 300px;
   border-radius: 12px;
   border: 3px solid var(--mint-cream);
   overflow: hidden;
@@ -52,11 +70,6 @@
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
-}
-
-.image-preview-wrapper:hover {
-  border-color: var(--sage-green);
-  transform: scale(1.02);
 }
 
 .image-preview {
@@ -122,9 +135,8 @@
   background-color: var(--cream-white);
 }
 
-/* Enhanced form actions for two-column layout */
-.two-columns .form-actions {
-  grid-column: 1 / -1;
+/* Enhanced form actions for book layout */
+.book-layout + .form-actions {
   display: flex;
   justify-content: space-between;
   gap: 24px;
@@ -133,14 +145,14 @@
   border-top: 3px solid var(--mint-cream);
 }
 
-.two-columns .form-actions button {
+.book-layout + .form-actions button {
   min-width: 150px;
   position: relative;
   overflow: hidden;
 }
 
 /* Subtle animation for buttons */
-.two-columns .form-actions button::before {
+.book-layout + .form-actions button::before {
   content: '';
   position: absolute;
   top: 0;
@@ -151,18 +163,22 @@
   transition: left 0.5s ease;
 }
 
-.two-columns .form-actions button:hover::before {
+.book-layout + .form-actions button:hover::before {
   left: 100%;
 }
 
 /* Responsive Design */
 @media (max-width: 1024px) {
   .modal-content.two-columns {
-    max-width: 700px;
+    max-width: 800px;
+  }
+  
+  .book-layout {
+    gap: 24px;
   }
   
   .form-grid {
-    gap: 24px;
+    gap: 20px;
   }
 }
 
@@ -171,27 +187,48 @@
     max-width: 95%;
   }
   
+  .book-layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    text-align: center;
+  }
+  
   .form-grid {
     grid-template-columns: 1fr;
     gap: 0;
+  }
+  
+  .image-preview-wrapper {
+    width: 140px;
+    height: 190px;
+  }
+  
+  .image-placeholder {
+    font-size: 56px;
   }
   
   .form-column .form-group:first-child textarea {
     min-height: 100px;
   }
   
-  .two-columns .form-actions {
+  .book-layout + .form-actions {
     flex-direction: column;
     gap: 16px;
   }
   
-  .two-columns .form-actions button {
+  .book-layout + .form-actions button {
     min-width: auto;
     width: 100%;
   }
+}
+
+@media (max-width: 480px) {
+  .book-layout {
+    gap: 20px;
+  }
   
-  .image-preview-container {
-    margin-top: 12px;
+  .form-grid .form-group {
+    margin-bottom: 16px;
   }
   
   .image-preview-wrapper {
@@ -202,24 +239,9 @@
   .image-placeholder {
     font-size: 48px;
   }
-}
-
-@media (max-width: 480px) {
-  .form-grid .form-group {
-    margin-bottom: 16px;
-  }
   
   .form-column .form-group:first-child textarea {
     min-height: 80px;
-  }
-  
-  .image-preview-wrapper {
-    width: 100px;
-    height: 140px;
-  }
-  
-  .image-placeholder {
-    font-size: 40px;
   }
   
   .form-group input,

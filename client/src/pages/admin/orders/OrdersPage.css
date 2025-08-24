@@ -148,8 +148,8 @@
 }
 
 .clear-filters-btn {
-  background-color: #ef4444;
-  color: white;
+  background-color: var(--dark-orang);
+  color: var(--warm-beige);
   border: none;
   padding: 10px 16px;
   border-radius: 8px;
@@ -160,7 +160,7 @@
 }
 
 .clear-filters-btn:hover {
-  background-color: #dc2626;
+  background-color: var(--golden-sand);
   transform: translateY(-1px);
 }
 
@@ -523,20 +523,45 @@
   }
   
   .order-summary-admin {
+    grid-template-columns: 1fr 1.5fr;
+    gap: 16px;
     padding: 16px;
+    justify-items: start;
   }
-  
+
+  .order-summary-admin div {
+    text-align: left;
+  }
+
   .order-details {
     padding: 16px;
+  }
+
+  .order-book-item{
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    align-items: start;
+  }
+
+  .book-order-info{
+    grid-column: 1 / -1;
+  }
+
+  .admin-order-book-details{
+    text-align: left;
   }
   
   .book-img img,
   .image-placeholder {
-    width: 50px;
-    height: 65px;
+    width: 60px;
+    height: 80px;
   }
   
   .image-placeholder {
     font-size: 20px;
   }
+
+  .pagination-info {
+  font-size: 14px;
+}
 }

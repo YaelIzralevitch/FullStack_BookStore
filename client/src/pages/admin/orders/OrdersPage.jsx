@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import debounce from 'lodash.debounce';
 import { getOrdersForAdmin, updateOrderStatus } from '../../../services/api';
 import StatusDropdown from '../../../components/StatusDropdown/StatusDropdown';
@@ -19,6 +19,8 @@ function OrdersPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
 
+  const hasFetched = useRef(false);
+
   // דיליי בשליחת הבקשה רק עבור החיפוש
   const debouncedSearch = useCallback(
     debounce((value) => {
@@ -34,14 +36,17 @@ function OrdersPage() {
     };
   }, [debouncedSearch]);
 
-    useEffect(() => {
-      window.scrollTo({
-        top: 0,
-      });
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+    });
   }, [currentPage]);
   
   useEffect(() => {
-    fetchOrders();
+    if (!hasFetched.current) {
+      hasFetched.current = true;
+      fetchOrders();
+    }
   }, [currentPage, statusFilter, sortBy, sortOrder, searchTerm]); 
 
   const fetchOrders = async () => {

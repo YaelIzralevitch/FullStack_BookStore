@@ -28,7 +28,7 @@ function AdminLayout() {
       <header className="header">
         <div className="header-admin">
           <div className='header-logo-hello'>
-            <img className="logo" src="/src/assets/" alt="Logo" />
+            <img className="logo" src="\src\assets\bookstore-logo.png" alt="Logo" onClick={() => navigate('/admin')}/>
             <h1>Hello Admin, {currentUser?.first_name}</h1>
           </div>
 

@@ -223,101 +223,101 @@ function StockManagementPage() {
         ))}
         <button className="add-category-btn" onClick={handleAddCategory}>+ Add Category</button>
       </div>
-
-      {selectedCategoryId && (
-        <div className="inventory-controls">
-          <div className="search-div">
-            <input 
-              type="text" 
-              placeholder="Search books by name..." 
-              value={searchTerm} 
-              onChange={(e) => setSearchTerm(e.target.value)} 
-              className="search-input"
-            />
-            <img className="icon" src="\src\assets\icon-search.png" alt="search"/>
-          </div>
-
-          <div className="filters">
-            <div className="sort-controls">
-              <label>Sort by:</label>
-              <button
-                className={`sort-btn ${sortBy === 'title' ? 'active' : ''}`}
-                onClick={() => handleSortChange('title')}
-              >
-                Name {sortBy === 'title' && (sortOrder === 'ASC' ? '↑' : '↓')}
-              </button>
-              <button
-                className={`sort-btn ${sortBy === 'price' ? 'active' : ''}`}
-                onClick={() => handleSortChange('price')}
-              >
-                Price {sortBy === 'price' && (sortOrder === 'ASC' ? '↑' : '↓')}
-              </button>
+      <div className='controls-books-section'>
+        {selectedCategoryId && (
+          <div className="inventory-controls">
+            <div className="search-div">
+              <input 
+                type="text" 
+                placeholder="Search books by name..." 
+                value={searchTerm} 
+                onChange={(e) => setSearchTerm(e.target.value)} 
+                className="search-input"
+              />
+              <img className="icon" src="\src\assets\icon-search.png" alt="search"/>
             </div>
 
-            {(searchTerm || sortBy) && (
-              <button 
-                onClick={clearFilters}
-                className="clear-filters-btn"
-              >
-                Clear Filters
-              </button>
+            <div className="filters">
+              <div className="sort-controls">
+                <label>Sort by:</label>
+                <button
+                  className={`sort-btn ${sortBy === 'title' ? 'active' : ''}`}
+                  onClick={() => handleSortChange('title')}
+                >
+                  Name {sortBy === 'title' && (sortOrder === 'ASC' ? '↑' : '↓')}
+                </button>
+                <button
+                  className={`sort-btn ${sortBy === 'price' ? 'active' : ''}`}
+                  onClick={() => handleSortChange('price')}
+                >
+                  Price {sortBy === 'price' && (sortOrder === 'ASC' ? '↑' : '↓')}
+                </button>
+              </div>
+
+              {(searchTerm || sortBy) && (
+                <button 
+                  onClick={clearFilters}
+                  className="clear-filters-btn"
+                >
+                  Clear Filters
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
+        {selectedCategoryId && (
+          <div className="books-section">
+            <button className="add-book-btn" onClick={() => handleAddBook({ id: selectedCategoryId })}>
+              + Add Book
+            </button>
+
+            {booksInCategory.length === 0 ? (
+              <div className="no-books">
+                <p>There are no books to display in this category...</p>
+                <button 
+                  className="delete-category-btn" 
+                  onClick={() => handleDeleteCategory(selectedCategoryId)}
+                >
+                  Delete category 🗑️
+                </button>
+              </div>
+            ) : sortedBooks.length === 0 ? (
+              <div className="no-books">
+                <p>No matching results for your search...</p>
+              </div>
+            ) : (
+              <div className="books-list">
+                {sortedBooks.map(book => (
+                  <div key={book.id} className="book-row" onClick={() => handleEditBook(book)}>
+                    <div className="book-image">
+                      {book.image_url ? (
+                        <img src={book.image_url} alt={book.title} />
+                      ) : (
+                        <div className="image-placeholder">📖</div>
+                      )}
+                    </div>
+                    <div className="book-info">
+                      <p className="book-title">{book.title}</p>
+                      <p className="book-author">By: {book.author}</p>
+                    </div>
+                    <div className="book-meta">
+                      <p>Price per unit: ${book.price}</p>
+                      <p>In stock: {book.stock_quantity}</p>
+                    </div>
+                    <button 
+                      className="delete-book-btn" 
+                      onClick={(e) => { e.stopPropagation(); handleDeleteBook(book); }}
+                    >
+                      🗑️
+                    </button>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
-        </div>
-      )}
-
-      {selectedCategoryId && (
-        <div className="books-section">
-          <button className="add-book-btn" onClick={() => handleAddBook({ id: selectedCategoryId })}>
-            + Add Book
-          </button>
-
-          {booksInCategory.length === 0 ? (
-            <div className="no-books">
-              <p>There are no books to display in this category...</p>
-              <button 
-                className="delete-category-btn" 
-                onClick={() => handleDeleteCategory(selectedCategoryId)}
-              >
-                Delete category 🗑️
-              </button>
-            </div>
-          ) : sortedBooks.length === 0 ? (
-            <div className="no-books">
-              <p>No matching results for your search...</p>
-            </div>
-          ) : (
-            <div className="books-list">
-              {sortedBooks.map(book => (
-                <div key={book.id} className="book-row" onClick={() => handleEditBook(book)}>
-                  <div className="book-image">
-                    {book.image_url ? (
-                      <img src={book.image_url} alt={book.title} />
-                    ) : (
-                      <div className="image-placeholder">📖</div>
-                    )}
-                  </div>
-                  <div className="book-info">
-                    <p className="book-title">{book.title}</p>
-                    <p className="book-author">By: {book.author}</p>
-                  </div>
-                  <div className="book-meta">
-                    <p>Price per unit: ${book.price}</p>
-                    <p>In stock: {book.stock_quantity}</p>
-                  </div>
-                  <button 
-                    className="delete-book-btn" 
-                    onClick={(e) => { e.stopPropagation(); handleDeleteBook(book); }}
-                  >
-                    🗑️
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-
+        )}
+      </div>
       {showBookModal && (
         <BookPopup 
           book={selectedBook} 

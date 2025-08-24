@@ -5,6 +5,7 @@
   flex: 1;
   max-width: 400px;
   margin: 0 16px;
+  max-height: 45px;
 }
 
 .nav-search input {

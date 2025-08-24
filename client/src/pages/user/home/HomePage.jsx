@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { getCategories } from '../../../services/api';
 import Category from '../../../components/Category/Category.jsx';
 import HeroCarousel from '../../../components/HeroCarousel/HeroCarousel.jsx';
@@ -8,6 +8,8 @@ function HomePage() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const hasFetched = useRef(false);
 
   useEffect(() => {
     async function fetchCategories() {
@@ -22,8 +24,11 @@ function HomePage() {
         setLoading(false);
       }
     }
-    window.scrollTo({ top: 0 });
-    fetchCategories();  
+    if (!hasFetched.current) {
+      hasFetched.current = true;
+      window.scrollTo({ top: 0 });
+      fetchCategories();  
+    }
   }, []);
 
   if (loading) return <p>Loading Categories...</p>;
