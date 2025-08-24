@@ -16,7 +16,7 @@ export const fetchData = async (endpoint) => {
       headers
      });
     const responseData = await res.json();
-
+    
     if (!res.ok) throw new Error(responseData.message || JSON.stringify(responseData)); 
     return responseData;
 
@@ -128,9 +128,6 @@ export const updateUserDetails = async (userId, userData) => await updateData('u
 // קטגוריות
 export const getCategories = () => fetchData('categories');
 export const getCategoryById = (id) => fetchData(`categories/${id}`);
-export const createCategory = (data) => postData('categories', data);
-export const updateCategory = (id, data) => updateData('categories', id, data);
-export const deleteCategory = (id) => deleteData('categories', id);
 
 
 // ספרים
@@ -156,7 +153,7 @@ export const getAvailableYears = async () => await fetchData('dashboard/years');
 
 
 // הזמנות מנהל
-export const getAllOrdersForAdmin = async (params = {}) => {
+export const getOrdersForAdmin = async (params = {}) => {
   const searchParams = new URLSearchParams();
   
   Object.keys(params).forEach(key => {
@@ -170,3 +167,17 @@ export const getAllOrdersForAdmin = async (params = {}) => {
 };
 export const updateOrderStatus = async (orderId, status) => await updateData('orders/admin', `${orderId}/status`, { status });
 export const getOrderDetailsForAdmin = async (orderId) => await fetchData(`orders/admin/${orderId}`);
+
+// ניהול מלאי מנהל
+
+// קטגוריות במלאי
+//export const getInventoryCategories = () => fetchData('inventory/categories');
+export const createInventoryCategory = (categoryData) => postData('inventory/category', categoryData);
+export const updateInventoryCategory = (categoryId, categoryData) => updateData('inventory/category', categoryId, categoryData);
+export const deleteInventoryCategory = (categoryId) => deleteData(`inventory/category/${categoryId}`);
+
+// ספרים במלאי
+//export const fetchBooksInInventory = (categoryId) => fetchData(`inventory/books/${categoryId}`);
+export const createBookInInventory = (bookData) => postData('inventory/book', bookData);
+export const updateBookInInventory = (bookId, bookData) => updateData('inventory/book', bookId, bookData);
+export const deleteBookInInventory = (bookId) => deleteData(`inventory/book/${bookId}`);

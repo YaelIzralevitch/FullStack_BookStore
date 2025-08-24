@@ -1,0 +1,181 @@
+import { useState, useEffect } from 'react';
+import '../Category/CategoryPopup.css';
+import './BookPopup.css';
+
+function BookPopup({ book, onClose, onSave, categories }) {
+  const [formData, setFormData] = useState({
+    id: null,
+    category_id: '',
+    title: '',
+    author: '',
+    description: '',
+    price: '',
+    stock_quantity: '',
+    image_url: ''
+  });
+
+  const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    if (book) setFormData(book);
+  }, [book]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+
+    // ניקוי שגיאה כשהמשתמש משנה את השדה
+    setErrors(prev => ({ ...prev, [name]: '' }));
+  };
+
+  const validate = () => {
+    const newErrors = {};
+
+    // קטגוריה חובה
+    if (!formData.category_id || formData.category_id === '') {
+      newErrors.category_id = 'Category is required';
+    }
+
+    // שדות טקסט חובה
+    if (!formData.title?.trim()) newErrors.title = 'Title is required';
+    if (!formData.author?.trim()) newErrors.author = 'Author is required';
+    if (!formData.description?.trim()) newErrors.description = 'Description is required';
+
+    // שדות מספריים חובה (מספר >= 0)
+    if (formData.price === '' || isNaN(formData.price) || Number(formData.price) < 0) {
+      newErrors.price = 'Incorrect price';
+    }
+
+    if (formData.stock_quantity === '' || isNaN(formData.stock_quantity) || Number(formData.stock_quantity) < 0) {
+      newErrors.stock_quantity = 'Incorrect stock quantity';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+  
+  const handleSubmit = () => {
+    if (!validate()) return;
+
+    onSave({
+      ...formData,
+      category_id: Number(formData.category_id),
+      price: parseFloat(formData.price),
+      stock_quantity: parseInt(formData.stock_quantity)
+    });
+  };
+
+  return (
+    <div className="modal-backdrop">
+      <div className="modal-content two-columns">
+        <h3>{formData.id ? 'Edit Book' : 'Add Book'}</h3>
+
+        <div className="form-grid">
+          {/* עמודה 1 */}
+          <div className="form-column">
+            <div className="form-group">
+              <label htmlFor="category_id">Category</label>
+              <select
+                id="category_id"
+                name="category_id"
+                value={formData.category_id || ''}
+                onChange={handleChange}
+              >
+                <option value="">-- Select Category --</option>
+                {categories.map(cat => (
+                  <option key={cat.id} value={cat.id}>{cat.name}</option>
+                ))}
+              </select>
+              {errors.category_id && <div className="error-text">{errors.category_id}</div>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="title">Title</label>
+              <input 
+                id="title"
+                name="title"
+                value={formData.title || ''}
+                onChange={handleChange}
+              />
+              {errors.title && <div className="error-text">{errors.title}</div>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="author">Author</label>
+              <input 
+                id="author"
+                name="author"
+                value={formData.author || ''}
+                onChange={handleChange}
+              />
+              {errors.author && <div className="error-text">{errors.author}</div>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="price">Price</label>
+              <input 
+                id="price"
+                name="price"
+                type="number"
+                value={formData.price ?? ''}
+                onChange={handleChange}
+              />
+              {errors.price && <div className="error-text">{errors.price}</div>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="stock_quantity">Stock Quantity</label>
+              <input 
+                id="stock_quantity"
+                name="stock_quantity"
+                type="number"
+                value={formData.stock_quantity ?? ''}
+                onChange={handleChange}
+              />
+              {errors.stock_quantity && <div className="error-text">{errors.stock_quantity}</div>}
+            </div>
+          </div>
+
+          {/* עמודה 2 */}
+          <div className="form-column">
+            <div className="form-group">
+              <label htmlFor="description">Description</label>
+              <textarea 
+                id="description"
+                name="description"
+                value={formData.description || ''}
+                onChange={handleChange}
+              />
+              {errors.description && <div className="error-text">{errors.description}</div>}
+            </div>
+
+            <div className="form-group image-preview-group">
+              <label htmlFor="image_url">Image URL</label>
+              <input 
+                id="image_url"
+                name="image_url"
+                value={formData.image_url || ''}
+                onChange={handleChange}
+              />
+              {formData.image_url && (
+                <img 
+                  src={formData.image_url} 
+                  alt="Preview" 
+                  className="image-preview"
+                  onError={(e) => e.target.style.display = 'none'}
+                />
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="form-actions">
+          <button onClick={handleSubmit}>Save</button>
+          <button onClick={onClose}>Cancel</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default BookPopup;

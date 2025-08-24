@@ -10,6 +10,7 @@ const booksRouter = require('./routes/books.router');
 const ordersRouter = require('./routes/orders.routes');
 const searchRouter = require('./routes/navSearch.router');
 const dashboardRoutes = require('./routes/dashboard.routes');
+const inventoryRoutes = require('./routes/stockManagement.router');
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use('/api/books', booksRouter);
 app.use('/api/orders', ordersRouter);
 app.use('/api/search', searchRouter);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/inventory', inventoryRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

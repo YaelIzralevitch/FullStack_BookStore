@@ -1,0 +1,324 @@
+.inventory-page {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.inventory-page h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.inventory-controls {
+  margin-bottom: 20px;
+}
+
+.search-div {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  transition: border-color 0.2s;
+}
+
+.search-div{
+    display: flex;
+    background-color: #ffffff;
+    border: 2px solid #e5e7eb;
+    border-radius: 25px;
+    overflow: hidden;
+    width: 90%;
+}
+
+.search-div:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.search-div:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.icon{
+    height: 2.5rem;
+    padding: 5px;
+}
+
+.search-input {
+  flex: 1;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: none;
+}
+
+
+.filters {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.status-filter {
+  padding: 0.5rem 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+}
+
+.sort-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sort-controls label {
+  font-weight: 500;
+  color: #374151;
+}
+
+.sort-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid #e5e7eb;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+
+.sort-btn:hover {
+  border-color: #3b82f6;
+}
+
+.sort-btn.active {
+  background: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+.category-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.category-btn {
+  background-color: #e4e2e2;
+}
+
+.add-category-btn {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.add-category-btn:hover {
+  background-color: #45a049;
+}
+
+.category-btn.active {
+  background-color: #616661; /* צבע לדוגמא */
+  color: white;
+}
+
+.category-section {
+  margin-bottom: 30px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 20px;
+}
+
+.category-section h3 {
+  display: inline-block;
+  margin-right: 15px;
+  color: #555;
+}
+
+.category-section button {
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.category-section button:hover {
+  background-color: #0b7dda;
+}
+
+.add-book-btn {
+  background-color: #4c56af;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.books-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.book-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 15px;
+  background-color: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-wrap: wrap; /* מאפשר לרדת שורה במסכים קטנים */
+}
+
+.book-row:hover {
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.book-image {
+  width: 60px;
+  height: 80px;
+  flex-shrink: 0;
+  margin-right: 15px;
+}
+
+.book-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.image-placeholder {
+  width: 100%;
+  height: 100%;
+  background-color: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: #9ca3af;
+}
+
+.book-info {
+  flex: 1;
+  display: flex;
+  gap: 20px; /* רווח אופקי בין פרטי הספר */
+  align-items: center;
+  flex-wrap: wrap; /* מאפשר את הפרטים ליפול שורה במסכים קטנים */
+}
+
+.book-title {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.book-author, .book-category {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.book-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  text-align: right;
+  min-width: 120px;
+  color: #0b7dda;
+}
+
+.delete-book-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  margin-left: auto; /* מסיט את הכפתור לימין */
+  transition: transform 0.2s;
+}
+
+.delete-book-btn:hover {
+  transform: scale(1.2);
+}
+
+.delete-category-btn {
+  background-color: #bd7573;
+  color: white;
+  border: none;
+  padding: 20px 22px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.delete-category-btn:hover {
+  background-color: #a64b4b;
+}
+
+.no-books {
+  text-align: center;
+  margin-top: 20px;
+  color: #666;
+}
+
+/* --- רספונסיבי למסכים קטנים --- */
+@media (max-width: 768px) {
+  .book-row {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .book-info {
+    flex-direction: column;
+    gap: 5px;
+    align-items: flex-start;
+  }
+
+  .book-meta {
+    text-align: left;
+    min-width: auto;
+  }
+
+  .book-image {
+    width: 50px;
+    height: 65px;
+  }
+
+  .book-title {
+    font-size: 0.95rem;
+  }
+
+  .book-author, .book-category {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .book-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .book-image {
+    margin-bottom: 5px;
+  }
+
+  .book-meta {
+    align-self: flex-start;
+  }
+}
