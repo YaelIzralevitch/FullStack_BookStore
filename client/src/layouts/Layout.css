@@ -100,8 +100,8 @@
 
 .admin-nav-btn {
   background-color: transparent;
-  color: var(--cream-white);
-  border: 2px solid var(--cream-white);
+  color: var(--forest-green);
+  border: 2px solid var(--forest-green);
   padding: 8px 16px;
   border-radius: 6px;
   font-size: 14px;
@@ -111,8 +111,8 @@
 }
 
 .admin-nav-btn:hover {
-  background-color: var(--cream-white);
-  color: var(--forest-green);
+  background-color: var(--light-sage);
+  color: var(--cream-white);
 }
 
 .admin-nav-btn.active {

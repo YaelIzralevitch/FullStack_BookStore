@@ -1,41 +1,263 @@
-.image-preview-group {
-  display: flex;
-  gap: 10px;
+/* Book Popup Specific Styles - Extends CategoryPopup.css */
+
+.modal-content.two-columns {
+  max-width: 900px;
+  width: 95%;
 }
 
-.image-preview {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.two-columns .form-grid {
+.form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 32px;
+  margin-bottom: 32px;
 }
 
 .form-column {
   display: flex;
   flex-direction: column;
-  gap: 10px;
 }
 
-.form-actions {
-  margin-top: 20px;
+/* Override form-group margin for grid layout */
+.form-grid .form-group {
+  margin-bottom: 20px;
+}
+
+/* Description textarea in second column */
+.form-column .form-group:first-child textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* Image Preview Group */
+.image-preview-group {
   display: flex;
-  justify-content: flex-end;
-  gap: 10px;
+  flex-direction: column;
 }
 
-.form-group {
-  margin-bottom: 12px;
+.image-preview-container {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
 }
 
-.error-text {
-  color: red;
-  font-size: 0.8rem;
-  margin-top: 4px;
+.image-preview-wrapper {
+  width: 160px;
+  height: 220px;
+  border-radius: 12px;
+  border: 3px solid var(--mint-cream);
+  overflow: hidden;
+  position: relative;
+  background-color: var(--mint-cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.image-preview-wrapper:hover {
+  border-color: var(--sage-green);
+  transform: scale(1.02);
+}
+
+.image-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.image-placeholder {
+  color: var(--sage-green);
+  font-size: 64px;
+  opacity: 0.6;
+  text-align: center;
+  user-select: none;
+}
+
+/* Special styling for number inputs */
+.form-group input[type="number"] {
+  background-image: linear-gradient(45deg, transparent 49%, var(--mint-cream) 50%, transparent 51%);
+  background-size: 20px 20px;
+  background-position: right 10px center;
+  background-repeat: no-repeat;
+}
+
+.form-group input[type="number"]:focus {
+  background-image: linear-gradient(45deg, transparent 49%, var(--sage-green) 50%, transparent 51%);
+}
+
+/* Enhanced select styling */
+.form-group select {
+  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23626F47" d="M2,0L0,2h4L2,0z"/><path fill="%23626F47" d="M2,5L0,3h4L2,5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px;
+  padding-right: 40px;
+  appearance: none;
+}
+
+.form-group select:focus {
+  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23839256" d="M2,0L0,2h4L2,0z"/><path fill="%23839256" d="M2,5L0,3h4L2,5z"/></svg>');
+}
+
+/* Form validation styles */
+.form-group input.error,
+.form-group select.error,
+.form-group textarea.error {
+  border-color: #dc2626;
+  background-color: #fef2f2;
+}
+
+.form-group input.error:focus,
+.form-group select.error:focus,
+.form-group textarea.error:focus {
+  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
+}
+
+/* Success state for valid inputs */
+.form-group input:valid:not(:placeholder-shown),
+.form-group select:valid:not([value=""]),
+.form-group textarea:valid:not(:placeholder-shown) {
+  border-color: var(--light-sage);
+  background-color: var(--cream-white);
+}
+
+/* Enhanced form actions for two-column layout */
+.two-columns .form-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 3px solid var(--mint-cream);
+}
+
+.two-columns .form-actions button {
+  min-width: 150px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle animation for buttons */
+.two-columns .form-actions button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.two-columns .form-actions button:hover::before {
+  left: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .modal-content.two-columns {
+    max-width: 700px;
+  }
+  
+  .form-grid {
+    gap: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .modal-content.two-columns {
+    max-width: 95%;
+  }
+  
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  
+  .form-column .form-group:first-child textarea {
+    min-height: 100px;
+  }
+  
+  .two-columns .form-actions {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .two-columns .form-actions button {
+    min-width: auto;
+    width: 100%;
+  }
+  
+  .image-preview-container {
+    margin-top: 12px;
+  }
+  
+  .image-preview-wrapper {
+    width: 120px;
+    height: 160px;
+  }
+  
+  .image-placeholder {
+    font-size: 48px;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-grid .form-group {
+    margin-bottom: 16px;
+  }
+  
+  .form-column .form-group:first-child textarea {
+    min-height: 80px;
+  }
+  
+  .image-preview-wrapper {
+    width: 100px;
+    height: 140px;
+  }
+  
+  .image-placeholder {
+    font-size: 40px;
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 10px 12px;
+  }
+  
+  .form-group select {
+    padding-right: 35px;
+    background-size: 10px;
+    background-position: right 10px center;
+  }
+}
+
+/* Loading state for form */
+.form-loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.form-loading .form-actions button {
+  cursor: not-allowed;
+  background-color: var(--mint-cream);
+  color: var(--sage-green);
+}
+
+/* Focus ring enhancement */
+@supports selector(:focus-visible) {
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    box-shadow: none;
+  }
+  
+  .form-group input:focus-visible,
+  .form-group select:focus-visible,
+  .form-group textarea:focus-visible {
+    box-shadow: 0 0 0 4px rgba(131, 146, 86, 0.1);
+  }
 }

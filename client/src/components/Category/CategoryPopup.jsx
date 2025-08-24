@@ -55,14 +55,27 @@ function CategoryPopup({ category, onClose, onSave }) {
             value={formData.image_url || ''}
             onChange={handleChange} 
           />
-          {formData.image_url && (
-            <img 
-              src={formData.image_url} 
-              alt="Preview" 
-              className="image-preview"
-              onError={(e) => e.target.style.display = 'none'}
-            />
-          )}
+          <div className="image-preview-container">
+            <div className="image-preview-wrapper">
+              {formData.image_url ? (
+                <img 
+                  src={formData.image_url} 
+                  alt="Preview" 
+                  className="image-preview"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'flex';
+                  }}
+                />
+              ) : null}
+              <div 
+                className="image-placeholder" 
+                style={{display: formData.image_url ? 'none' : 'flex'}}
+              >
+                📂
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="form-actions">
