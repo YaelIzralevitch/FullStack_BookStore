@@ -1,21 +1,54 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { getBooksByCategoryId } from '../../../services/api';
 import './CategoryBooksPage.css';
 
+// Cache פשוט מחוץ לקומפוננט
+const categoryBooksCache = new Map();
+let lastVisitedPath = null;
+
 function CategoryBooksPage() {
   const { categoryId } = useParams();
+  const location = useLocation();
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [sortOption, setSortOption] = useState('');
 
   useEffect(() => {
+    // בדיקה אם באים מעמוד שלא קשור לקטגוריה הזו
+    const currentPath = location.pathname;
+    const isComingFromDifferentSection = lastVisitedPath && 
+      !lastVisitedPath.includes(`/categories/${categoryId}`) &&
+      !currentPath.includes(lastVisitedPath);
+    
+    // אם באים מאזור שונה - נקה את המטמון
+    if (isComingFromDifferentSection) {
+      categoryBooksCache.clear();
+    }
+    
+    // עדכון הנתיב האחרון
+    lastVisitedPath = currentPath;
+
     async function fetchBooks() {
       try {
         setLoading(true);
+        
+        // בדיקה אם יש במטמון
+        if (categoryBooksCache.has(categoryId)) {
+          const cachedData = categoryBooksCache.get(categoryId);
+          setBooks(cachedData);
+          setLoading(false);
+          return;
+        }
+
+        // אם אין במטמון - שליפה מהשרת
         const response = await getBooksByCategoryId(categoryId);
-        setBooks(response.data || []);
+        const booksData = response.data || [];
+        
+        // שמירה במטמון
+        categoryBooksCache.set(categoryId, booksData);
+        setBooks(booksData);
       } catch (err) {
         setError('Error loading books');
         console.error(err);
@@ -23,8 +56,9 @@ function CategoryBooksPage() {
         setLoading(false);
       }
     }
+    window.scrollTo({ top: 0 });
     fetchBooks();
-  }, [categoryId]);
+  }, [categoryId, location.pathname]);
 
   const handleSortChange = (e) => {
     const option = e.target.value;
@@ -71,17 +105,23 @@ function CategoryBooksPage() {
         {books.map((book) => (
           <Link
             key={book.id}
-            to={`/home/categories/${categoryId}/books/${book.id}`}
-            className="book-card"
+            to={book.stock_quantity === 0 ? "#" : `/home/categories/${categoryId}/books/${book.id}`}
+            className='book-card'
+            onClick={(e) => {
+              if (book.stock_quantity === 0) e.preventDefault();
+            }}
           >
-            {book.stock_quantity <= 5 && (
-              <div className="low-stock">
-                Only {book.stock_quantity} left!
-              </div>
+            {book.stock_quantity === 0 && (
+              <div className="out-of-stock">Out Of Stock!</div>
             )}
-            <img src={book.image_url} alt={book.title} className="book-image" />
-            <h3 className="book-title">{book.title}</h3>
-            <p className="book-price">${book.price}</p>
+            {book.stock_quantity <= 5 && book.stock_quantity > 0 && (
+              <div className="low-stock">Only {book.stock_quantity} left!</div>
+            )}
+            <div className={`book-content ${book.stock_quantity === 0 ? "disabled" : ""}`}>
+              <img src={book.image_url} alt={book.title} className="book-cover" />
+              <h3 className="book-title">{book.title}</h3>
+              <p className="book-price">${book.price}</p>
+            </div>
           </Link>
         ))}
       </div>

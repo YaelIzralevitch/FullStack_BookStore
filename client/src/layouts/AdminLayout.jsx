@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import AuthContext from '../../contexts/AuthContext';
+import AuthContext from '../contexts/AuthContext';
+import './Layout.css'
 
 function AdminLayout() {
   const { currentUser, logout } = useContext(AuthContext);
@@ -8,16 +9,14 @@ function AdminLayout() {
   const location = useLocation();
 
   const navigationOptions = [
-    { label: 'Dashboard', value: '/dashboard' },
-    { label: 'Stock Management', value: '/dashboard/stockManagement' },
-    { label: 'Orders', value: '/dashboard/orders' },
-    { label: 'Logout', value: '/login' },
+    { label: 'Dashboard', value: '/admin' },
+    { label: 'Stock Management', value: '/admin/stockManagement' },
+    { label: 'Orders', value: '/admin/orders' },
   ];
 
   const handleNavigation = (option) => {
     if (option.label === 'Logout') {
-      // טיפול מיוחד ללוגאוט
-      logout(); // אם יש פונקציית logout בcontext
+      logout();
       navigate('/login');
     } else {
       navigate(option.value);
@@ -27,10 +26,11 @@ function AdminLayout() {
   return (
     <>
       <header className="header">
-        <div className="header-user">
-          <img className="logo" src="/src/assets/" alt="Logo" />
-          
-          <h1>Hello Admin, {currentUser?.first_name}</h1>
+        <div className="header-admin">
+          <div className='header-logo-hello'>
+            <img className="logo" src="/src/assets/" alt="Logo" />
+            <h1>Hello Admin, {currentUser?.first_name}</h1>
+          </div>
 
           <div className="admin-nav">
             {navigationOptions.map((option, index) => (
@@ -43,6 +43,12 @@ function AdminLayout() {
               </button>
             ))}
           </div>
+          <button
+                className='admin-nav-btn logout-btn'
+                onClick={ () => { logout(); navigate("/login");} }
+              >
+                Logout
+              </button>
         </div>
       </header>
 

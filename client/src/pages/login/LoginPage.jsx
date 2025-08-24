@@ -22,6 +22,7 @@ const LoginPage = () => {
 
     if (!email.trim() || !password.trim()) {
       setError('Please fill in all fields');
+      setLoading(false);
       return;
     }
 
@@ -33,7 +34,7 @@ const LoginPage = () => {
       // Successful login
       login(res.user);
       if (res.user.role === 'admin') {
-        navigate('/dashboard');
+        navigate('/admin');
       }
       else if (res.user.role === 'client') {  
         navigate('/home');

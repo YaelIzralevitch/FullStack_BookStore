@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect} from 'react';
 import CartContext from '../../../contexts/CartContext';
 import AuthContext from '../../../contexts/AuthContext';
 import PaymentPopup from '../../../components/paymentPopup/PaymentPopup';
@@ -19,6 +19,12 @@ function CartPage() {
   const [orderData, setOrderData] = useState({});
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+    });
+  }, []);
 
   const formatPrice = (price) => `$${parseFloat(price).toFixed(2)}`;
 
@@ -64,6 +70,7 @@ function CartPage() {
   const handlePaymentSuccess = (paymentData) => {
     clearCart();
     setShowPaymentPopup(false);
+    window.scrollTo({ top: 0 });
     setSuccessMessage(`Payment successful! Order #${paymentData.orderId} has been created.`);
     setTimeout(() => setSuccessMessage(''), 5000);
   };

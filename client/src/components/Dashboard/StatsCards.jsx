@@ -19,13 +19,13 @@ function StatsCards({ generalStats }) {
       title: "Books in Stock",
       value: generalStats.total_books_in_stock.toLocaleString(),
       icon: "📚",
-      color: "purple"
+      color: "orange"
     },
     {
       title: "Categories",
       value: generalStats.total_categories,
       icon: "📂",
-      color: "orange"
+      color: "purple"
     }
   ];
 

@@ -35,6 +35,7 @@ function UserDetailsPage() {
                 house_number: currentUser.house_number || ''
             });
         }
+        window.scrollTo({ top: 0 });
     }, [currentUser]);
 
     // פונקציה לזיהוי השינויים בפרטי המשתמש
@@ -89,6 +90,7 @@ function UserDetailsPage() {
 
     const handleCancelEdit = () => {
         setIsEditMode(false);
+        setError('');
         if (currentUser) {
             setEditedUser({
                 first_name: currentUser.first_name || '',
@@ -103,6 +105,7 @@ function UserDetailsPage() {
     };
 
     const handleUserInputChange = (field, value) => {
+        setError('');
         setEditedUser(prev => ({ ...prev, [field]: value }));
     };
 
@@ -117,7 +120,7 @@ function UserDetailsPage() {
                 onClick={() => setIsEditMode(true)}
                 className="btn btn-success"
             >
-                עריכה
+                <img src="/src/assets/icons-edit.png" alt="Edit Icon" />
             </button>
         ) : (
             <>

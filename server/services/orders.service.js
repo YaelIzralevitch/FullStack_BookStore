@@ -99,16 +99,16 @@ async function getOrderDetails(orderId, userId) {
 /**
  * קבלת כל ההזמנות (לאדמין)
  */
-async function getAllOrdersForAdmin(options) {
+async function getOrdersForAdmin(options) {
   try {
-    const result = await ordersController.getAllOrders(options);
+    const result = await ordersController.getOrders(options);
     
     return {
       code: 200,
       data: result
     };
   } catch (error) {
-    console.error('ERROR IN getAllOrdersForAdmin service:', error);
+    console.error('ERROR IN getOrdersForAdmin service:', error);
     return { 
       code: 500, 
       msg: error.message || "Failed to retrieve orders" 
@@ -140,6 +140,6 @@ module.exports = {
   getUserOrderHistory,
   getOrderDetails,
   createOrderWithStripePayment,
-  getAllOrdersForAdmin,
+  getOrdersForAdmin,
   updateOrderStatus
 };

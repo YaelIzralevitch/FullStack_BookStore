@@ -49,14 +49,14 @@ function RevenueChart({ data, year, onYearChange, availableYears }) {
             <YAxis 
               yAxisId="revenue"
               orientation="left"
-              stroke="#059669"
+              stroke="#A4B465"
               fontSize={12}
               tickFormatter={formatCurrency}
             />
             <YAxis 
               yAxisId="orders"
               orientation="right"
-              stroke="#3b82f6"
+              stroke="#EBA447"
               fontSize={12}
             />
             <Tooltip content={<CustomTooltip />} />
@@ -64,14 +64,14 @@ function RevenueChart({ data, year, onYearChange, availableYears }) {
             <Bar 
               yAxisId="revenue"
               dataKey="total_revenue" 
-              fill="#059669"
+              fill="#A4B465"
               name="Revenue ($)"
               radius={[4, 4, 0, 0]}
             />
             <Bar 
               yAxisId="orders"
               dataKey="order_count" 
-              fill="#3b82f6"
+              fill="#EBA447"
               name="Orders"
               radius={[4, 4, 0, 0]}
             />

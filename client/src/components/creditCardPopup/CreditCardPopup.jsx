@@ -73,7 +73,7 @@ function CreditCardPopup({ userId, setShowCreditCardPopup }) {
       <div className="popup-overlay">
         <div className="credit-card-popup">
           <button 
-            className="close-btn" 
+            id="close-btn" 
             onClick={() => setShowCreditCardPopup(false)}
             aria-label="Close"
           >

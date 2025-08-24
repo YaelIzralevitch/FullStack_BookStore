@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import debounce from 'lodash.debounce';
-import { getAllOrdersForAdmin, updateOrderStatus } from '../../../services/api';
+import { getOrdersForAdmin, updateOrderStatus } from '../../../services/api';
 import StatusDropdown from '../../../components/StatusDropdown/StatusDropdown';
 import './OrdersPage.css';
 
@@ -33,6 +33,12 @@ function OrdersPage() {
       debouncedSearch.cancel();
     };
   }, [debouncedSearch]);
+
+    useEffect(() => {
+      window.scrollTo({
+        top: 0,
+      });
+  }, [currentPage]);
   
   useEffect(() => {
     fetchOrders();
@@ -52,7 +58,7 @@ function OrdersPage() {
         limit: 10
       };
 
-      const response = await getAllOrdersForAdmin(params);
+      const response = await getOrdersForAdmin(params);
       
       if (response.success) {
         setOrders(response.data.orders);
@@ -107,14 +113,6 @@ function OrdersPage() {
     setExpandedOrderId(expandedOrderId === orderId ? null : orderId);
   };
 
-  const handlePageChange = (newPage) => {
-    setCurrentPage(newPage);
-    const rootDiv = document.getElementById('root');
-    if (rootDiv) {
-      rootDiv.scrollTop = 0;
-    }
-  };
-
   const handleSortChange = (field) => {
     if (sortBy === field) {
       setSortOrder(sortOrder === 'ASC' ? 'DESC' : 'ASC');
@@ -150,7 +148,7 @@ function OrdersPage() {
             onChange={(e) => debouncedSearch(e.target.value)}
             className="search-input"
           />
-          <img class="icon" src="\src\assets\icon-search.png"/>
+          <img className="icon" src="\src\assets\icon-search.png"/>
         </div>
 
         <div className="filters">
@@ -251,8 +249,8 @@ function OrdersPage() {
                     <div className="books-list">
                       <h3>Ordered Books:</h3>
                       {order.books.map((book, index) => (
-                        <div key={`${book.book_id}-${index}`} className="book-item">
-                          <div className="book-image">
+                        <div key={`${book.book_id}-${index}`} className="order-book-item">
+                          <div className="book-img">
                             {book.image_url ? (
                               <img 
                                 src={book.image_url} 
@@ -268,7 +266,7 @@ function OrdersPage() {
                             </div>
                           </div>
                           
-                          <div className="book-details">
+                          <div className="admin-order-book-details">
                             <h4>{book.title}</h4>
                             <p className="book-author">By: {book.author}</p>
                             {book.category_name && (
@@ -293,7 +291,7 @@ function OrdersPage() {
           {totalPages > 1 && (
             <div className="pagination">
               <button
-                onClick={() => handlePageChange(currentPage - 1)}
+                onClick={() => setCurrentPage(currentPage - 1)}
                 disabled={currentPage === 1}
                 className="pagination-btn"
               >
@@ -305,7 +303,7 @@ function OrdersPage() {
               </div>
               
               <button
-                onClick={() => handlePageChange(currentPage + 1)}
+                onClick={() => setCurrentPage(currentPage + 1)}
                 disabled={currentPage === totalPages}
                 className="pagination-btn"
               >

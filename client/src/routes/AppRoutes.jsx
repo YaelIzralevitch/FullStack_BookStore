@@ -9,7 +9,7 @@ import CategoryBooksPage from '../pages/user/books/CategoryBooksPage.jsx';
 import BookDetailsPage from '../pages/user/bookDetails/BookDetailsPage.jsx';
 import OrdersHistoryPage from '../pages/user/ordersHistory/OrdersHistoryPage.jsx';
 import CartPage from '../pages/user/cart/CartPage.jsx';
-import AdminLayout from '../layouts/adminLayout/AdminLayout.jsx';
+import AdminLayout from '../layouts/AdminLayout.jsx';
 import DashboardPage from '../pages/admin/dashboard/DashboardPage.jsx';
 import StockManagementPage from '../pages/admin/stockManagement/StockManagementPage.jsx';
 import OrdersPage from '../pages/admin/orders/OrdersPage.jsx';
@@ -40,7 +40,7 @@ function AppRoutes() {
   if (currentUser?.role === 'admin') {
     return (
       <Routes>
-        <Route path="/dashboard" element={<AdminLayout />}>
+        <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<DashboardPage />} />
           <Route path="stockManagement" element={<StockManagementPage />} />
           <Route path='orders' element={<OrdersPage />} />

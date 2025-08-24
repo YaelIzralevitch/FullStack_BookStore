@@ -138,7 +138,7 @@ router.get("/admin", authenticate, requireAdmin, async (req, res) => {
 
     options.sortOrder = options.sortOrder.toUpperCase();
 
-    const result = await ordersService.getAllOrdersForAdmin(options);
+    const result = await ordersService.getOrdersForAdmin(options);
 
     if (result.code !== 200) {
       return res.status(result.code).json({

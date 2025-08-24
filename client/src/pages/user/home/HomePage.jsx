@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getCategories } from '../../../services/api';
 import Category from '../../../components/Category/Category.jsx';
+import HeroCarousel from '../../../components/HeroCarousel/HeroCarousel.jsx';
 import './HomePage.css';
 
 function HomePage() {
@@ -21,7 +22,8 @@ function HomePage() {
         setLoading(false);
       }
     }
-    fetchCategories();
+    window.scrollTo({ top: 0 });
+    fetchCategories();  
   }, []);
 
   if (loading) return <p>Loading Categories...</p>;
@@ -29,6 +31,8 @@ function HomePage() {
 
   return (
     <div className="categories-page">
+      <HeroCarousel />
+      
       <h2>Book's Categories</h2>
       <div className="categories-grid">
         {categories.map(cat => (

@@ -2,9 +2,9 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 
 function CategoryPieChart({ data }) {
   const COLORS = [
-    '#0088FE', '#00C49F', '#FFBB28', '#FF8042', 
-    '#8884d8', '#82ca9d', '#ffc658', '#ff7300',
-    '#00ff00', '#ff00ff', '#00ffff', '#ffff00'
+    '#60a5fa', '#a78bfa', '#fb923c', '#A4B465', 
+    '#8884d8', '#82ca9d', '#ffc658', '#f8f163ff',
+    '#81f581ff', '#f881f8ff', '#64f0f0ff', '#ffff00'
   ];
 
   const formatCurrency = (value) => `$${value.toLocaleString()}`;

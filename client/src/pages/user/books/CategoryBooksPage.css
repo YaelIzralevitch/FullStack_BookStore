@@ -1,6 +1,61 @@
+
 .books-page {
-  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 16px;
+}
+
+.books-page h2 {
+  color: var(--forest-green);
+  font-size: 32px;
+  font-weight: 700;
   text-align: center;
+  margin-bottom: 32px;
+  position: relative;
+}
+
+.books-page h2::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--sage-green), var(--light-sage));
+  border-radius: 2px;
+}
+
+/* Sort Container */
+.sort-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.sort-container label {
+  color: var(--forest-green);
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.sort-container select {
+  padding: 10px 16px;
+  border: 2px solid var(--mint-cream);
+  border-radius: 8px;
+  background-color: var(--cream-white);
+  color: var(--forest-green);
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 200px;
+}
+
+.sort-container select:focus {
+  outline: none;
+  border-color: var(--sage-green);
+  box-shadow: 0 0 0 3px rgba(131, 146, 86, 0.1);
 }
 
 .books-grid {
@@ -23,12 +78,18 @@
   transition: transform 0.2s ease;
 }
 
+.book-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 
 .book-card:hover {
   transform: scale(1.05);
 }
 
-.book-image {
+.book-cover {
   width: 160px;
   height: 220px;
   object-fit: cover;
@@ -43,7 +104,7 @@
 }
 
 .book-price {
-  color: #4a69bd;
+  color: var(--sage-green);
   font-weight: bold;
   font-size: 14px;
 }
@@ -55,35 +116,33 @@
   color: #555; 
 }
 
-.low-stock {
+.low-stock,
+.out-of-stock {
   position: absolute;
-  top: 12px;
-  right: -40px;
-  background-color: rgba(255, 0, 0, 0.9);
   color: white;
-  padding: 4px 40px;
   font-size: 0.85rem;
   font-weight: bold;
   border-radius: 4px;
-  transform: rotate(45deg);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
-
-.sort-container {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 20px;
+.low-stock{
+  top: 10px;
+  right: -35px;
+  padding: 4px 20px;
+  transform: rotate(45deg);
+  background-color: #dc2626;
 }
 
-.sort-container label {
-  font-weight: bold;
+.out-of-stock{
+  top: 30%;
+  padding: 5px 30px;
+  background-color: gray;
+  z-index: 1;
 }
 
-.sort-container select {
-  padding: 5px 8px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
+.book-content.disabled {
+  opacity: 0.5;
 }
+
 

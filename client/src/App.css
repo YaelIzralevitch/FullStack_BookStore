@@ -1,297 +1,72 @@
-/*
+/* הגדרות כלליות לכל האתר */
+
+/* פונט בסיסי */
 * {
-  margin: 0;
-  padding: 0;
+  font-family: 'Arial', 'Helvetica', sans-serif;
   box-sizing: border-box;
-}
-
-html, body, #root {
-  width: 100%;
-  height: 100%;
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
-
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-textarea{
-  resize: none;
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
 body {
-  background-color: #f5f7fa;
-  color: #333;
+  background-color: var(--cream-white);
+  color: var(--forest-green);
   line-height: 1.6;
-  min-height: 100vh;
-  width: 100vw;
-}
-*/
-
-/* App.css - עיצוב כללי לאפליקציה */
-
-/* עיצוב גופנים ואתחול */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html, body, #root {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-textarea{
-  resize: none;
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-}
-
-body {
-  background-color: #f5f7fa;
-  color: #333;
-  line-height: 1.6;
-  min-height: 100vh;
-  width: 100vw;
-}
-
-/* עיצוב לטפסים */
-.login-container, 
-.register-container,
-.complete-registration-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  width: 100%;
-  padding: 20px;
-  background: linear-gradient(135deg, #6b8cce, #4a69bd);
-}
-
-.login-form,
-.register-form,
-.complete-registration-form {
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  padding: 30px;
-  width: 100%;
-  max-width: 450px;
-}
-
-.login-form h2,
-.register-form h2,
-.complete-registration-form h2 {
-  color: #2c3e50;
-  margin-bottom: 20px;
-  font-size: 24px;
-  text-align: center;
-}
-
-.submit-button {
-  width: 100%;
-  padding: 12px;
-  background-color: #4a69bd;
-  color: white;
-  border: none;
-  border-radius: 5px;
   font-size: 16px;
-  font-weight: 600;
+}
+
+/* סגנון כללי לכפתורים */
+button {
+  background-color: var(--sage-green);
+  color: var(--cream-white);
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.submit-button:hover {
-  background-color: #3d5a9e;
-}
-
-.submit-button:disabled {
-  background-color: #a0b0d8;
-  cursor: not-allowed;
-}
-
-.error-message {
-  color: #e74c3c;
-  background-color: #fdecea;
-  padding: 10px;
-  border-radius: 5px;
-  margin-bottom: 20px;
-  font-size: 14px;
-  text-align: center;
-}
-
-.register-link, .login-link {
-  margin-top: 20px;
-  text-align: center;
-  font-size: 15px;
-}
-
-.register-link a,
-.login-link a {
-  color: #4a69bd;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.register-link a:hover,
-.login-link a:hover {
-  text-decoration: underline;
-}
-
-/* עיצוב לדף הבית ודפי התוכן */
-/* עיצוב עבור HomeLayout */
-.header {
-  background-color: var(--light-blue-color);
-  padding: 1rem 2rem;
-  box-shadow: var(--shadow);
-  border-bottom: 1px solid var(--gray-light);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: sticky;
-  top: 0;
-  z-index: 50;
-}
-
-/* עיצוב כפתורי הניווט */
-.navigation-buttons {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-}
-
-.nav-button {
-  padding: 0.75rem 1.5rem;
-  background-color: var(--primary-color);
-  color: white;
-  text-decoration: none;
-  border-radius: var(--radius);
-  font-size: 0.9rem;
+  font-size: 16px;
   font-weight: 500;
-  border: none;
-  cursor: pointer;
-  transition: var(--transition);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: inline-block;
-  text-align: center;
+  transition: background-color 0.3s ease, transform 0.1s ease;
 }
 
-.nav-button:hover {
-  background-color: var(--primary-dark);
+button:hover {
+  background-color: var(--forest-green);
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(74, 111, 165, 0.2);
-  color: white;
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+button:disabled {
+  background-color: var(--mint-cream);
+  color: var(--sage-green);
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* סגנון כללי לקישורים */
+a {
+  color: var(--forest-green);
   text-decoration: none;
+  transition: color 0.3s ease;
 }
 
-.nav-button:focus {
-  outline: 2px solid var(--primary-color);
-  outline-offset: 2px;
+a:hover {
+  color: var(--sage-green);
 }
 
-/* עיצוב מיוחד לכפתור logout */
-.nav-button.logout-button {
-  background-color: transparent;
-  padding: 1px;
-}
-
-.logout-icon{
-  width: 40px;
-  height: 40px;
-  object-fit: fill;
-  display: block;
-}
-
-.header-user {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-.header-user h1 {
-  margin: 0;
-  font-size: 1.5rem;
-  color: var(--primary-color);
-  font-weight: 600;
-}
-
-
-/* עיצוב עבור HomePage */
-.home-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
-  height: 100%;
-}
-
-.content-home {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  align-items: start;
-  min-height: 60vh;
-  padding: 0 2rem;
-  background-color: white;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-}
-
-.welcome-message {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 2rem;
-}
-
-.welcome-message h2 {
-  font-size: 2.5rem;
-  color: var(--primary-color);
-  margin: 0;
-  font-weight: 700;
-  line-height: 1.2;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-
-/* עיצוב לרשימות ותוכן */
-.page-title {
-  font-size: 2rem;
-  color: var(--primary-color);
-  margin-bottom: 1.5rem;
-  font-weight: 700;
-  text-align: center;
-  border-bottom: 2px solid var(--gray-light);
-  padding-bottom: 1rem;
-}
-
-/* עיצוב לטעינה */
-.loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 30px;
-  color: #666;
+/* סגנון כללי לשדות טקסט */
+input, textarea {
+  border: 2px solid var(--mint-cream);
+  border-radius: 6px;
+  padding: 10px 12px;
   font-size: 16px;
+  background-color: var(--cream-white);
+  color: var(--forest-green);
+  transition: border-color 0.3s ease;
 }
 
-/* סגנון למבנה האפליקציה לכיסוי מלא */
-.app-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  width: 100%;
-}
-
-.home-Outlet-container {
-  padding: 20px;
+input:focus, textarea:focus {
+  outline: none;
+  border-color: var(--sage-green);
 }

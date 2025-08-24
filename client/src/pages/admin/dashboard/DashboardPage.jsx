@@ -45,6 +45,7 @@ function DashboardPage() {
     };
     if (!hasFetched.current) {
       hasFetched.current = true;
+      window.scrollTo({ top: 0 });
       initializeDashboard();
     }
   }, []);

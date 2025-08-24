@@ -152,7 +152,7 @@ async function getOrderById(orderId, userId) {
 /**
  * קבלת כל ההזמנות (לאדמין) עם פילטר וחיפוש
  */
-async function getAllOrders(options = {}) {
+async function getOrders(options = {}) {
   try {
     const {
       search = '',
@@ -168,8 +168,8 @@ async function getAllOrders(options = {}) {
 
     // חיפוש לפי מספר הזמנה או אימייל
     if (search) {
-      whereClause += ` AND (o.id = ? OR u.email LIKE ?)`;
-      queryParams.push(parseInt(search) || 0, `%${search}%`);
+      whereClause += ` AND (CAST(o.id AS CHAR) LIKE ? OR u.email LIKE ?)`;
+      queryParams.push(`%${search}%`, `%${search}%`);
     }
 
     // פילטר לפי סטטוס
@@ -239,7 +239,7 @@ async function getAllOrders(options = {}) {
       totalPages: Math.ceil(totalCount.total / limit)
     };
   } catch (error) {
-    console.error('ERROR IN getAllOrders:', error);
+    console.error('ERROR IN getOrders:', error);
     throw error;
   }
 }
@@ -279,6 +279,6 @@ module.exports = {
   getUserOrders,
   getOrderById, 
   createOrder,
-  getAllOrders,
+  getOrders,
   updateOrderStatus
 };

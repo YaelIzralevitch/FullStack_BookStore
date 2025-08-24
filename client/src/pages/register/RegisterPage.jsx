@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Register } from '../../services/api';
+import './RegisterPage.css';
 
 const RegisterPage = () => {
   const [email, setEmail] = useState('');
@@ -57,79 +58,80 @@ const RegisterPage = () => {
         {error && <div className="error-message">{error}</div>}
         
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              disabled={loading}
-              autoComplete="email"
-            />
-          </div>
-          
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={loading}
-              autoComplete="new-password"
-            />
-          </div>
-          
-          <div className="form-group">
-            <label htmlFor="password-verify">Confirm Password</label>
-            <input
-              type="password"
-              id="password-verify"
-              value={passwordVerify}
-              onChange={(e) => setPasswordVerify(e.target.value)}
-              disabled={loading}
-              autoComplete="new-password"
-            />
-          </div>
+          <div className='form-fields'>
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
+                autoComplete="email"
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={loading}
+                autoComplete="new-password"
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="password-verify">Confirm Password</label>
+              <input
+                type="password"
+                id="password-verify"
+                value={passwordVerify}
+                onChange={(e) => setPasswordVerify(e.target.value)}
+                disabled={loading}
+                autoComplete="new-password"
+              />
+            </div>
 
-          <div className="form-group">
-            <input
-              type="text"
-              id="first_name"
-              name="first_name"
-              placeholder='First Name *'
-              value={first_name}
-              onChange={(e) => setFirst_name(e.target.value)}
-              disabled={loading}
-            />
-          </div>
+            <div className="form-group">
+              <label htmlFor="first_name">First Name</label>
+              <input
+                type="text"
+                id="first_name"
+                name="first_name"
+                value={first_name}
+                onChange={(e) => setFirst_name(e.target.value)}
+                disabled={loading}
+              />
+            </div>
 
-          <div className="form-group">
-            <input
-              type="text"
-              id="last_name"
-              name="last_name"
-              placeholder='Last Name *'
-              value={last_name}
-              onChange={(e) => setLast_name(e.target.value)}
-              disabled={loading}
-            />
-          </div>
+            <div className="form-group">
+              <label htmlFor="last_name">Last Name</label>
+              <input
+                type="text"
+                id="last_name"
+                name="last_name"
+                value={last_name}
+                onChange={(e) => setLast_name(e.target.value)}
+                disabled={loading}
+              />
+            </div>
 
-          <div className="form-group">
-            <input
-              type="tel"
-              id="phone"
-              name="phone"
-              placeholder='Phone'
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              pattern='^\d{7,15}$'
-              disabled={loading}
-            />
+            <div className="form-group">
+              <label htmlFor="phone">Phone</label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                pattern='^\d{7,15}$'
+                disabled={loading}
+              />
+            </div> 
           </div>
-          
           <button type="submit" className="submit-button" disabled={loading}>
             {loading ? 'Registering...' : 'Register'}
           </button>

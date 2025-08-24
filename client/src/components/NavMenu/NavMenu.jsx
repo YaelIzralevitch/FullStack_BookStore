@@ -1,23 +1,37 @@
 import { useState, useRef, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import AuthContext from '../../contexts/AuthContext';
 import './NavMenu.css';
 
 function NavMenu({ userId }) {
+  const navigationOptions = [
+    { label: 'Home', value: '/home' },
+    { label: 'Shopping cart', value: '/home/cart'},
+    { label: 'Previous orders', value: '/home/ordersHistory' },
+    { label: 'Personal profile', value: `/home/userDetails/${userId}` },
+    { label: 'Logout', value: '/login' },
+  ];
+  
+  const { logout } = useContext(AuthContext);
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState('Home');
   const dropdownRef = useRef(null);
 
-  const navigationOptions = [
-    { label: 'Home', value: '/home', icon: '🏠' },
-    { label: 'Shopping cart', value: '/home/cart', icon: '📚' },
-    { label: 'Previous orders', value: '/home/ordersHistory', icon: '📖' },
-    { label: 'Personal profile', value: `/home/userDetails/${userId}`, icon: '🔬' },
-    { label: 'Logout', value: '/login', icon: '🏛️' },
-  ];
+  // פונקציה לקביעת האופציה הנוכחית על בסיס ה-location
+  const getCurrentOption = () => {
+    const match = navigationOptions.find(opt => location.pathname === opt.value);
+    return match ? match.label : 'Home';
+  };
 
-  const { logout } = useContext(AuthContext);
-  const navigate = useNavigate();
+  const [selectedOption, setSelectedOption] = useState(getCurrentOption());
+
+  // עדכן את האופציה הנבחרת כאשר ה-location משתנה
+  useEffect(() => {
+    const currentOption = getCurrentOption();
+    setSelectedOption(currentOption);
+  }, [location.pathname, userId]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -34,7 +48,13 @@ function NavMenu({ userId }) {
   const handleOptionClick = (option) => {
     setSelectedOption(option.label);
     setIsOpen(false);
-    navigate(option.value);
+    
+    if (option.label === 'Logout') {
+      logout();
+      navigate(option.value);
+    } else {
+      navigate(option.value);
+    }
   };
 
   return (
@@ -44,9 +64,6 @@ function NavMenu({ userId }) {
         onClick={() => setIsOpen(!isOpen)}
       >
         <span className="selected-value">
-          <span className="selected-icon">
-            {navigationOptions.find(opt => opt.label === selectedOption)?.icon}
-          </span>
           {selectedOption}
         </span>
         <span className={`arrow ${isOpen ? 'up' : 'down'}`}>▼</span>
@@ -57,14 +74,13 @@ function NavMenu({ userId }) {
           <div
             key={option.value}
             className={`dropdown-item ${selectedOption === option.label ? 'selected' : ''}`}
-            onClick={option.label !== 'Logout' ? () => handleOptionClick(option) :  () => { logout(); navigate(option.value); } }
+            onClick={() => handleOptionClick(option)}
           >
-            <span className="item-icon">{option.icon}</span>
             <span className="item-label">{option.label}</span>
           </div>
         ))}
       </div>
-      </div>
+    </div>
   );
 }
 

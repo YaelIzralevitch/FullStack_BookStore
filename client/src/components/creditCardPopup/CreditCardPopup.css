@@ -40,28 +40,30 @@
 }
 
 /* כפתור סגירה */
-.close-btn {
+#close-btn {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  top: 20px;
+  right: 24px;
   background: none;
   border: none;
-  font-size: 1.5rem;
-  color: #6b7280;
+  font-size: 28px;
+  color: var(--sage-green);
   cursor: pointer;
-  padding: 0.25rem;
+  padding: 4px 8px;
   border-radius: 50%;
-  width: 2rem;
-  height: 2rem;
+  transition: all 0.3s ease;
+  line-height: 1;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
 }
 
-.close-btn:hover {
-  background-color: #f3f4f6;
-  color: #374151;
+#close-btn:hover {
+  background-color: var(--mint-cream);
+  color: var(--forest-green);
+  transform: scale(1.05);
 }
 
 /* כותרות */
@@ -106,15 +108,15 @@
 
 .saved-card {
   /* גודל וצורה של כרטיס אשראי אמיתי */
-  width: 320px;
+  width: 340px;
   height: 200px;
   border-radius: 16px;
   padding: 1.5rem;
   position: relative;
-  margin-left: 5rem;
+  margin-left: 5.8rem;
   
   /* גרדיינט יפה שנראה כמו כרטיס אשראי */
-  background: linear-gradient(135deg, #8c9be2 0%, #9e76c7 100%);
+  background: linear-gradient(135deg, #9baaf9 0%, var(--sage-green) 100%);
   box-shadow: 
     0 8px 32px rgba(102, 126, 234, 0.37),
     0 4px 16px rgba(0, 0, 0, 0.1);
@@ -189,6 +191,19 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   line-height: 1.2;
   color: #2a2929;
+}
+
+.card-details {
+  font-family: 'Courier New', monospace;
+  font-size: 16px;
+  color: var(--forest-green);
+  background-color: var(--cream-white);
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--mint-cream);
+  margin: 16px 0;
+  font-weight: 600;
+  letter-spacing: 1px;
 }
 
 /* כפתור המחיקה */
@@ -307,7 +322,6 @@ input[placeholder="0000-0000-0000"] {
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
-  margin-top: 0.5rem;
 }
 
 .popup-btn:disabled {

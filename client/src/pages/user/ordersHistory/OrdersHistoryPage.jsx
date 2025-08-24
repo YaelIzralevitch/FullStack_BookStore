@@ -37,7 +37,7 @@ function OrderHistoryPage() {
         setLoading(false);
       }
     }
-
+    window.scrollTo({ top: 0 });
     fetchOrderHistory();
   }, [currentUser]);
 
