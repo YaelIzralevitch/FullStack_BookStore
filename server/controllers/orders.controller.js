@@ -1,7 +1,7 @@
 const pool = require("../config/db");
 
 /**
- * יצירת הזמנה חדשה
+ * create a new order with order details
  */
 async function createOrder(userId, orderData) {
   const connection = await pool.getConnection();
@@ -11,7 +11,6 @@ async function createOrder(userId, orderData) {
 
     const { items, totalPrice, shippingAddress } = orderData;
 
-    // יצירת הזמנה
     const [orderResult] = await connection.query(`
       INSERT INTO orders (user_id, total_price, order_status, created_at)
       VALUES (?, ?, 'paid', NOW())
@@ -19,14 +18,14 @@ async function createOrder(userId, orderData) {
 
     const orderId = orderResult.insertId;
 
-    // הוספת פרטי הזמנה
+    // add order details
     for (const item of items) {
       await connection.query(`
         INSERT INTO order_details (order_id, book_id, quantity, unit_price)
         VALUES (?, ?, ?, ?)
       `, [orderId, item.id, item.quantity, item.price]);
 
-      // עדכון מלאי (אופציונלי)
+      // update stock quantity
       await connection.query(`
         UPDATE books 
         SET stock_quantity = stock_quantity - ? 
@@ -51,11 +50,10 @@ async function createOrder(userId, orderData) {
 
 
 /**
- * קבלת כל ההזמנות של משתמש עם פרטי הספרים
+ * get all orders for a user with details
  */
 async function getUserOrders(userId) {
   try {
-    // שאילתה לקבלת כל ההזמנות של המשתמש
     const [orders] = await pool.query(`
       SELECT 
         o.id as order_id,
@@ -71,7 +69,7 @@ async function getUserOrders(userId) {
       return [];
     }
 
-    // לכל הזמנה, קבל את פרטי הספרים
+    // order details for each order
     const ordersWithDetails = await Promise.all(
       orders.map(async (order) => {
         const [orderDetails] = await pool.query(`
@@ -102,7 +100,7 @@ async function getUserOrders(userId) {
 }
 
 /**
- * קבלת הזמנה בודדת עם פרטים מלאים
+ * get specific order by id for a user with details
  */
 async function getOrderById(orderId, userId) {
   try {
@@ -150,7 +148,7 @@ async function getOrderById(orderId, userId) {
 
 
 /**
- * קבלת כל ההזמנות (לאדמין) עם פילטר וחיפוש
+ * get all orders with filters, sorting and pagination (for admin)
  */
 async function getOrders(options = {}) {
   try {
@@ -166,22 +164,21 @@ async function getOrders(options = {}) {
     let whereClause = 'WHERE 1=1';
     const queryParams = [];
 
-    // חיפוש לפי מספר הזמנה או אימייל
+    // search by order ID or user email
     if (search) {
       whereClause += ` AND (CAST(o.id AS CHAR) LIKE ? OR u.email LIKE ?)`;
       queryParams.push(`%${search}%`, `%${search}%`);
     }
 
-    // פילטר לפי סטטוס
+    // filter by order status
     if (status) {
       whereClause += ` AND o.order_status = ?`;
       queryParams.push(status);
     }
 
-    // חישוב offset לפאגינציה
+    // offset for pagination
     const offset = (page - 1) * limit;
 
-    // שאילתה עיקרית
     const [orders] = await pool.query(`
       SELECT 
         o.id as order_id,
@@ -199,7 +196,7 @@ async function getOrders(options = {}) {
       LIMIT ? OFFSET ?
     `, [...queryParams, limit, offset]);
 
-    // שאילתה לספירת סה"כ הזמנות (לפאגינציה)
+    // total count for pagination
     const [[totalCount]] = await pool.query(`
       SELECT COUNT(*) as total
       FROM orders o
@@ -207,7 +204,6 @@ async function getOrders(options = {}) {
       ${whereClause}
     `, queryParams);
 
-    // לכל הזמנה, קבל את פרטי הספרים
     const ordersWithDetails = await Promise.all(
       orders.map(async (order) => {
         const [orderDetails] = await pool.query(`
@@ -245,7 +241,7 @@ async function getOrders(options = {}) {
 }
 
 /**
- * עדכון סטטוס הזמנה (לאדמין)
+ * update order status (for admin)
  */
 async function updateOrderStatus(orderId, newStatus) {
   try {

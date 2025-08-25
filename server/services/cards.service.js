@@ -2,7 +2,7 @@ const cardsController = require("../controllers/cards.Controller");
 const usersController = require("../controllers/users.controller");
 
 /**
- * קבלת פרטי כרטיס אשראי
+ * retrieve user's saved credit card
  */
 async function getUserSavedCard(userId) {
   try {
@@ -10,7 +10,7 @@ async function getUserSavedCard(userId) {
 
     return {
       code: 200,
-      data: creditCard // יהיה null אם לא נמצא כרטיס
+      data: creditCard // if no card, will be null
     };
   } catch (error) {
     console.error('ERROR IN getUserCreditCard service:', error);
@@ -19,7 +19,7 @@ async function getUserSavedCard(userId) {
 }
 
 /**
- * הוספת כרטיס אשראי
+ * add a credit card for user
  */
 async function saveUserCreditCard(userId, paymentMethodId ) {
   try {
@@ -37,7 +37,7 @@ async function saveUserCreditCard(userId, paymentMethodId ) {
 }
 
 /**
- * מחיקת כרטיס אשראי
+ * delete user's saved credit card
  */
 async function deleteUserCreditCard(userId) {
   try {

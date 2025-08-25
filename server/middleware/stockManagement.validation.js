@@ -1,5 +1,5 @@
 /**
- * ולידציה ליצירת או עדכון ספר
+ * validation middleware for book and category data
  */
 function validateBookData(req, res, next) {
   const book = req.body;
@@ -12,7 +12,7 @@ function validateBookData(req, res, next) {
     });
   }
 
-  // --- בדיקת קטגוריה
+  // check category
   if (!book.category_id || typeof book.category_id !== 'number') {
     return res.status(400).json({
       success: false,
@@ -20,7 +20,7 @@ function validateBookData(req, res, next) {
     });
   }
 
-  // --- בדיקת שם הספר
+  // check title
   if (!book.title || typeof book.title !== 'string' || book.title.trim().length === 0) {
     return res.status(400).json({
       success: false,
@@ -28,7 +28,7 @@ function validateBookData(req, res, next) {
     });
   }
 
-  // --- בדיקת המחבר
+  // check author
   if (!book.author || typeof book.author !== 'string' || book.author.trim().length === 0) {
     return res.status(400).json({
       success: false,
@@ -36,7 +36,7 @@ function validateBookData(req, res, next) {
     });
   }
 
-  // --- בדיקת תיאור (אפשר להשאיר ריק אם רוצים)
+  // check description (optional)
   if (book.description && typeof book.description !== 'string') {
     return res.status(400).json({
       success: false,
@@ -44,7 +44,7 @@ function validateBookData(req, res, next) {
     });
   }
 
-  // --- בדיקת מחיר
+  // check price
   if (book.price === undefined || typeof book.price !== 'number' || book.price < 0) {
     return res.status(400).json({
       success: false,
@@ -52,7 +52,7 @@ function validateBookData(req, res, next) {
     });
   }
 
-  // --- בדיקת כמות במלאי
+  // check stock_quantity
   if (book.stock_quantity === undefined || typeof book.stock_quantity !== 'number' || book.stock_quantity < 0) {
     return res.status(400).json({
       success: false,
@@ -60,7 +60,6 @@ function validateBookData(req, res, next) {
     });
   }
 
-  // --- אם הכל תקין, מוסיפים ל־req
   req.book = book;
   next();
 }

@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const inventoryService = require('../services/stockManagement.service');
-const { authenticate } = require("../middleware/auth.middleware");
+const { authenticate, requireAdmin } = require("../middleware/auth.middleware");
 const { validateBookData, validateCategoryData } = require("../middleware/stockManagement.validation");
 
 
-// ====== קטגוריות ======
-router.get('/categories', authenticate, async (req, res) => {
+// ====== categories ======
+router.get('/categories', authenticate, requireAdmin, async (req, res) => {
   try {
     const categories = await inventoryService.getAllCategories();
      res.json({ success: true, data: categories });
@@ -15,7 +15,7 @@ router.get('/categories', authenticate, async (req, res) => {
   }
 });
 
-router.post('/category', authenticate, validateCategoryData, async (req, res) => {
+router.post('/category', authenticate, validateCategoryData, requireAdmin, async (req, res) => {
   try {
     const category = await inventoryService.createCategory(req.body);
     res.json(category);
@@ -24,7 +24,7 @@ router.post('/category', authenticate, validateCategoryData, async (req, res) =>
   }
 });
 
-router.put('/category/:id', authenticate, validateCategoryData, async (req, res) => {
+router.put('/category/:id', authenticate, validateCategoryData, requireAdmin, async (req, res) => {
   try {
     const category = await inventoryService.updateCategory(req.params.id, req.body);
     res.json(category);
@@ -33,7 +33,7 @@ router.put('/category/:id', authenticate, validateCategoryData, async (req, res)
   }
 });
 
-router.delete('/category/:id', authenticate,async (req, res) => {
+router.delete('/category/:id', requireAdmin, authenticate,async (req, res) => {
   try {
     await inventoryService.deleteCategory(req.params.id);
     res.json({ message: 'Category deleted successfully' });
@@ -42,8 +42,8 @@ router.delete('/category/:id', authenticate,async (req, res) => {
   }
 });
 
-// ====== ספרים ======
-router.get('/books/:categoryId', authenticate, async (req, res) => {
+// ====== books ======
+router.get('/books/:categoryId', authenticate, requireAdmin, async (req, res) => {
   try {
     const books = await inventoryService.getBooksByCategory(req.params.categoryId);
     res.json(books);
@@ -52,7 +52,7 @@ router.get('/books/:categoryId', authenticate, async (req, res) => {
   }
 });
 
-router.post('/book', authenticate, validateBookData, async (req, res) => {
+router.post('/book', authenticate, validateBookData, requireAdmin, async (req, res) => {
   try {
     const book = await inventoryService.createBook(req.body);
     res.json(book);
@@ -61,7 +61,7 @@ router.post('/book', authenticate, validateBookData, async (req, res) => {
   }
 });
 
-router.put('/book/:id', authenticate, validateBookData, async (req, res) => {
+router.put('/book/:id', authenticate, validateBookData, requireAdmin, async (req, res) => {
   try {
     const book = await inventoryService.updateBook(req.params.id, req.body);
     res.json(book);
@@ -70,12 +70,73 @@ router.put('/book/:id', authenticate, validateBookData, async (req, res) => {
   }
 });
 
-router.delete('/book/:id', authenticate, async (req, res) => {
+router.delete('/book/:id', authenticate, requireAdmin, async (req, res) => {
   try {
     await inventoryService.deleteBook(req.params.id);
     res.json({ message: 'Book deleted successfully' });
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+});
+
+router.get("/category", authenticate, requireAdmin, requireAdmin, async (req, res) => {
+  try {
+    const options = {
+      categoryId: parseInt(req.query.categoryId),
+      search: req.query.search || '',
+      sortBy: req.query.sortBy || 'title',
+      sortOrder: req.query.sortOrder || 'ASC',
+      page: parseInt(req.query.page) || 1,
+      limit: parseInt(req.query.limit) || 10
+    };
+    console.log('Options received in route:', options);
+
+    if (!options.categoryId || isNaN(options.categoryId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Valid category ID is required"
+      });
+    }
+
+    const validSortFields = ['title', 'author', 'price', 'stock_quantity'];
+    const validSortOrders = ['ASC', 'DESC'];
+    
+    if (!validSortFields.includes(options.sortBy)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid sort field"
+      });
+    }
+
+    if (!validSortOrders.includes(options.sortOrder.toUpperCase())) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid sort order"
+      });
+    }
+
+    options.sortOrder = options.sortOrder.toUpperCase();
+
+    const result = await inventoryService.getBooksByCategoryWithPagination(options);
+    console.log('Result from service:', result.data);
+
+    if (result.code !== 200) {
+      return res.status(result.code).json({
+        success: false,
+        message: result.msg
+      });
+    }
+
+    res.json({
+      success: true,
+      data: result.data
+    });
+  } catch (error) {
+    console.error('ERROR IN GET /books/category:', error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error"
+    });
   }
 });
 

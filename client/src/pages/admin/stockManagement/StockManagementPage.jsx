@@ -1,7 +1,8 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
+import debounce from 'lodash.debounce';
 import { 
   getCategories, 
-  getBooksByCategoryId, 
+  getBooksByCategoryWithPagination,  // השתמש בפונקציה החדשה
   createBookInInventory, 
   updateBookInInventory, 
   createInventoryCategory, 
@@ -15,27 +16,41 @@ import './StockManagementPage.css';
 
 function StockManagementPage() {
   const [categories, setCategories] = useState([]);
+  const [books, setBooks] = useState([]); // שינוי לarray פשוט במקום object
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
-
-  const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [booksLoading, setBooksLoading] = useState(false);
+  const [selectedBook, setSelectedBook] = useState(null);
+  const [showBookModal, setShowBookModal] = useState(false);
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortBy, setSortBy] = useState('title'); 
+  const [sortOrder, setSortOrder] = useState('ASC');
+  
+  // pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
 
-  const [loading, setLoading] = useState(true);
-  const [selectedBook, setSelectedBook] = useState(null);
-  const [showBookModal, setShowBookModal] = useState(false);
-  const [showCategoryModal, setShowCategoryModal] = useState(false);
-
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState(''); 
-  const [sortOrder, setSortOrder] = useState('ASC'); 
-
-  const BOOKS_LIMIT = 10;
   const hasFetched = useRef(false);
 
-  // --- טעינת קטגוריות
+  // דיליי בשליחת הבקשה רק עבור החיפוש
+  const debouncedSearch = useCallback(
+    debounce((value) => {
+      setSearchTerm(value);
+      setCurrentPage(1);
+    }, 500),
+    []
+  );
+
+  useEffect(() => {
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [debouncedSearch]);
+
+  // טעינת קטגוריות בלבד בהתחלה
   useEffect(() => {
     if (hasFetched.current) return;
     hasFetched.current = true;
@@ -61,40 +76,53 @@ function StockManagementPage() {
     fetchCategories();
   }, []);
 
-  // --- טעינת ספרים לקטגוריה
+  // טעינת ספרים כשמשתנים הפילטרים או הקטגוריה
   useEffect(() => {
+    if (selectedCategoryId) {
+      fetchBooks();
+    }
+  }, [selectedCategoryId, currentPage, searchTerm, sortBy, sortOrder]);
+
+  const fetchBooks = async () => {
     if (!selectedCategoryId) return;
 
-    async function fetchBooks() {
-      try {
-        setLoading(true);
-        const params = {
-          page: currentPage,
-          limit: BOOKS_LIMIT,
-          search: searchTerm,
-          sortBy,
-          sortOrder
-        };
-        const res = await getBooksByCategoryId(selectedCategoryId, params);
+    try {
+      setBooksLoading(true);
+      
+      const params = {
+        search: searchTerm,
+        sortBy,
+        sortOrder,
+        page: currentPage,
+        limit: 10
+      };
 
-        if (res.success) {
-          setBooks(res.data.books || []);
-          setTotalPages(res.data.totalPages || 1);
-          setTotalCount(res.data.totalCount || 0);
-        } else {
-          setBooks([]);
-          setTotalPages(1);
-          setTotalCount(0);
-        }
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
+      const response = await getBooksByCategoryWithPagination(selectedCategoryId, params);
+      console.log('Books fetched:', response.data);
+      
+      if (response.success) {
+        setBooks(response.data.books);
+        setTotalPages(response.data.totalPages);
+        setTotalCount(response.data.totalCount);
+      } else {
+        console.error('Failed to fetch books:', response.message);
       }
+    } catch (err) {
+      console.error('Error fetching books:', err);
+    } finally {
+      setBooksLoading(false);
     }
+  };
 
-    fetchBooks();
-  }, [selectedCategoryId, currentPage, searchTerm, sortBy, sortOrder]);
+  // שינוי קטגוריה
+  const handleCategoryChange = (category) => {
+    setSelectedCategoryId(category.id);
+    setSelectedCategory(category);
+    setCurrentPage(1);
+    setSearchTerm('');
+    setSortBy('title');
+    setSortOrder('ASC');
+  };
 
   // --- ניהול ספרים
   const handleAddBook = (category) => {
@@ -108,37 +136,28 @@ function StockManagementPage() {
   };
 
   const handleBookSave = async (bookData) => {
-    if (bookData.id) {
-      await updateBookInInventory(bookData.id, bookData);
-    } else {
-      const newBook = await createBookInInventory(bookData);
-      bookData.id = newBook.id;
-    }
-
-    // טען מחדש את הספרים מהשרת
-    setCurrentPage(1);
-    await fetchBooksForCategory(selectedCategoryId, 1);
-
-    setShowBookModal(false);
-  };
-
-  const fetchBooksForCategory = async (categoryId, page) => {
     try {
-      const params = {
-        page,
-        limit: BOOKS_LIMIT,
-        search: searchTerm,
-        sortBy,
-        sortOrder
-      };
-      const res = await getBooksByCategoryId(categoryId, params);
-      if (res.success) {
-        setBooks(res.data.books || []);
-        setTotalPages(res.data.totalPages || 1);
-        setTotalCount(res.data.totalCount || 0);
+      if (bookData.id) {
+        await updateBookInInventory(bookData.id, bookData);
+      } else {
+        await createBookInInventory(bookData);
       }
+
+      // אם הקטגוריה השתנתה, עבור לקטגוריה החדשה
+      if (bookData.category_id !== selectedCategoryId) {
+        const newCat = categories.find(c => c.id === bookData.category_id);
+        setSelectedCategoryId(bookData.category_id);
+        setSelectedCategory(newCat);
+        setCurrentPage(1);
+      } else {
+        // רענן את הרשימה הנוכחית
+        await fetchBooks();
+      }
+
+      setShowBookModal(false);
     } catch (err) {
-      console.error(err);
+      console.error('Error saving book:', err);
+      alert('Failed to save book');
     }
   };
 
@@ -146,8 +165,12 @@ function StockManagementPage() {
     if (!window.confirm(`Are you sure you want to delete "${book.title}"?`)) return;
 
     try {
+      if (selectedBook?.id === book.id) {
+        setShowBookModal(false);
+        setSelectedBook(null);
+      }
       await deleteBookInInventory(book.id);
-      setBooks(prev => prev.filter(b => b.id !== book.id));
+      await fetchBooks(); // רענן את הרשימה
     } catch (err) {
       console.error('Error deleting book:', err);
       alert('Failed to delete book');
@@ -161,19 +184,29 @@ function StockManagementPage() {
   };
 
   const handleCategorySave = async (categoryData) => {
-    if (categoryData.id) {
-      await updateInventoryCategory(categoryData.id, categoryData);
-      setCategories(prev => prev.map(c => c.id === categoryData.id ? categoryData : c));
-    } else {
-      const newCat = await createInventoryCategory(categoryData);
-      categoryData.id = newCat.data.id;
+    try {
+      if (categoryData.id) {
+        await updateInventoryCategory(categoryData.id, categoryData);
+        setCategories(prev => prev.map(c => c.id === categoryData.id ? categoryData : c));
+        
+        if (selectedCategoryId === categoryData.id) {
+          setSelectedCategory(categoryData);
+        }
+      } else {
+        const newCat = await createInventoryCategory(categoryData);
+        categoryData.id = newCat.data.id;
 
-      setCategories(prev => [...prev, categoryData]);
-      setSelectedCategoryId(categoryData.id);
-      setSelectedCategory(categoryData);
+        setCategories(prevCats => [...prevCats, categoryData]);
+        setSelectedCategoryId(categoryData.id);
+        setSelectedCategory(categoryData);
+        setCurrentPage(1);
+      }
+
+      setShowCategoryModal(false);
+    } catch (err) {
+      console.error('Error saving category:', err);
+      alert('Failed to save category');
     }
-
-    setShowCategoryModal(false);
   };
 
   const handleDeleteCategory = async (categoryId) => {
@@ -182,18 +215,22 @@ function StockManagementPage() {
     try {
       await deleteInventoryCategory(categoryId);
       setCategories(prev => prev.filter(c => c.id !== categoryId));
-
+      
       if (selectedCategoryId === categoryId) {
-        setSelectedCategoryId(categories[0]?.id || null);
-        setSelectedCategory(categories[0] || null);
+        const remainingCategories = categories.filter(c => c.id !== categoryId);
+        if (remainingCategories.length > 0) {
+          setSelectedCategoryId(remainingCategories[0].id);
+          setSelectedCategory(remainingCategories[0]);
+        } else {
+          setSelectedCategoryId(null);
+          setSelectedCategory(null);
+        }
       }
     } catch (err) {
       console.error("Error deleting category:", err);
       alert("Failed to delete category");
     }
   };
-
-  if (loading) return <p>Loading inventory management...</p>;
 
   const handleSortChange = (field) => {
     if (sortBy === field) {
@@ -202,13 +239,17 @@ function StockManagementPage() {
       setSortBy(field);
       setSortOrder('ASC');
     }
+    setCurrentPage(1);
   };
 
   const clearFilters = () => {
     setSearchTerm('');
-    setSortBy('');
+    setSortBy('title');
     setSortOrder('ASC');
+    setCurrentPage(1);
   };
+
+  if (loading) return <p>Loading inventory management...</p>;
 
   return (
     <div className="inventory-page">
@@ -219,26 +260,23 @@ function StockManagementPage() {
           <button 
             key={category.id} 
             className={`category-btn ${selectedCategoryId === category.id ? 'active' : ''}`}
-            onClick={() => {
-              setSelectedCategoryId(category.id);
-              setSelectedCategory(category);
-              setCurrentPage(1);
-            }}
+            onClick={() => handleCategoryChange(category)}
           >
             {category.name}
           </button>
         ))}
         <button className="add-category-btn" onClick={handleAddCategory}>+ Add Category</button>
       </div>
+
       <div className='controls-books-section'>
         {selectedCategoryId && (
           <div className="inventory-controls">
             <div className="search-div">
               <input 
                 type="text" 
-                placeholder="Search books by name..." 
-                value={searchTerm} 
-                onChange={(e) => setSearchTerm(e.target.value)} 
+                placeholder="Search books by name or author..." 
+                defaultValue={searchTerm}
+                onChange={(e) => debouncedSearch(e.target.value)}
                 className="search-input"
               />
               <img className="icon" src="\src\assets\icon-search.png" alt="search"/>
@@ -251,7 +289,7 @@ function StockManagementPage() {
                   className={`sort-btn ${sortBy === 'title' ? 'active' : ''}`}
                   onClick={() => handleSortChange('title')}
                 >
-                  Name {sortBy === 'title' && (sortOrder === 'ASC' ? '↑' : '↓')}
+                  Title {sortBy === 'title' && (sortOrder === 'ASC' ? '↑' : '↓')}
                 </button>
                 <button
                   className={`sort-btn ${sortBy === 'price' ? 'active' : ''}`}
@@ -259,9 +297,15 @@ function StockManagementPage() {
                 >
                   Price {sortBy === 'price' && (sortOrder === 'ASC' ? '↑' : '↓')}
                 </button>
+                <button
+                  className={`sort-btn ${sortBy === 'stock_quantity' ? 'active' : ''}`}
+                  onClick={() => handleSortChange('stock_quantity')}
+                >
+                  Stock {sortBy === 'stock_quantity' && (sortOrder === 'ASC' ? '↑' : '↓')}
+                </button>
               </div>
 
-              {(searchTerm || sortBy) && (
+              {(searchTerm || sortBy !== 'title' || sortOrder !== 'ASC') && (
                 <button 
                   onClick={clearFilters}
                   className="clear-filters-btn"
@@ -273,78 +317,111 @@ function StockManagementPage() {
           </div>
         )}
 
+        {selectedCategoryId && selectedCategory && (
+          <div className="selected-category-header">
+            <h3 className="category-title">{selectedCategory.name}</h3>
+            <button 
+              className="edit-category-btn" 
+              onClick={() => {
+                setSelectedCategory(selectedCategory);
+                setShowCategoryModal(true);
+              }}
+              title="Edit category"
+            >
+              ✏️
+            </button>
+          </div>
+        )}
+
         {selectedCategoryId && (
           <div className="books-section">
-            <button className="add-book-btn" onClick={() => handleAddBook({ id: selectedCategoryId })}>
-              + Add Book
-            </button>
-
-          {books.length === 0 ? (
-            <div className="no-books">
-              <p>No books found in this category...</p>
-              <button 
-                className="delete-category-btn" 
-                onClick={() => handleDeleteCategory(selectedCategoryId)}
-              >
-                Delete category 🗑️
+            <div className="books-section-header">
+              <button className="add-book-btn" onClick={() => handleAddBook({ id: selectedCategoryId })}>
+                + Add Book
               </button>
-            </div>
-          ) : (
-            <>
-              <div className="books-list">
-                {books.map(book => (
-                  <div key={book.id} className="book-row" onClick={() => handleEditBook(book)}>
-                    <div className="book-image">
-                      {book.image_url ? (
-                        <img src={book.image_url} alt={book.title} />
-                      ) : (
-                        <div className="image-placeholder">📖</div>
-                      )}
-                    </div>
-                    <div className="book-info">
-                      <p className="book-title">{book.title}</p>
-                      <p className="book-author">By: {book.author}</p>
-                    </div>
-                    <div className="book-meta">
-                      <p>Price per unit: ${book.price}</p>
-                      <p>In stock: {book.stock_quantity}</p>
-                    </div>
-                    <button 
-                      className="delete-book-btn" 
-                      onClick={(e) => { e.stopPropagation(); handleDeleteBook(book); }}
-                    >
-                      🗑️
-                    </button>
-                  </div>
-                ))}
-              </div>
-
-              {/* Pagination */}
-              {totalPages > 1 && (
-                <div className="pagination">
-                  <button 
-                    onClick={() => setCurrentPage(currentPage - 1)} 
-                    disabled={currentPage === 1}
-                    className="pagination-btn"
-                  >
-                    Previous
-                  </button>
-                  <div className="pagination-info">
-                    Page {currentPage} of {totalPages}
-                  </div>
-                  <button 
-                    onClick={() => setCurrentPage(currentPage + 1)} 
-                    disabled={currentPage === totalPages}
-                    className="pagination-btn"
-                  >
-                    Next
-                  </button>
+              
+              {totalCount > 0 && (
+                <div className="results-summary">
+                  <span>Found {totalCount} books</span>
                 </div>
               )}
-            </>
-          )}
-        </div>
-      )}
+            </div>
+
+            {booksLoading && books.length === 0 ? (
+              <div className="loading">Loading books...</div>
+            ) : totalCount === 0 ? (
+              <div className="no-books">
+                <p>There are no books to display in this category...</p>
+                <button 
+                  className="delete-category-btn" 
+                  onClick={() => handleDeleteCategory(selectedCategoryId)}
+                >
+                  Delete category 🗑
+                </button>
+              </div>
+            ) : books.length === 0 ? (
+              <div className="no-books">
+                <p>No matching results for your search...</p>
+              </div>
+            ) : (
+              <>
+                <div className="books-list">
+                  {books.map(book => (
+                    <div key={book.id} className="book-row" onClick={() => handleEditBook(book)}>
+                      <div className="book-image">
+                        {book.image_url ? (
+                          <img src={book.image_url} alt={book.title} />
+                        ) : (
+                          <div className="image-placeholder">📖</div>
+                        )}
+                      </div>
+                      <div className="book-info">
+                        <p className="book-title">{book.title}</p>
+                        <p className="book-author">By: {book.author}</p>
+                      </div>
+                      <div className="book-meta">
+                        <p>Price per unit: ${book.price}</p>
+                        <p>In stock: {book.stock_quantity}</p>
+                      </div>
+                      <button 
+                        className="delete-book-btn" 
+                        onClick={(e) => { e.stopPropagation(); handleDeleteBook(book); }}
+                      >
+                        🗑
+                      </button>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="pagination">
+                    <button
+                      onClick={() => setCurrentPage(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className="pagination-btn"
+                    >
+                      Previous
+                    </button>
+                    
+                    <div className="pagination-info">
+                      Page {currentPage} of {totalPages}
+                    </div>
+                    
+                    <button
+                      onClick={() => setCurrentPage(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      className="pagination-btn"
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        )}
+      </div>
 
       {showBookModal && (
         <BookPopup 

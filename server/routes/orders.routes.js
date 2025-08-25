@@ -6,14 +6,14 @@ const { validateOrderCreation, validateOrderId, validatePaymentData } = require(
 
 
 /**
- * יצירת הזמנה חדשה עם תשלום
+ * create order with Stripe payment
  * POST /api/orders/checkout
  */
 router.post("/checkout", authenticate, validateOrderCreation, validatePaymentData, async (req, res) => {
   try {
     const userId = req.user.id;
-    const orderData = req.orderData; // מגיע מה-middleware
-    const paymentData = req.paymentData; // מגיע מה-middleware
+    const orderData = req.orderData; // middleware
+    const paymentData = req.paymentData; // middleware
 
     const result = await ordersService.createOrderWithStripePayment(
       userId, 
@@ -42,7 +42,7 @@ router.post("/checkout", authenticate, validateOrderCreation, validatePaymentDat
 });
 
 /**
- * קבלת היסטוריית הזמנות של משתמש
+ * get user's order history
  * GET /api/orders/user/:userId
  */
 router.get("/user/:userId", authenticate, authorizeOwner, async (req, res) => {
@@ -72,7 +72,7 @@ router.get("/user/:userId", authenticate, authorizeOwner, async (req, res) => {
 });
 
 /**
- * קבלת פרטי הזמנה בודדת
+ * receive order details for a specific order of a user
  * GET /api/orders/:orderId/user/:userId
  */
 router.get("/:orderId/user/:userId", authenticate, authorizeOwner, async (req, res) => {
@@ -104,7 +104,7 @@ router.get("/:orderId/user/:userId", authenticate, authorizeOwner, async (req, r
 
 
 /**
- * קבלת כל ההזמנות (לאדמין)
+ * receive all orders (for admin)
  * GET /api/orders/admin?search=&status=&sortBy=&sortOrder=&page=&limit=
  */
 router.get("/admin", authenticate, requireAdmin, async (req, res) => {
@@ -161,14 +161,14 @@ router.get("/admin", authenticate, requireAdmin, async (req, res) => {
 });
 
 /**
- * קבלת פרטי הזמנה (לאדמין)
+ * receive specific order details (for admin)
  * GET /api/orders/admin/:orderId
  */
 router.get("/admin/:orderId", authenticate, requireAdmin, validateOrderId, async (req, res) => {
   try {
-    const orderId = req.orderId; // מגיע מה-middleware
+    const orderId = req.orderId; // middleware
 
-    const result = await ordersService.getOrderDetails(orderId); // ללא userId כי זה אדמין
+    const result = await ordersService.getOrderDetails(orderId); // by admin, no userId needed
 
     if (result.code !== 200) {
       return res.status(result.code).json({
@@ -192,12 +192,12 @@ router.get("/admin/:orderId", authenticate, requireAdmin, validateOrderId, async
 
 
 /**
- * עדכון סטטוס הזמנה (לאדמין)
+ * update order status (for admin)
  * PUT /api/orders/admin/:orderId/status
  */
 router.put("/admin/:orderId/status", authenticate, requireAdmin, validateOrderId, async (req, res) => {
   try {
-    const orderId = req.orderId; // מגיע מה-middleware
+    const orderId = req.orderId; // middleware
     const { status } = req.body;
 
     if (!status) {

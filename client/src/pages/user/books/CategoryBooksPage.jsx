@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
-import { getAllBooksByCategoryId } from '../../../services/api';
+import { getBooksByCategoryId } from '../../../services/api';
 import './CategoryBooksPage.css';
 
 // Cache פשוט מחוץ לקומפוננט
@@ -45,7 +45,7 @@ function CategoryBooksPage() {
         }
 
         // אם אין במטמון - שליפה מהשרת
-        const response = await getAllBooksByCategoryId(categoryId);
+        const response = await getBooksByCategoryId(categoryId);
         const booksData = response.data || [];
         
         // שמירה במטמון

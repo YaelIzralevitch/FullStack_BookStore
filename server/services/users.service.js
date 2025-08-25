@@ -1,7 +1,7 @@
 const usersController = require("../controllers/users.controller");
 
 /**
- * קבלת פרטי משתמש
+ * get user by ID
  */
 async function getUserById(userId) {
   try {
@@ -19,7 +19,7 @@ async function getUserById(userId) {
 }
 
 /**
- * עדכון פרטי משתמש
+ * update user details
  */
 async function updateUserDetails(userId, updateData) {
   try {
@@ -32,7 +32,6 @@ async function updateUserDetails(userId, updateData) {
   } catch (error) {
     console.error('ERROR IN updateUserDetails service:', error);
     
-    // טיפול בשגיאות ספציפיות
     if (error.message === 'User not found') {
       return { code: 404, msg: "User not found" };
     }

@@ -4,7 +4,7 @@ const usersController = require("../controllers/users.controller");
 
 
 /**
- * יצירת הזמנה חדשה עם תשלום
+ * create order with Stripe payment
  */
 async function createOrderWithStripePayment(userId, orderData, paymentData) {
   try {
@@ -12,7 +12,7 @@ async function createOrderWithStripePayment(userId, orderData, paymentData) {
     const user = await usersController.getUserById(userId);
     const userEmail = user.email;
     
-    // עיבוד התשלום עם Stripe
+    // processing payment with Stripe
     const paymentResult = await cardsController.processStripePayment(
       userId,
       userEmail, 
@@ -27,7 +27,7 @@ async function createOrderWithStripePayment(userId, orderData, paymentData) {
       };
     }
     
-    // יצירת ההזמנה
+    // creating the order 
     const orderResult = await ordersController.createOrder(userId, orderData);
 
     return {
@@ -48,7 +48,7 @@ async function createOrderWithStripePayment(userId, orderData, paymentData) {
 }
 
 /**
- * קבלת היסטוריית הזמנות של משתמש
+ * get user's order history
  */
 async function getUserOrderHistory(userId) {
   try {
@@ -69,7 +69,7 @@ async function getUserOrderHistory(userId) {
 }
 
 /**
- * קבלת הזמנה בודדת
+ * get order details (for user or admin)
  */
 async function getOrderDetails(orderId, userId) {
   try {
@@ -97,7 +97,7 @@ async function getOrderDetails(orderId, userId) {
 
 
 /**
- * קבלת כל ההזמנות (לאדמין)
+ * get all orders (for admin)
  */
 async function getOrdersForAdmin(options) {
   try {
@@ -117,7 +117,7 @@ async function getOrdersForAdmin(options) {
 }
 
 /**
- * עדכון סטטוס הזמנה (לאדמין)
+ * update order status (for admin)
  */
 async function updateOrderStatus(orderId, newStatus) {
   try {

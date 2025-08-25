@@ -1,7 +1,7 @@
 const dashboardController = require("../controllers/dashboard.controller");
 
 /**
- * קבלת נתוני דשבורד מלאים
+ * get dashboard data (for a specific year)
  */
 async function getDashboardData(year = new Date().getFullYear()) {
   try {
@@ -34,7 +34,7 @@ async function getDashboardData(year = new Date().getFullYear()) {
 }
 
 /**
- * קבלת רשימת שנים זמינות (לסלקטור)
+ * get available years for which there is data
  */
 async function getAvailableYears() {
   try {

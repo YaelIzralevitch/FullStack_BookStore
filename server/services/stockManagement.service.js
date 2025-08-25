@@ -1,6 +1,6 @@
 const stockManagmentController = require('../controllers/stockManagement.controller');
 
-// ===== קטגוריות =====
+// ===== categories =====
 async function getAllCategories() {
   try {
     const categories = await stockManagmentController.getAllCategories();
@@ -41,7 +41,7 @@ async function deleteCategory(id) {
   }
 }
 
-// ===== ספרים =====
+// ===== books =====
 async function getBooksByCategory(categoryId) {
   try {
     const books = await stockManagmentController.getBooksByCategory(categoryId);
@@ -82,6 +82,22 @@ async function deleteBook(id) {
   }
 }
 
+async function getBooksByCategoryWithPagination(options) {
+  try {
+    console.log('Options received in service:', options);
+    const result = await stockManagmentController.getBooksByCategoryWithPagination(options);
+    console.log('Result from controller:', result);
+    
+    return { code: 200, data: result};
+  } catch (error) {
+    console.error('ERROR IN getBooksByCategoryWithPagination service:', error);
+    return { code: 500, msg: error.message || "Failed to retrieve books" 
+    };
+  }
+}
+
+
+
 module.exports = {
   getAllCategories,
   createCategory,
@@ -90,5 +106,6 @@ module.exports = {
   getBooksByCategory,
   createBook,
   updateBook,
-  deleteBook
+  deleteBook,
+  getBooksByCategoryWithPagination
 };

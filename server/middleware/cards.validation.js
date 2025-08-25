@@ -1,5 +1,5 @@
 /**
- * ולידציה לכרטיס אשראי חדש
+ * validation middleware for credit card operations
  */
 function validateCreditCardAdd(req, res, next) {
   const { paymentMethodId } = req.body;

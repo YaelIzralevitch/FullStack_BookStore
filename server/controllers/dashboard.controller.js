@@ -1,7 +1,7 @@
 const pool = require("../config/db");
 
 /**
- * קבלת נתוני הכנסות חודשיים לפי שנה
+ * get monthly revenue data for a given year
  */
 async function getMonthlyRevenue(year) {
   try {
@@ -16,7 +16,7 @@ async function getMonthlyRevenue(year) {
       ORDER BY month
     `, [year]);
 
-    // יצירת מערך עם כל החודשים (גם אלו ללא מכירות)
+    // create an array with all 12 months, filling in zeros where needed
     const monthlyData = Array.from({ length: 12 }, (_, index) => {
       const month = index + 1;
       const found = results.find(r => r.month === month);
@@ -36,7 +36,7 @@ async function getMonthlyRevenue(year) {
 }
 
 /**
- * קבלת פילוח מכירות לפי קטגוריות
+ * get sales data per category for a given year
  */
 async function getCategorySales(year = new Date().getFullYear()) {
   try {
@@ -68,31 +68,31 @@ async function getCategorySales(year = new Date().getFullYear()) {
 }
 
 /**
- * קבלת סטטיסטיקות כלליות
+ * get general stats for dashboard
  */
 async function getGeneralStats() {
   try {
-    // מספר הזמנות השנה
+    // number of orders this year
     const [[ordersCount]] = await pool.query(`
       SELECT COUNT(*) as count 
       FROM orders 
       WHERE YEAR(created_at) = YEAR(NOW())
     `);
 
-    // הכנסות השנה
+    // revenue this year
     const [[yearRevenue]] = await pool.query(`
       SELECT COALESCE(SUM(total_price), 0) as revenue 
       FROM orders 
       WHERE YEAR(created_at) = YEAR(NOW()) AND order_status = 'paid'
     `);
 
-    // מספר ספרים במלאי
+    // total books in stock
     const [[totalBooks]] = await pool.query(`
       SELECT SUM(stock_quantity) as total_stock 
       FROM books
     `);
 
-    // מספר קטגוריות
+    // count of categories
     const [[categoriesCount]] = await pool.query(`
       SELECT COUNT(*) as count 
       FROM categories
@@ -112,7 +112,7 @@ async function getGeneralStats() {
 
 
 /**
- * קבלת שנים זמינות במערכת
+ * get available years from orders data
  */
 async function getAvailableYears() {
   try {
@@ -125,7 +125,7 @@ async function getAvailableYears() {
 
     const years = results.map(result => result.year);
     
-    // אם אין נתונים, החזר את השנה הנוכחית
+    // if no years found, return current year
     if (years.length === 0) {
       return [new Date().getFullYear()];
     }
@@ -138,7 +138,7 @@ async function getAvailableYears() {
 }
 
 /**
- * פונקציה עזר לקבלת שם חודש
+ * help function to get month name from month number
  */
 function getMonthName(month) {
   const months = [

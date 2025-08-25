@@ -5,7 +5,7 @@ const { authenticate, authorizeOwner } = require("../middleware/auth.middleware"
 const { validateCreditCardAdd } = require("../middleware/cards.validation");
 
 /**
- * קבלת פרטי כרטיס אשראי
+ * get user's saved credit card
  * GET /api/cards/:userId
  */
 router.get("/:userId", authenticate, authorizeOwner, async (req, res) => {
@@ -36,7 +36,7 @@ router.get("/:userId", authenticate, authorizeOwner, async (req, res) => {
 });
 
 /**
- * הוספת כרטיס אשראי
+ * add a credit card for user
  * POST /api/cards/:userId
  */
 router.post("/:userId", authenticate, authorizeOwner, validateCreditCardAdd, async (req, res) => {
@@ -66,7 +66,7 @@ router.post("/:userId", authenticate, authorizeOwner, validateCreditCardAdd, asy
 });
 
 /**
- * מחיקת כרטיס אשראי
+ * delete user's saved credit card
  * DELETE /api/cards/:userId
  */
 router.delete("/:userId", authenticate, authorizeOwner, async (req, res) => {

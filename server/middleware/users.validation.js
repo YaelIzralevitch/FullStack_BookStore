@@ -1,10 +1,9 @@
 /**
- * ולידציה לעדכון פרטי משתמש
+ * validation middleware for user update data
  */
 function validateUserUpdate(req, res, next) {
   const updateData = req.body;
 
-  // בדיקה שיש נתונים לעדכן
   if (!updateData || Object.keys(updateData).length === 0) {
     return res.status(400).json({ 
       success: false, 
@@ -12,11 +11,11 @@ function validateUserUpdate(req, res, next) {
     });
   }
 
-  // רשימת שדות מותרים
+  // allowed fields for update
   const allowedFields = ['first_name', 'last_name', 'email', 'phone', 'city', 'street', 'house_number'];
   const providedFields = Object.keys(updateData);
 
-  // בדיקה שכל השדות שסופקו מותרים
+  // check for invalid fields
   const invalidFields = providedFields.filter(field => !allowedFields.includes(field));
   if (invalidFields.length > 0) {
     return res.status(400).json({ 
@@ -25,7 +24,7 @@ function validateUserUpdate(req, res, next) {
     });
   }
 
-  // ולידציה של שם פרטי
+
   if (updateData.first_name !== undefined) {
     if (!updateData.first_name || updateData.first_name.trim().length === 0) {
       return res.status(400).json({ 
@@ -35,7 +34,6 @@ function validateUserUpdate(req, res, next) {
     }
   }
 
-  // ולידציה של שם משפחה
   if (updateData.last_name !== undefined) {
     if (!updateData.last_name || updateData.last_name.trim().length === 0) {
       return res.status(400).json({ 
@@ -45,7 +43,6 @@ function validateUserUpdate(req, res, next) {
     }
   }
 
-  // ולידציה של אימייל
   if (updateData.email !== undefined) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!updateData.email || !emailRegex.test(updateData.email)) {
@@ -56,7 +53,6 @@ function validateUserUpdate(req, res, next) {
     }
   }
 
-  // ולידציה של טלפון
   if (updateData.phone !== undefined) {
     if (updateData.phone && !/^[\d\-\+\(\)\s]{7,20}$/.test(updateData.phone)) {
       return res.status(400).json({ 
