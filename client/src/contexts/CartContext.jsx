@@ -4,9 +4,9 @@ const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState(() => {
-                                        const savedCart = localStorage.getItem('cart');
-                                        return savedCart ? JSON.parse(savedCart) : [];
-                                        });
+    const savedCart = localStorage.getItem('cart');
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
 
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(cartItems));
@@ -15,15 +15,23 @@ export const CartProvider = ({ children }) => {
   const addToCart = (book, quantity = 1) => {
     setCartItems(prevItems => {
       const existingItem = prevItems.find(item => item.id === book.id);
-      
+
       if (existingItem) {
+        // ✅ מחשבים את הכמות החדשה, בלי לעבור את המלאי
+        const newQuantity = Math.min(
+          existingItem.quantity + quantity,
+          book.stock_quantity
+        );
+
         return prevItems.map(item =>
           item.id === book.id
-            ? { ...item, quantity: item.quantity + quantity }
+            ? { ...item, quantity: newQuantity }
             : item
         );
       } else {
-        return [...prevItems, { ...book, quantity }];
+        // ✅ במידה וזה מוצר חדש, דואגים שלא לעבור את המלאי
+        const initialQuantity = Math.min(quantity, book.stock_quantity);
+        return [...prevItems, { ...book, quantity: initialQuantity }];
       }
     });
   };
@@ -33,15 +41,16 @@ export const CartProvider = ({ children }) => {
   };
 
   const updateQuantity = (bookId, newQuantity) => {
-    if (newQuantity <= 0) {
-      removeFromCart(bookId);
-      return;
-    }
-
     setCartItems(prevItems =>
       prevItems.map(item =>
         item.id === bookId
-          ? { ...item, quantity: newQuantity }
+          ? {
+              ...item,
+              quantity: Math.min(
+                newQuantity,
+                item.stock_quantity // ✅ לא לעבור מלאי
+              )
+            }
           : item
       )
     );

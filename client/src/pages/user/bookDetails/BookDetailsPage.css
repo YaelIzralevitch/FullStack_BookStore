@@ -114,6 +114,38 @@
   border: 2px solid var(--mint-cream);
 }
 
+.out-of-stock-msg {
+  color: red;
+  font-weight: bold;
+  background-color: #ffe5e5;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* הודעה למלאי נמוך (5 ספרים ומטה) */
+.low-stock-msg {
+  color: orange;
+  font-weight: bold;
+  background-color: #fff4e5;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* הודעת הצלחה אחרי הוספה לעגלה */
+.success-message {
+  color: green;
+  font-weight: bold;
+  background-color: #e5ffe5;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
 /* Add to Cart Button */
 .add-to-cart-btn {
   background-color: var(--sage-green);

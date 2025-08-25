@@ -1,63 +1,80 @@
 import { useEffect, useState, useRef } from 'react';
-import { useParams, Link, useLocation } from 'react-router-dom';
-import { getAllBooksByCategoryId } from '../../../services/api';
+import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
+import { getAllBooksByCategoryId, getCategoryById } from '../../../services/api';
 import './CategoryBooksPage.css';
 
-// Cache
+// Caches
 const categoryBooksCache = new Map();
-let lastVisitedPath = null;
 
 function CategoryBooksPage() {
   const { categoryId } = useParams();
   const location = useLocation();
   const [books, setBooks] = useState([]);
+  const [categoryName, setCategoryName] = useState(location.state?.categoryName || ''); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [sortOption, setSortOption] = useState('');
   const hasFetched = useRef(false);
+  const navigate = useNavigate();
 
+  // ✅ מביאים את שם הקטגוריה עם cache
   useEffect(() => {
-    const currentPath = location.pathname;
-    const isComingFromDifferentSection = lastVisitedPath && 
-      !lastVisitedPath.includes(`/categories/${categoryId}`) &&
-      !currentPath.includes(lastVisitedPath);
-    
-    if (isComingFromDifferentSection) {
-      categoryBooksCache.clear();
-    }
-    
-    lastVisitedPath = currentPath;
+    async function fetchCategoryName() {
+      if (categoryName) return; // כבר הגיע מה־state
 
-    async function fetchBooks() {
+      if (categoryNameCache.has(categoryId)) {
+        setCategoryName(categoryNameCache.get(categoryId));
+        return;
+      }
+
       try {
-        setLoading(true);
-        
-        if (categoryBooksCache.has(categoryId)) {
-          const cachedData = categoryBooksCache.get(categoryId);
-          setBooks(cachedData);
-          setLoading(false);
-          return;
+        const res = await getCategoryById(categoryId);
+        if (res.success && res.data) {
+          categoryNameCache.set(categoryId, res.data.name);
+          setCategoryName(res.data.name);
         }
-
-        const response = await getAllBooksByCategoryId(categoryId);
-        const booksData = response.data || [];
-        
-        categoryBooksCache.set(categoryId, booksData);
-        setBooks(booksData);
       } catch (err) {
-        setError('Error loading books');
-        console.error(err);
-      } finally {
-        setLoading(false);
+        console.error('Error fetching category name:', err);
       }
     }
-    
-    if (!hasFetched.current) {
-      hasFetched.current = true;
-      window.scrollTo({ top: 0 });
-      fetchBooks();
-    }
-  }, [categoryId, location.pathname]);
+    fetchCategoryName();
+  }, [categoryId, categoryName]);
+
+  useEffect(() => {
+      async function fetchBooks() {
+        try {
+          setLoading(true);
+
+          const cameFromBookDetails = sessionStorage.getItem("fromBookDetails") === "true";
+          sessionStorage.removeItem("fromBookDetails");
+
+          if (cameFromBookDetails) {
+            if (categoryBooksCache.has(categoryId)) {
+              setBooks(categoryBooksCache.get(categoryId));
+              setLoading(false);
+              return;
+            }
+          }
+          categoryBooksCache.clear;
+          const response = await getAllBooksByCategoryId(categoryId);
+          const booksData = response.data || [];
+          
+          categoryBooksCache.set(categoryId, booksData);
+          setBooks(booksData);
+        } catch (err) {
+          setError('Error loading books');
+          console.error(err);
+        } finally {
+          setLoading(false);
+        }
+      }
+      
+      if (!hasFetched.current) {
+        hasFetched.current = true;
+        window.scrollTo({ top: 0 });
+        fetchBooks();
+      }
+    }, [categoryId, location.pathname]);
 
   const handleSortChange = (e) => {
     const option = e.target.value;
@@ -80,15 +97,15 @@ function CategoryBooksPage() {
   if (loading) return <p>Loading books...</p>;
   if (error) return <p>{error}</p>;
   if (!loading && books.length === 0) {
-    return <p className="no-books-message">
-      No books available in this category...
-    </p>;
+    return <p className="no-books-message">No books available in this category...</p>;
   }
 
   return (
     <div className="books-page">
-      <h2>Category's Books</h2>
-      
+      <h2>{categoryName || "Category's Books"}</h2> {/* ✅ שם הקטגוריה מגיע גם מרענון */}
+      <button className='back-btn' onClick={() => navigate(-1)}>
+        <img src="\src\assets\icon-back.png" alt="Back"/>
+      </button>
       <div className="sort-container">
         <label>Sort by: </label>
         <select value={sortOption} onChange={handleSortChange}>
@@ -104,9 +121,13 @@ function CategoryBooksPage() {
         {books.map((book) => (
           <Link
             key={book.id}
-            to={book.stock_quantity === 0 ? "#" : `/home/categories/${categoryId}/books/${book.id}`}
-            state={{ book: book }}
-            className='book-card'
+            to={
+              book.stock_quantity === 0
+                ? "#"
+                : `/home/categories/${categoryId}/books/${book.id}`
+            }
+            state={{ book }}
+            className="book-card"
             onClick={(e) => {
               if (book.stock_quantity === 0) e.preventDefault();
             }}
@@ -117,8 +138,16 @@ function CategoryBooksPage() {
             {book.stock_quantity <= 5 && book.stock_quantity > 0 && (
               <div className="low-stock">Only {book.stock_quantity} left!</div>
             )}
-            <div className={`book-content ${book.stock_quantity === 0 ? "disabled" : ""}`}>
-              <img src={book.image_url} alt={book.title} className="book-cover" />
+            <div
+              className={`book-content ${
+                book.stock_quantity === 0 ? "disabled" : ""
+              }`}
+            >
+              <img
+                src={book.image_url}
+                alt={book.title}
+                className="book-cover"
+              />
               <h3 className="book-title">{book.title}</h3>
               <p className="book-price">${book.price}</p>
             </div>
