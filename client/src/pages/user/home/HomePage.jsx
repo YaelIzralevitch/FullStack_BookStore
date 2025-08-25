@@ -18,8 +18,7 @@ function HomePage() {
         const response = await getCategories();
         setCategories(response.data || []);
       } catch (err) {
-        setError('Error loading categories');
-        console.error(err);
+        setError(err.message, 'Error loading categories');
       } finally {
         setLoading(false);
       }

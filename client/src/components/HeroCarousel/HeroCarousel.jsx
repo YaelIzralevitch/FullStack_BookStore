@@ -5,15 +5,15 @@ const HeroCarousel = () => {
   const images = [
     {
       id: 1,
-      url: 'https://wallpapers.com/images/hd/row-of-bookshelf-from-library-wzcir10772tcuqps.jpg',
-      alt: 'Beautiful library with books',
-      title: 'Discover Your Next Favorite Book',
-    },
-    {
-      id: 2,
       url: 'https://d2z2mkwk6fkehh.cloudfront.net/f2me/blog/How%20to%20Ship%20a%20Package%20Internationally/bd8aa5a77f9f8646465d94e24e6fe533.jpg',
       alt: 'Shipping Boxes',
       title: 'Enjoy Free Shipping Within 3-5 Business Days!',
+    },
+    {
+      id: 2,
+      url: 'https://wallpapers.com/images/hd/row-of-bookshelf-from-library-wzcir10772tcuqps.jpg',
+      alt: 'Beautiful library with books',
+      title: 'Discover Your Next Favorite Book',
     },
     {
       id: 3,

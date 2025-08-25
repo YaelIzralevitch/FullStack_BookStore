@@ -125,7 +125,6 @@ function CategoryBooksPage() {
       };
 
       const response = await getBooksByCategoryId(categoryId, params);
-      console.log("response", response)
       
       if (response.success) {
         const booksData = response.data.books || [];

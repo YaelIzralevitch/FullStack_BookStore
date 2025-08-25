@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getUser, isTokenValid } from '../utils/localStorage';
 
 const AuthContext = createContext(null);
@@ -6,13 +7,15 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const user = getUser();
     if(user){
       const isValid = isTokenValid();
       if (!isValid) {
-        logout(); 
+        logout();
+        navigate('/login')
         return;
       }
     }

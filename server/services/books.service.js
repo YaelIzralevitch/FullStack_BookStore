@@ -22,9 +22,7 @@ async function getBookById(bookId) {
 
 async function getBooksByCategoryWithPagination(options) {
   try {
-    console.log('Options received in books service:', options);
     const result = await booksController.getBooksByCategoryWithPagination(options);
-    console.log('Result from books controller:', result);
     
     return { code: 200, data: result };
   } catch (error) {

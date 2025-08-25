@@ -89,7 +89,6 @@ router.get("/category", authenticate, requireAdmin, requireAdmin, async (req, re
       page: parseInt(req.query.page) || 1,
       limit: parseInt(req.query.limit) || 10
     };
-    console.log('Options received in route:', options);
 
     if (!options.categoryId || isNaN(options.categoryId)) {
       return res.status(400).json({

@@ -41,8 +41,6 @@ router.get("/", authenticate, async (req, res) => {
       sortOrder: req.query.sortOrder || 'ASC'
     };
 
-    console.log('Options received in books/category route:', options);
-
     if (!options.categoryId || isNaN(options.categoryId)) {
       return res.status(400).json({
         success: false,

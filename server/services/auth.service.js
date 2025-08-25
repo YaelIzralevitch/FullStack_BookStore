@@ -1,7 +1,6 @@
 const authController = require("../controllers/auth.controller");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const SECRET = "MySecretKey";
 
 async function login({ email, password }) {
   // search for user (regular user only)
@@ -23,13 +22,13 @@ async function login({ email, password }) {
     if (!ok) {
       await authController.increaseFailOrLock(user.id, sec.failed_attempts);
       if ( sec.failed_attempts + 1 >=3 ){
-        return { code: 401, msg: `Invalid Password. 3 failed attempts. Account will be blocked for 24h.` };  
+        return { code: 401, msg: `Invalid Password. 3 failed attempts. Account will be blocked for ${process.env.JWT_EXPIRES_IN}.` };  
       }
       return { code: 401, msg: `Invalid Password. You have ${3 - (sec.failed_attempts + 1)} more attempts left.` };
     }
 
     await authController.resetSecurity(user.id);
-    const token = jwt.sign({ id: user.id, role: user.role }, SECRET, { expiresIn: "24h" });
+    const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
     return {
       code: 200,
       token,
