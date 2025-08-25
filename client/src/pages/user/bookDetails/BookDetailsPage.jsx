@@ -1,11 +1,12 @@
 import { useEffect, useState, useContext, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation  } from 'react-router-dom';
 import CartContext from '../../../contexts/CartContext';
 import { getBookById } from '../../../services/api'; 
 import './BookDetailsPage.css';
 
 function BookDetailsPage() {
   const { bookId } = useParams();
+  const location = useLocation();
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,21 +20,32 @@ function BookDetailsPage() {
     async function fetchBook() {
       try {
         setLoading(true);
+        
+        const bookFromState = location.state?.book;
+        
+        if (bookFromState && bookFromState.id === parseInt(bookId)) {
+          setBook(bookFromState);
+          setLoading(false);
+          return;
+        }
+        
         const response = await getBookById(bookId);
         setBook(response.data);
-      // eslint-disable-next-line no-unused-vars
+        
       } catch (err) {
         setError('Error loading book details');
+        console.error(err);
       } finally {
         setLoading(false);
       }
     }
+    
     if (!hasFetched.current) {
       hasFetched.current = true;
       window.scrollTo({ top: 0 });
       fetchBook();
     }
-  }, [bookId]);
+  }, [bookId, location.state]);
 
   const handleIncrease = () => {
     setQuantity(prev => prev + 1);

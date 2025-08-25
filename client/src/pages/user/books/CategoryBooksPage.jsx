@@ -14,17 +14,14 @@ function CategoryBooksPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [sortOption, setSortOption] = useState('');
-
   const hasFetched = useRef(false);
 
   useEffect(() => {
-    // Check if they are coming from a page not related to this category
     const currentPath = location.pathname;
     const isComingFromDifferentSection = lastVisitedPath && 
       !lastVisitedPath.includes(`/categories/${categoryId}`) &&
       !currentPath.includes(lastVisitedPath);
     
-    // If coming from a different region - clear the cache
     if (isComingFromDifferentSection) {
       categoryBooksCache.clear();
     }
@@ -35,7 +32,6 @@ function CategoryBooksPage() {
       try {
         setLoading(true);
         
-        // Checking if there is something in the cache
         if (categoryBooksCache.has(categoryId)) {
           const cachedData = categoryBooksCache.get(categoryId);
           setBooks(cachedData);
@@ -43,7 +39,6 @@ function CategoryBooksPage() {
           return;
         }
 
-        // If not in cache - fetch from server
         const response = await getAllBooksByCategoryId(categoryId);
         const booksData = response.data || [];
         
@@ -56,6 +51,7 @@ function CategoryBooksPage() {
         setLoading(false);
       }
     }
+    
     if (!hasFetched.current) {
       hasFetched.current = true;
       window.scrollTo({ top: 0 });
@@ -109,6 +105,7 @@ function CategoryBooksPage() {
           <Link
             key={book.id}
             to={book.stock_quantity === 0 ? "#" : `/home/categories/${categoryId}/books/${book.id}`}
+            state={{ book: book }}
             className='book-card'
             onClick={(e) => {
               if (book.stock_quantity === 0) e.preventDefault();

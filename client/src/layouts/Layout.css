@@ -41,7 +41,7 @@
 }
 
 .logo:hover {
-    box-shadow: 4px 5px 8px rgba(0, 0, 0, 0.2);
+    scale: 1.1;
 }
 
 

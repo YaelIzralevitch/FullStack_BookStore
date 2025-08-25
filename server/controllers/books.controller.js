@@ -3,7 +3,7 @@ const pool = require('../config/db');
 async function getAllBooksByCategoryId(categoryId) {
   try {
     const [rows] = await pool.query(
-    `SELECT id, title, author, price, stock_quantity, image_url, category_id 
+    `SELECT id, title, author, price, stock_quantity, image_url, category_id, description
     FROM books 
     WHERE category_id = ?`,
     [categoryId]
