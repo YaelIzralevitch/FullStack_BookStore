@@ -99,9 +99,8 @@ function BookDetailsPage() {
         <h2>{book.title}</h2>
         <p><strong>Author:</strong> {book.author}</p>
         <p><strong>Price:</strong> ${book.price}</p>
-        <p>{book.description}</p>
+        <p className='book-description'>{book.description}</p>
 
-        {/* ✅ הודעות מלאי */}
         {book.stock_quantity === 0 && (
           <p className="out-of-stock-msg">This book is out of stock!</p>
         )}
@@ -109,7 +108,6 @@ function BookDetailsPage() {
           <p className="low-stock-msg">Only {book.stock_quantity} left in stock!</p>
         )}
 
-        {/* ✅ שליטה בכמות והוספה לעגלה */}
         {book.stock_quantity > 0 && (
           <>
             <div className="quantity-control">

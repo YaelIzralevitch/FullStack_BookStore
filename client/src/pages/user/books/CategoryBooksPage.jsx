@@ -17,20 +17,13 @@ function CategoryBooksPage() {
   const hasFetched = useRef(false);
   const navigate = useNavigate();
 
-  // ✅ מביאים את שם הקטגוריה עם cache
   useEffect(() => {
     async function fetchCategoryName() {
-      if (categoryName) return; // כבר הגיע מה־state
-
-      if (categoryNameCache.has(categoryId)) {
-        setCategoryName(categoryNameCache.get(categoryId));
-        return;
-      }
+      if (categoryName) return;
 
       try {
         const res = await getCategoryById(categoryId);
         if (res.success && res.data) {
-          categoryNameCache.set(categoryId, res.data.name);
           setCategoryName(res.data.name);
         }
       } catch (err) {

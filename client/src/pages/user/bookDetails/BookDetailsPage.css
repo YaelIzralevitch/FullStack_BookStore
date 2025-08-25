@@ -57,7 +57,7 @@
 }
 
 /* Description styling */
-.book-details-info p:last-of-type {
+.book-details-info .book-description {
   background-color: var(--warm-beige);
   padding: 20px;
   border-radius: 12px;
@@ -70,9 +70,7 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  margin: 24px 0;
   background-color: transparent;
-  padding: 16px;
   width: fit-content;
 }
 
@@ -124,15 +122,9 @@
   text-align: center;
 }
 
-/* הודעה למלאי נמוך (5 ספרים ומטה) */
 .low-stock-msg {
-  color: orange;
-  font-weight: bold;
-  background-color: #fff4e5;
+  color: #dc2626 !important;
   padding: 10px;
-  border-radius: 5px;
-  margin-bottom: 10px;
-  text-align: center;
 }
 
 /* הודעת הצלחה אחרי הוספה לעגלה */
