@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import { getAllBooksByCategoryId } from '../../../services/api';
 import './CategoryBooksPage.css';
@@ -14,6 +14,8 @@ function CategoryBooksPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [sortOption, setSortOption] = useState('');
+
+  const hasFetched = useRef(false);
 
   useEffect(() => {
     // בדיקה אם באים מעמוד שלא קשור לקטגוריה הזו
@@ -56,8 +58,11 @@ function CategoryBooksPage() {
         setLoading(false);
       }
     }
-    window.scrollTo({ top: 0 });
-    fetchBooks();
+    if (!hasFetched.current) {
+      hasFetched.current = true;
+      window.scrollTo({ top: 0 });
+      fetchBooks();
+    }
   }, [categoryId, location.pathname]);
 
   const handleSortChange = (e) => {

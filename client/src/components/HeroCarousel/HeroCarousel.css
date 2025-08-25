@@ -1,6 +1,6 @@
 /* Hero Carousel Styles */
 .hero-carousel {
-  width: 100vw;
+  width: 99.5vw;
   margin: 0 0 48px 0;
   margin-left: calc(-50vw + 50%);
   position: relative;

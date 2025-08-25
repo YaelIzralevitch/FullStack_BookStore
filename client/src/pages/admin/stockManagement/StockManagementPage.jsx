@@ -230,54 +230,54 @@ function StockManagementPage() {
         ))}
         <button className="add-category-btn" onClick={handleAddCategory}>+ Add Category</button>
       </div>
-
-      {selectedCategoryId && (
-        <div className="inventory-controls">
-          <div className="search-div">
-            <input 
-              type="text" 
-              placeholder="Search books by name..." 
-              value={searchTerm} 
-              onChange={(e) => setSearchTerm(e.target.value)} 
-              className="search-input"
-            />
-            <img className="icon" src="\src\assets\icon-search.png" alt="search"/>
-          </div>
-
-          <div className="filters">
-            <div className="sort-controls">
-              <label>Sort by:</label>
-              <button
-                className={`sort-btn ${sortBy === 'title' ? 'active' : ''}`}
-                onClick={() => handleSortChange('title')}
-              >
-                Name {sortBy === 'title' && (sortOrder === 'ASC' ? '↑' : '↓')}
-              </button>
-              <button
-                className={`sort-btn ${sortBy === 'price' ? 'active' : ''}`}
-                onClick={() => handleSortChange('price')}
-              >
-                Price {sortBy === 'price' && (sortOrder === 'ASC' ? '↑' : '↓')}
-              </button>
+      <div className='controls-books-section'>
+        {selectedCategoryId && (
+          <div className="inventory-controls">
+            <div className="search-div">
+              <input 
+                type="text" 
+                placeholder="Search books by name..." 
+                value={searchTerm} 
+                onChange={(e) => setSearchTerm(e.target.value)} 
+                className="search-input"
+              />
+              <img className="icon" src="\src\assets\icon-search.png" alt="search"/>
             </div>
 
-            {(searchTerm || sortBy) && (
-              <button 
-                onClick={clearFilters}
-                className="clear-filters-btn"
-              >
-                Clear Filters
-              </button>
-            )}
-          </div>
-        </div>
-      )}
+            <div className="filters">
+              <div className="sort-controls">
+                <label>Sort by:</label>
+                <button
+                  className={`sort-btn ${sortBy === 'title' ? 'active' : ''}`}
+                  onClick={() => handleSortChange('title')}
+                >
+                  Name {sortBy === 'title' && (sortOrder === 'ASC' ? '↑' : '↓')}
+                </button>
+                <button
+                  className={`sort-btn ${sortBy === 'price' ? 'active' : ''}`}
+                  onClick={() => handleSortChange('price')}
+                >
+                  Price {sortBy === 'price' && (sortOrder === 'ASC' ? '↑' : '↓')}
+                </button>
+              </div>
 
-      {selectedCategoryId && (
-        <div className="books-section">
-          <button className="add-book-btn" onClick={() => handleAddBook({ id: selectedCategoryId })}>
-            + Add Book
-          </button>
+              {(searchTerm || sortBy) && (
+                <button 
+                  onClick={clearFilters}
+                  className="clear-filters-btn"
+                >
+                  Clear Filters
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
+        {selectedCategoryId && (
+          <div className="books-section">
+            <button className="add-book-btn" onClick={() => handleAddBook({ id: selectedCategoryId })}>
+              + Add Book
+            </button>
 
           {books.length === 0 ? (
             <div className="no-books">

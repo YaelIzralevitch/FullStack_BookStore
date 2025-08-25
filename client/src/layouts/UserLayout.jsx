@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 import { Outlet} from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import AuthContext from '../contexts/AuthContext';
 import NavSearch from '../components/NavSearch/NavSearch';
 import NavMenu from '../components/NavMenu/NavMenu';
@@ -9,13 +10,14 @@ import './Layout.css'
 function UserLayout() {
 
     const { currentUser } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     return (
     <>
      <header className="header">
       <div className="header-user">
 
-        <img className="logo" src="/src/assets/" alt="Logo" />
+        <img className="logo" src="\src\assets\bookstore-logo.png" alt="Logo" onClick={() => navigate('/home')}/>
         
         <h1>Hello, {currentUser?.first_name}</h1>
         

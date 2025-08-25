@@ -45,12 +45,15 @@ function NavSearch() {
 
   return (
     <div className="nav-search">
-      <input
-        type="text"
-        placeholder="search books or categories..."
-        value={query}
-        onChange={handleChange}
-      />
+      <div className="search-div">
+        <input
+          type="text"
+          placeholder="search books or categories..."
+          value={query}
+          onChange={handleChange}
+        />
+        <img className="icon" src="\src\assets\icon-search.png"/>
+      </div>
       {results.length > 0 && (
         <ul className="search-results">
           {results.map((item) => (

@@ -60,7 +60,7 @@
 
 .books-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
   gap: 50px;
   margin-top: 60px;
   justify-items: center;
@@ -144,5 +144,4 @@
 .book-content.disabled {
   opacity: 0.5;
 }
-
 

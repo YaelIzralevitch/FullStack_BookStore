@@ -14,6 +14,12 @@ const HeroCarousel = () => {
       url: 'https://d2z2mkwk6fkehh.cloudfront.net/f2me/blog/How%20to%20Ship%20a%20Package%20Internationally/bd8aa5a77f9f8646465d94e24e6fe533.jpg',
       alt: 'Shipping Boxes',
       title: 'Enjoy Free Shipping Within 3-5 Business Days!',
+    },
+    {
+      id: 3,
+      url: 'https://img.freepik.com/free-photo/black-friday-elements-assortment_23-2149074076.jpg?semt=ais_hybrid&w=740',
+      alt: 'Discount Ad',
+      title: 'Buy over $200 in one purchase and receive $10 off!',
     }
   ];
 
@@ -24,7 +30,7 @@ const HeroCarousel = () => {
       setCurrentIndex(prevIndex => 
         prevIndex === images.length - 1 ? 0 : prevIndex + 1
       );
-    }, 10000); // החלפה כל 5 שניות
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [images.length]);

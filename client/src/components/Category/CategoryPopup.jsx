@@ -36,44 +36,48 @@ function CategoryPopup({ category, onClose, onSave }) {
       <div className="modal-content">
         <h3>{formData.id ? 'Edit Category' : 'Add Category'}</h3>
 
-        <div className="form-group">
-          <label htmlFor="name">Category Name</label>
-          <input 
-            id="name"
-            name="name" 
-            value={formData.name || ''}
-            onChange={handleChange} 
-          />
-          {errors.name && <div className="error-text">{errors.name}</div>}
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="image_url">Image URL</label>
-          <input 
-            id="image_url"
-            name="image_url" 
-            value={formData.image_url || ''}
-            onChange={handleChange} 
-          />
-          <div className="image-preview-container">
-            <div className="image-preview-wrapper">
-              {formData.image_url ? (
-                <img 
-                  src={formData.image_url} 
-                  alt="Preview" 
-                  className="image-preview"
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                    e.target.nextSibling.style.display = 'flex';
-                  }}
-                />
-              ) : null}
-              <div 
-                className="image-placeholder" 
-                style={{display: formData.image_url ? 'none' : 'flex'}}
-              >
-                📂
+        <div className="category-layout">
+            <div className="image-preview-container">
+              <div className="cat-img-preview-wrapper">
+                {formData.image_url ? (
+                  <img 
+                    src={formData.image_url} 
+                    alt="Preview" 
+                    className="image-preview"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.nextSibling.style.display = 'flex';
+                    }}
+                  />
+                ) : null}
+                <div 
+                  className="image-placeholder" 
+                  style={{display: formData.image_url ? 'none' : 'flex'}}
+                >
+                  📂
+                </div>
               </div>
+          </div>
+
+          <div className="category-fields-section">
+            <div className="form-group">
+              <label htmlFor="name">Category Name</label>
+              <input 
+                id="name"
+                name="name" 
+                value={formData.name || ''}
+                onChange={handleChange} 
+              />
+              {errors.name && <div className="error-text">{errors.name}</div>}
+            </div>
+            <div className="form-group">
+              <label htmlFor="image_url">Image URL</label>
+              <input 
+                id="image_url"
+                name="image_url" 
+                value={formData.image_url || ''}
+                onChange={handleChange} 
+              />
             </div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext} from 'react';
+import { useEffect, useState, useContext, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import CartContext from '../../../contexts/CartContext';
 import { getBookById } from '../../../services/api'; 
@@ -13,6 +13,8 @@ function BookDetailsPage() {
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useContext(CartContext);
 
+  const hasFetched = useRef(false);
+
   useEffect(() => {
     async function fetchBook() {
       try {
@@ -26,8 +28,11 @@ function BookDetailsPage() {
         setLoading(false);
       }
     }
-    window.scrollTo({ top: 0 });
-    fetchBook();
+    if (!hasFetched.current) {
+      hasFetched.current = true;
+      window.scrollTo({ top: 0 });
+      fetchBook();
+    }
   }, [bookId]);
 
   const handleIncrease = () => {

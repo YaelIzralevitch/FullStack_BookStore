@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { getUserCreditCard, deleteUserCreditCard } from '../../services/api';
@@ -12,6 +12,8 @@ function CreditCardPopup({ userId, setShowCreditCardPopup }) {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const hasFetched = useRef(false);
 
   useEffect(() => {
     async function fetchUserCreditCard() {
@@ -30,7 +32,7 @@ function CreditCardPopup({ userId, setShowCreditCardPopup }) {
       }   
     }
 
-    if (userId) {
+    if (!hasFetched.current && userId) {
       fetchUserCreditCard();
     }
   }, [userId]);

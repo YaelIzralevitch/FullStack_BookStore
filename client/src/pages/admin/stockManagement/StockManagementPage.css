@@ -46,16 +46,16 @@
   gap: 12px;
   margin-bottom: 32px;
   padding: 20px;
-  background-color: var(--warm-beige);
   border-radius: 16px;
   border: 2px solid var(--mint-cream);
+  background-color: var(--mint-cream);
 }
 
 .category-btn {
   background-color: var(--cream-white);
   color: var(--forest-green);
   border: 2px solid var(--mint-cream);
-  padding: 12px 20px;
+  padding: 10px 15px;
   border-radius: 10px;
   font-size: 14px;
   font-weight: 600;
@@ -84,7 +84,7 @@
 }
 
 .add-category-btn {
-  background-color: var(--light-sage);
+  background-color: var(--mint-cream);
   color: var(--forest-green);
   border: 2px dashed var(--sage-green);
   padding: 12px 20px;
@@ -103,13 +103,15 @@
   box-shadow: 0 4px 8px rgba(98, 111, 71, 0.15);
 }
 
+.controls-books-section{
+  border: 2px solid var(--mint-cream);
+  border-radius: 16px;
+}
+
 /* Inventory Controls */
 .inventory-controls {
-  background-color: var(--warm-beige);
   padding: 24px;
-  border-radius: 16px;
-  margin-bottom: 24px;
-  border: 2px solid var(--mint-cream);
+  padding-bottom: 0;
 }
 
 .search-div {
@@ -194,45 +196,25 @@
   border-color: var(--sage-green);
 }
 
-.clear-filters-btn {
-  background-color: #ef4444;
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.clear-filters-btn:hover {
-  background-color: #dc2626;
-  transform: translateY(-1px);
-}
-
 /* Books Section */
 .books-section {
-  background-color: var(--warm-beige);
   border-radius: 16px;
   padding: 24px;
-  border: 2px solid var(--mint-cream);
+  padding-top: 0;
 }
 
 .add-book-btn {
   background-color: var(--sage-green);
   color: var(--cream-white);
   border: none;
-  padding: 14px 28px;
+  padding: 12px 20px;
   border-radius: 12px;
   font-size: 16px;
-  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-bottom: 24px;
+  margin: 10px 0;
   display: block;
   margin-left: auto;
-  margin-right: auto;
 }
 
 .add-book-btn:hover {
