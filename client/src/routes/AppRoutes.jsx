@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import LoginPage from '../pages/login/loginPage.jsx';
+import LoginPage from '../pages/login/LoginPage.jsx';
 import RegisterPage from '../pages/register/RegisterPage.jsx';
 import UserLayout from '../layouts/UserLayout.jsx';
 import HomePage from '../pages/user/home/HomePage.jsx';

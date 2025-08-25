@@ -1,4 +1,3 @@
-// components/PaymentPopup.jsx
 import { useState, useEffect, useContext } from 'react';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
@@ -33,7 +32,7 @@ function PaymentForm({ orderData, onClose, onSuccess }) {
           setSavedCard(response.data);
         } else {
           setSavedCard(null);
-          setUseNewCard(true); // אין כרטיס שמור
+          setUseNewCard(true); // No credit card
         }
       } catch (err) {
         console.error('Error fetching saved card:', err);
@@ -61,13 +60,13 @@ function PaymentForm({ orderData, onClose, onSuccess }) {
       let paymentData;
 
       if (savedCard && !useNewCard) {
-        // שימוש בכרטיס שמור
+        // Using a saved card
         paymentData = {
           useSavedCard: true,
           saveNewCard: false
         };
       } else {
-        // שימוש בכרטיס חדש
+        // Using a new card
         const cardElement = elements.getElement(CardElement);
 
         if (!cardElement) {
@@ -75,7 +74,7 @@ function PaymentForm({ orderData, onClose, onSuccess }) {
           return;
         }
 
-        // צור Payment Method עם Stripe
+        // Create a Payment Method with Stripe
         const { error, paymentMethod } = await stripe.createPaymentMethod({
           type: 'card',
           card: cardElement,
@@ -93,7 +92,6 @@ function PaymentForm({ orderData, onClose, onSuccess }) {
         };
       }
 
-      // ביצוע התשלום
       const response = await createOrder(orderData, paymentData);
 
       if (response.success) {
@@ -221,7 +219,6 @@ function PaymentForm({ orderData, onClose, onSuccess }) {
   );
 }
 
-// הקומפוננטה הראשית עם Elements Provider
 function PaymentPopup({ orderData, onClose, onSuccess }) {
   return (
     <Elements stripe={stripePromise}>

@@ -35,18 +35,15 @@
   flex-direction: column;
 }
 
-/* Override form-group margin for grid layout */
 .form-grid .form-group {
   margin-bottom: 10px;
 }
 
-/* Description textarea in second column */
 .form-column .form-group:first-child textarea {
   min-height: 120px;
   resize: vertical;
 }
 
-/* Image Preview Group for Books */
 .image-preview-group {
   display: flex;
   flex-direction: column;
@@ -151,7 +148,6 @@
   overflow: hidden;
 }
 
-/* Subtle animation for buttons */
 .book-layout + .form-actions button::before {
   content: '';
   position: absolute;
@@ -167,7 +163,6 @@
   left: 100%;
 }
 
-/* Responsive Design */
 @media (max-width: 1024px) {
   .modal-content.two-columns {
     max-width: 800px;
@@ -257,7 +252,6 @@
   }
 }
 
-/* Loading state for form */
 .form-loading {
   pointer-events: none;
   opacity: 0.7;
@@ -269,7 +263,6 @@
   color: var(--sage-green);
 }
 
-/* Focus ring enhancement */
 @supports selector(:focus-visible) {
   .form-group input:focus,
   .form-group select:focus,

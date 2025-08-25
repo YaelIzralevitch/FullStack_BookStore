@@ -23,7 +23,7 @@ function CreditCardPopup({ userId, setShowCreditCardPopup }) {
         if (response.success && response.data) {
           setSavedCard(response.data);
         } else {
-          setSavedCard(null); // אין כרטיס
+          setSavedCard(null); // No credit card
         }
       } catch (err) {
         setError(err.message || 'Failed to fetch user credit card details');

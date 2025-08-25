@@ -55,7 +55,7 @@ function UserDetailsPage() {
         return changes;
     };
 
-        // פונקציה לעדכון פרטי משתמש - שולח רק שדות שהשתנו
+    // update user information - sends only changed fields
     const handleSaveUserDetails = async () => {
         try {
             setLoading(true);
@@ -63,7 +63,7 @@ function UserDetailsPage() {
             
             const changedFields = getChangedUserFields();
             
-            // אם אין שינויים, אל תשלח בקשה
+            // If there are no changes, do not submit a request.
             if (Object.keys(changedFields).length === 0) {
                 setSuccessMessage('No changes have been made.');
                 setIsEditMode(false);
@@ -73,12 +73,9 @@ function UserDetailsPage() {
             
             await updateUserDetails(currentUser.id, changedFields);
 
-            // עדכון המשתמש 
             setCurrentUser({ ...currentUser, ...changedFields });
             setSuccessMessage(`${Object.keys(changedFields).length} fields updated successfully.`);
             setIsEditMode(false);
-            
-            // הסתרת הודעת הצלחה אחרי 3 שניות
             setTimeout(() => setSuccessMessage(''), 3000);
             
         } catch (err) {
@@ -144,17 +141,22 @@ function UserDetailsPage() {
         <div className="user-details">
             {!isEditMode ? (
             <div>
-                <p><strong>First Name:</strong> {currentUser.first_name}</p>
-                <p><strong>Last Name:</strong> {currentUser.last_name}</p>
-                <p><strong>Email:</strong> {currentUser.email}</p>
-                <p><strong>Phone:</strong> {currentUser.phone}</p>
-                <p><strong>Address:</strong></p>
-                <p><strong>City:</strong>{currentUser.city}</p> 
-                <p><strong>Street:</strong> {currentUser.street}</p>
-                <p><strong>House Number:</strong> {currentUser.house_number}</p>
-
-                <button onClick={() => setShowCreditCardPopup(true)}>Manage Credit Card</button>
-                
+                <div className="details-section personal-info">
+                    <h3>Personal Information</h3>
+                    <p><strong>First Name:</strong> {currentUser.first_name}</p>
+                    <p><strong>Last Name:</strong> {currentUser.last_name}</p>
+                    <p><strong>Email:</strong> {currentUser.email}</p>
+                    <p><strong>Phone:</strong> {currentUser.phone}</p>
+                </div>
+                <div className="details-section address-info">
+                <h3>Address</h3>
+                    <p><strong>City:</strong>{currentUser.city}</p> 
+                    <p><strong>Street:</strong> {currentUser.street}</p>
+                    <p><strong>House Number:</strong> {currentUser.house_number}</p>
+                </div>
+                <div className="credit-card-section">
+                    <button onClick={() => setShowCreditCardPopup(true)}>Manage Credit Card</button>
+                </div>
                 {showCreditCardPopup && <CreditCardPopup userId={currentUser.id} setShowCreditCardPopup={setShowCreditCardPopup}/>}
             </div>
             ) : (

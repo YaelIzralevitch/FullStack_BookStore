@@ -121,12 +121,10 @@ function DashboardPage() {
         <p>Overview of your bookstore performance</p>
       </div>
 
-      {/* Stats Cards Section */}
       <StatsCards 
         generalStats={dashboardData.generalStats}
       />
 
-      {/* Charts Section */}
       <div className="charts-section">
         <div className="chart-container revenue-chart">
           <RevenueChart 

@@ -8,7 +8,6 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // בדיקה אם קיים משתמש מחובר ב-localStorage
     const user = getUser();
     setCurrentUser(user);
     setLoading(false);
@@ -22,8 +21,8 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setCurrentUser(null);
     localStorage.removeItem('user');
-    localStorage.removeItem('authToken'); // הסרת הטוקן בעת התנתקות
-    localStorage.removeItem('cart'); // הסרת העגלה בעת התנתקות
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('cart');
   };
 
 

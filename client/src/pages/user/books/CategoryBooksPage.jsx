@@ -3,7 +3,7 @@ import { useParams, Link, useLocation } from 'react-router-dom';
 import { getBooksByCategoryId } from '../../../services/api';
 import './CategoryBooksPage.css';
 
-// Cache פשוט מחוץ לקומפוננט
+// Cache
 const categoryBooksCache = new Map();
 let lastVisitedPath = null;
 
@@ -18,25 +18,24 @@ function CategoryBooksPage() {
   const hasFetched = useRef(false);
 
   useEffect(() => {
-    // בדיקה אם באים מעמוד שלא קשור לקטגוריה הזו
+    // Check if they are coming from a page not related to this category
     const currentPath = location.pathname;
     const isComingFromDifferentSection = lastVisitedPath && 
       !lastVisitedPath.includes(`/categories/${categoryId}`) &&
       !currentPath.includes(lastVisitedPath);
     
-    // אם באים מאזור שונה - נקה את המטמון
+    // If coming from a different region - clear the cache
     if (isComingFromDifferentSection) {
       categoryBooksCache.clear();
     }
     
-    // עדכון הנתיב האחרון
     lastVisitedPath = currentPath;
 
     async function fetchBooks() {
       try {
         setLoading(true);
         
-        // בדיקה אם יש במטמון
+        // Checking if there is something in the cache
         if (categoryBooksCache.has(categoryId)) {
           const cachedData = categoryBooksCache.get(categoryId);
           setBooks(cachedData);
@@ -44,11 +43,10 @@ function CategoryBooksPage() {
           return;
         }
 
-        // אם אין במטמון - שליפה מהשרת
+        // If not in cache - fetch from server
         const response = await getBooksByCategoryId(categoryId);
         const booksData = response.data || [];
         
-        // שמירה במטמון
         categoryBooksCache.set(categoryId, booksData);
         setBooks(booksData);
       } catch (err) {

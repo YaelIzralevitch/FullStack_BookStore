@@ -19,7 +19,7 @@ function NavMenu({ userId }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  // פונקציה לקביעת האופציה הנוכחית על בסיס ה-location
+  // Function to determine the current option based on location
   const getCurrentOption = () => {
     const match = navigationOptions.find(opt => location.pathname === opt.value);
     return match ? match.label : 'Home';
@@ -27,7 +27,6 @@ function NavMenu({ userId }) {
 
   const [selectedOption, setSelectedOption] = useState(getCurrentOption());
 
-  // עדכן את האופציה הנבחרת כאשר ה-location משתנה
   useEffect(() => {
     const currentOption = getCurrentOption();
     setSelectedOption(currentOption);

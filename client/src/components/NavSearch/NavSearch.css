@@ -1,5 +1,3 @@
-/* NavSearch Component Styles */
-
 .nav-search {
   position: relative;
   flex: 1;
@@ -89,7 +87,6 @@
   background-color: var(--forest-green);
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .nav-search {
     max-width: 100%;

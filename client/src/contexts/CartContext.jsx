@@ -8,7 +8,6 @@ export const CartProvider = ({ children }) => {
                                         return savedCart ? JSON.parse(savedCart) : [];
                                         });
 
-  // שמור סל ב-localStorage בכל שינוי
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(cartItems));
   }, [cartItems]);

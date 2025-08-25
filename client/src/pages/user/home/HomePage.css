@@ -1,5 +1,3 @@
-/* Home Page Styles */
-
 .categories-page {
   max-width: 1200px;
   width: 100%;
@@ -35,7 +33,6 @@
   padding: 0 16px;
 }
 
-/* Loading and Error States */
 .categories-page p {
   text-align: center;
   font-size: 18px;
@@ -47,7 +44,6 @@
   max-width: 400px;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .categories-page {
     padding: 20px 12px;

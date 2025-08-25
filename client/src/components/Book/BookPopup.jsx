@@ -23,25 +23,20 @@ function BookPopup({ book, onClose, onSave, categories }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-
-    // ניקוי שגיאה כשהמשתמש משנה את השדה
     setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
   const validate = () => {
     const newErrors = {};
 
-    // קטגוריה חובה
     if (!formData.category_id || formData.category_id === '') {
       newErrors.category_id = 'Category is required';
     }
 
-    // שדות טקסט חובה
     if (!formData.title?.trim()) newErrors.title = 'Title is required';
     if (!formData.author?.trim()) newErrors.author = 'Author is required';
     if (!formData.description?.trim()) newErrors.description = 'Description is required';
 
-    // שדות מספריים חובה (מספר >= 0)
     if (formData.price === '' || isNaN(formData.price) || Number(formData.price) < 0) {
       newErrors.price = 'Incorrect price';
     }
@@ -97,7 +92,7 @@ function BookPopup({ book, onClose, onSave, categories }) {
 
           <div className="book-fields-section">
             <div className="form-grid">
-              {/* עמודה 1 */}
+              {/* column 1 */}
               <div className="form-column">
                 <div className="form-group">
                   <label htmlFor="category_id">Category</label>
@@ -150,7 +145,7 @@ function BookPopup({ book, onClose, onSave, categories }) {
                 </div>
               </div>
 
-              {/* עמודה 2 */}
+              {/* column 2 */}
               <div className="form-column">
                 <div className="form-group">
                   <label htmlFor="stock_quantity">Stock Quantity</label>

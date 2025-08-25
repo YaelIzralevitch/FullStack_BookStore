@@ -1,5 +1,3 @@
-/* Book Details Page Styles */
-
 .book-details {
   max-width: 1000px;
   margin: 0 auto;
@@ -142,13 +140,6 @@
   transform: translateY(0);
 }
 
-/* Success Message */
-.success-message {
-  position: absolute;
-  top: 110px;
-  left: 40%;
-  animation: slideDown 0.3s ease-out;
-}
 
 @keyframes slideDown {
   from {
@@ -173,7 +164,6 @@
   margin: 40px auto;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .book-details {
     grid-template-columns: 1fr;

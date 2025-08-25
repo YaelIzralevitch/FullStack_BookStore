@@ -1,4 +1,3 @@
-// pages/OrderHistoryPage.jsx
 import { useState, useEffect, useContext, useRef} from 'react';
 import AuthContext from '../../../contexts/AuthContext';
 import { getUserOrderHistory } from '../../../services/api';

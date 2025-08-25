@@ -1,7 +1,5 @@
-/* User Details Page Styles */
-
 .user-details-container {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
   padding: 32px;
   background-color: var(--cream-white);
@@ -26,6 +24,28 @@
   height: 4px;
   background: linear-gradient(90deg, var(--sage-green), var(--light-sage));
   border-radius: 2px;
+}
+
+/* Messages */
+.error-message,
+.success-message {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.error-message {
+  background-color: #fecaca;
+  color: #dc2626;
+  border: 1px solid #f87171;
+}
+
+.success-message {
+  background-color: #dcfce7;
+  color: #16a34a;
+  border: 1px solid #4ade80;
 }
 
 /* Action Buttons */
@@ -83,31 +103,84 @@
 /* User Details Display */
 .user-details {
   background-color: var(--warm-beige);
-  padding: 32px;
-  border-radius: 12px;
+  padding: 20px;
+  border-radius: 16px;
   box-shadow: 0 4px 16px rgba(98, 111, 71, 0.1);
   border: 1px solid var(--mint-cream);
 }
 
-.user-details p {
-  margin-bottom: 16px;
+.user-details > div:not(.edit-user-form) {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px 32px;
+}
+
+.user-details .details-section {
+  background-color: var(--cream-white);
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid var(--mint-cream);
+  box-shadow: 0 2px 8px rgba(98, 111, 71, 0.05);
+}
+
+.user-details .details-section h3 {
   color: var(--forest-green);
-  font-size: 16px;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--mint-cream);
+}
+
+.user-details .personal-info {
+  grid-column: 1;
+}
+
+.user-details .address-info {
+  grid-column: 2;
+}
+
+.user-details .contact-info {
+  grid-column: 1 / -1;
+  margin-top: 8px;
+}
+
+.user-details p {
+  margin-bottom: 12px;
+  color: var(--forest-green);
+  font-size: 15px;
   line-height: 1.5;
+  display: flex;
+  align-items: center;
 }
 
 .user-details p strong {
   color: var(--forest-green);
   font-weight: 600;
   display: inline-block;
-  min-width: 140px;
+  min-width: 100px;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.user-details p span {
+  background-color: var(--mint-cream);
+  padding: 4px 8px;
+  border-radius: 6px;
+  flex: 1;
 }
 
 /* Credit Card Button */
-.user-details button {
-  background-color: var(--golden-sand);
-  color: var(--forest-green);
-  border: 1px solid var(--light-sage);
+.credit-card-section {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 10px;
+}
+
+.credit-card-section button {
+  background-color: var(--forest-green);
+  color: var(--cream-white);
+  border: none;
   padding: 12px 24px;
   border-radius: 8px;
   font-size: 14px;
@@ -116,9 +189,8 @@
   transition: all 0.3s ease;
 }
 
-.user-details button:hover {
-  background-color: var(--forest-green);
-  color: var(--cream-white);
+.credit-card-section button:hover {
+  background-color: var(--sage-green);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(98, 111, 71, 0.25);
 }
@@ -164,42 +236,30 @@
   outline: none;
 }
 
-/* Messages */
-.error-message {
-  background-color: #fef2f2;
-  color: #dc2626;
-  padding: 12px 16px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  border: 1px solid #fecaca;
-  font-size: 14px;
-  text-align: center;
-}
-
-.success-message {
-  background-color: #f0fdf4;
-  color: #16a34a;
-  padding: 12px 16px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  border: 1px solid #bbf7d0;
-  font-size: 14px;
-  text-align: center;
-}
-
-/* Responsive Design */
 @media (max-width: 768px) {
   .user-details-container {
     padding: 16px;
+    max-width: 100%;
   }
   
   .user-details-container h1 {
-    font-size: 24px;
+    font-size: 28px;
     margin-bottom: 24px;
   }
   
   .user-details {
     padding: 20px;
+  }
+  
+  .user-details > div:not(.edit-user-form) {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .user-details .personal-info,
+  .user-details .address-info,
+  .user-details .contact-info {
+    grid-column: 1;
   }
   
   .edit-user-form {
@@ -213,16 +273,63 @@
     grid-column: 1;
   }
   
-  .user-details p strong {
-    min-width: 100px;
-    display: block;
-    margin-bottom: 4px;
-  }
-  
   .btn {
     width: 100%;
     justify-content: center;
     margin-right: 0;
     margin-bottom: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .user-details-container {
+    padding: 12px;
+  }
+  
+  .user-details-container h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .user-details {
+    padding: 16px;
+  }
+  
+  .user-details .details-section {
+    padding: 16px;
+  }
+  
+  .user-details .details-section h3 {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+  
+  .user-details p {
+    font-size: 14px;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+  
+  .user-details p strong {
+    min-width: auto;
+    margin-right: 10px;
+    margin-bottom: 4px;
+    font-size: 13px;
+  }
+  
+  .user-details p span {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+  }
+  
+  .credit-card-section {
+    padding: 16px;
+    margin-top: 16px;
+  }
+  
+  .credit-card-section button {
+    width: 100%;
+    padding: 14px;
   }
 }

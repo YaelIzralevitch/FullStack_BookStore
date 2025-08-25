@@ -57,7 +57,6 @@ const HeroCarousel = () => {
         ))}
       </div>
       
-      {/* נקודות אינדיקטור */}
       <div className="carousel-dots">
         {images.map((_, index) => (
           <button

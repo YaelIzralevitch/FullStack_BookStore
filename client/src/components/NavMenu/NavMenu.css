@@ -1,5 +1,3 @@
-/* NavMenu Component Styles */
-
 .dropdown-container {
   position: relative;
   display: inline-block;
@@ -109,7 +107,6 @@
   white-space: nowrap;
 }
 
-/* Special styling for logout option */
 .dropdown-item:last-child .item-label {
   color: #dc2626;
   font-weight: 500;
@@ -125,7 +122,6 @@
   color: var(--cream-white);
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .dropdown-container {
     min-width: 140px;

@@ -21,12 +21,12 @@ function OrdersPage() {
 
   const hasFetched = useRef(false);
 
-  // דיליי בשליחת הבקשה רק עבור החיפוש
+  // Delay in sending the request only for the search
   const debouncedSearch = useCallback(
     debounce((value) => {
       setSearchTerm(value);
       setCurrentPage(1);
-    }, 500), // 500ms דיליי
+    }, 500), // the Delay
     []
   );
 
@@ -85,7 +85,6 @@ function OrdersPage() {
       const response = await updateOrderStatus(orderId, newStatus);
       
       if (response.success) {
-        // עדכן הסטטוס בstate המקומי
         setOrders(prevOrders => 
           prevOrders.map(order => 
             order.order_id === orderId 

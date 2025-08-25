@@ -1,12 +1,10 @@
 :root {
-  /* צבעים ירוקים */
   --forest-green: #00712D;
   --sage-green: #36904A;
   --light-sage: #6BAF66;
   --mint-cream: #D5ED9F;
   
-  /* צבעים חמים */
-  --cream-white: rgb(245, 255, 255);
+  --cream-white: #f5ffff;
   --warm-beige: #faf0de;
   --golden-sand: #FFC673;
   --dark-orang: #FF9100;

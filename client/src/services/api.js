@@ -1,8 +1,7 @@
-//import axios from 'axios';
 import { getAuthToken, setAuthToken } from '../utils/localStorage'; 
 const API_URL = 'http://localhost:3001/api';
 
-// פונקציה גנרית לביצוע בקשות GET
+// Generic GET
 export const fetchData = async (endpoint) => {
   try {
     const token = getAuthToken();
@@ -26,7 +25,7 @@ export const fetchData = async (endpoint) => {
   }
 };
 
-// פונקציה גנרית לביצוע בקשות POST עם טיפול בשגיאות
+// Generic POST
 export const postData = async (endpoint, data) => {
   try {
     const token = getAuthToken();
@@ -43,7 +42,6 @@ export const postData = async (endpoint, data) => {
     
     const responseData = await res.json();
     
-    // אם הסטטוס קוד לא בסדר, זרוק שגיאה עם המסר מהשרת
     if (!res.ok) {
       throw new Error(responseData.message || `POST ${endpoint} failed`);
     }
@@ -51,12 +49,11 @@ export const postData = async (endpoint, data) => {
     return responseData;
   } catch (error) {
     console.error(`Error posting to ${endpoint}:`, error);
-    // זרוק את השגיאה הלאה כדי שהקומפוננט יוכל לטפל בה
     throw error;
   }
 };
 
-// פונקציה גנרית לביצוע בקשות PUT
+// Generic PUT
 export const updateData = async (endpoint, id, data) => {
   try {
     const token = getAuthToken();
@@ -79,7 +76,7 @@ export const updateData = async (endpoint, id, data) => {
   }
 };
 
-// פונקציה גנרית לביצוע בקשות DELETE
+// Generic DELETE
 export const deleteData = async (endpoint) => {
   try {
     const token = getAuthToken();
@@ -171,13 +168,28 @@ export const getOrderDetailsForAdmin = async (orderId) => await fetchData(`order
 // ניהול מלאי מנהל
 
 // קטגוריות במלאי
-//export const getInventoryCategories = () => fetchData('inventory/categories');
 export const createInventoryCategory = (categoryData) => postData('inventory/category', categoryData);
 export const updateInventoryCategory = (categoryId, categoryData) => updateData('inventory/category', categoryId, categoryData);
 export const deleteInventoryCategory = (categoryId) => deleteData(`inventory/category/${categoryId}`);
 
 // ספרים במלאי
-//export const fetchBooksInInventory = (categoryId) => fetchData(`inventory/books/${categoryId}`);
 export const createBookInInventory = (bookData) => postData('inventory/book', bookData);
 export const updateBookInInventory = (bookId, bookData) => updateData('inventory/book', bookId, bookData);
 export const deleteBookInInventory = (bookId) => deleteData(`inventory/book/${bookId}`);
+
+export const getBooksByCategoryWithPagination = async (categoryId, params = {}) => {
+  const searchParams = new URLSearchParams();
+  
+  // הוספת categoryId כפרמטר חובה
+  searchParams.append('categoryId', categoryId);
+  
+  // הוספת שאר הפרמטרים אם הם קיימים
+  Object.keys(params).forEach(key => {
+    if (params[key] !== undefined && params[key] !== '') {
+      searchParams.append(key, params[key]);
+    }
+  });
+  
+  const endpoint = `inventory/category?${searchParams}`;
+  return await fetchData(endpoint);
+};

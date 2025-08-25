@@ -26,7 +26,7 @@ function CreditCardForm({ userId, setSavedCard, setError, setSuccessMessage, set
         return;
       }
       
-      // צור Payment Method עם Stripe
+      // Create a Payment Method with Stripe
       const { error, paymentMethod } = await stripe.createPaymentMethod({
         type: 'card',
         card: cardElement,
@@ -38,7 +38,7 @@ function CreditCardForm({ userId, setSavedCard, setError, setSuccessMessage, set
         return;
       }
 
-      // שלח את ה-Payment Method לשרת לשמירה
+      // Send the Payment Method to the server
       const response = await saveUserCreditCard(userId, {
         paymentMethodId: paymentMethod.id
       });
@@ -53,7 +53,6 @@ function CreditCardForm({ userId, setSavedCard, setError, setSuccessMessage, set
         setSuccessMessage('Credit card saved successfully');
         setTimeout(() => setSuccessMessage(''), 3000);
         
-        // נקה את הטופס
         cardElement.clear();
       } else {
         setError(response.message || 'Failed to save credit card');
