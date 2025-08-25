@@ -5,41 +5,53 @@ const pool = require("../config/db");
  */
 async function createOrder(userId, orderData) {
   const connection = await pool.getConnection();
-  
+
   try {
     await connection.beginTransaction();
 
     const { items, totalPrice, shippingAddress } = orderData;
 
-    const [orderResult] = await connection.query(`
+    const [orderResult] = await connection.query(
+      `
       INSERT INTO orders (user_id, total_price, order_status, created_at)
       VALUES (?, ?, 'paid', NOW())
-    `, [userId, totalPrice]);
+      `,
+      [userId, totalPrice]
+    );
 
     const orderId = orderResult.insertId;
 
     // add order details
     for (const item of items) {
-      await connection.query(`
+      await connection.query(
+        `
         INSERT INTO order_details (order_id, book_id, quantity, unit_price)
         VALUES (?, ?, ?, ?)
-      `, [orderId, item.id, item.quantity, item.price]);
+        `,
+        [orderId, item.id, item.quantity, item.price]
+      );
 
-      // update stock quantity
-      await connection.query(`
+      // update stock quantity (with check)
+      const [updateResult] = await connection.query(
+        `
         UPDATE books 
         SET stock_quantity = stock_quantity - ? 
         WHERE id = ? AND stock_quantity >= ?
-      `, [item.quantity, item.id, item.quantity]);
+        `,
+        [item.quantity, item.id, item.quantity]
+      );
+
+      if (updateResult.affectedRows === 0) {
+        throw new Error(`Not enough stock for book ID ${item.id}`);
+      }
     }
 
     await connection.commit();
 
     return {
       orderId,
-      status: 'success'
+      status: "success",
     };
-
   } catch (error) {
     await connection.rollback();
     throw error;
@@ -47,6 +59,7 @@ async function createOrder(userId, orderData) {
     connection.release();
   }
 }
+
 
 
 /**
