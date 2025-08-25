@@ -20,16 +20,15 @@ async function getUserById(userId) {
 }
 
 /**
- * עדכון פרטי משתמש (רק השדות שהשתנו)
+ * update user details
  */
 async function updateUserDetails(userId, updateData) {
   try {
-    // בניית שאילתה דינמית בהתאם לשדות שהתקבלו
     const allowedFields = ['first_name', 'last_name', 'email', 'phone', 'city', 'street', 'house_number'];
     const fieldsToUpdate = [];
     const values = [];
 
-    // בדיקה שהשדות שהתקבלו הם מותרים
+    // validate and prepare fields for update
     Object.keys(updateData).forEach(field => {
       if (allowedFields.includes(field)) {
         fieldsToUpdate.push(`${field} = ?`);
@@ -41,7 +40,7 @@ async function updateUserDetails(userId, updateData) {
       throw new Error('No valid fields to update');
     }
 
-    values.push(userId); // הוספת userId לסוף עבור WHERE clause
+    values.push(userId); // add userId for WHERE clause
 
     const query = `UPDATE users SET ${fieldsToUpdate.join(', ')} WHERE id = ?`;
     

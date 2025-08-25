@@ -5,7 +5,7 @@ const { authenticate, authorizeOwner } = require("../middleware/auth.middleware"
 const { validateUserUpdate } = require("../middleware/users.validation");
 
 /**
- * עדכון פרטי משתמש
+ * update user details
  * PUT /api/users/:userId
  */
 router.put("/:userId", authenticate, authorizeOwner, validateUserUpdate, async (req, res) => {
@@ -35,7 +35,7 @@ router.put("/:userId", authenticate, authorizeOwner, validateUserUpdate, async (
 });
 
 /**
- * קבלת פרטי משתמש
+ * get user details
  * GET /api/users/:userId
  */
 router.get("/:userId", authenticate, authorizeOwner, async (req, res) => {

@@ -3,11 +3,11 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const pool = require("../config/db");
 
 /**
- * קבלת או יצירת Stripe customer
+ * get or create stripe customer
  */
 async function getOrCreateStripeCustomer(userId, userEmail) {
   try {
-    // בדוק אם יש כבר stripe_customer_id בDB
+    //check if user already has a stripe customer id
     const [rows] = await pool.query(
       'SELECT stripe_customer_id FROM users WHERE id = ?',
       [userId]
@@ -19,13 +19,12 @@ async function getOrCreateStripeCustomer(userId, userEmail) {
       return existingUser.stripe_customer_id;
     }
 
-    // צור לקוח חדש ב-Stripe
+    // create new stripe customer
     const customer = await stripe.customers.create({
       email: userEmail,
       metadata: { user_id: userId.toString() }
     });
 
-    // שמור ב-DB
     await pool.query(
       'UPDATE users SET stripe_customer_id = ? WHERE id = ?',
       [customer.id, userId]
@@ -39,7 +38,7 @@ async function getOrCreateStripeCustomer(userId, userEmail) {
 }
 
 /**
- * קבלת כרטיס שמור של משתמש
+ * get saved card for user
  */
 async function getUserSavedCard(userId) {
   try {
@@ -62,7 +61,7 @@ async function getUserSavedCard(userId) {
 }
 
 /**
- * שמירת כרטיס אשראי חדש
+ * save new card for user
  */
 async function saveCard(userId, userEmail, paymentMethodId) {
   try {
@@ -70,17 +69,16 @@ async function saveCard(userId, userEmail, paymentMethodId) {
     const stripeCustomerId = await getOrCreateStripeCustomer(userId, userEmail);
 
     console.log("paymentMethodId", paymentMethodId);
-    // צרף את כרטיס האשראי ללקוח
+    // add payment method to customer in stripe
     await stripe.paymentMethods.attach(paymentMethodId, {
       customer: stripeCustomerId
     });
 
 
-    // קבל פרטי הכרטיס מ-Stripe
+    // retrieve payment method details
     const paymentMethod = await stripe.paymentMethods.retrieve(paymentMethodId);
     const card = paymentMethod.card;
 
-    // שמור בDB (רק מטא-דאטה)
     await pool.query(`
       INSERT INTO user_credit_cards 
       (user_id, stripe_payment_method_id, 
@@ -111,7 +109,7 @@ async function saveCard(userId, userEmail, paymentMethodId) {
 }
 
 /**
- * עיבוד תשלום עם Stripe
+ * process payment with stripe
  */
 async function processStripePayment(userId, userEmail, amount, paymentData) {
   try {
@@ -123,7 +121,7 @@ async function processStripePayment(userId, userEmail, amount, paymentData) {
     const stripeCustomerId = await getOrCreateStripeCustomer(userId, userEmail);
 
     if (useSavedCard) {
-      // ========== משתמש בכרטיס שמור ==========
+      // ========== use save card ==========
       const savedCard = await getUserSavedCard(userId);
       
       if (!savedCard) {
@@ -133,25 +131,25 @@ async function processStripePayment(userId, userEmail, amount, paymentData) {
       finalPaymentMethodId = savedCard.stripe_payment_method_id;
 
     } else {
-      // ========== כרטיס חדש ==========
+      // ========== new card ==========
       if (!paymentMethodId) {
         throw new Error('Payment method ID is required for new card payments');
       }
 
       finalPaymentMethodId = paymentMethodId;
 
-      // אם רוצה לשמור הכרטיס החדש
+      // if want to save the new card
       if (saveNewCard) {
         await saveCard(userId, stripeCustomerId, finalPaymentMethodId);
         cardSaved = true;
       }
     }
 
-    // ========== ביצוע התשלום ==========
+    // ========== payment ==========
     const paymentIntentData = {
-      customer: stripeCustomerId, // מזהה לקוח ב-Stripe
+      customer: stripeCustomerId, 
       receipt_email: userEmail,
-      amount: Math.round(amount * 100), // Stripe עובד בcents
+      amount: Math.round(amount * 100), 
       currency: 'usd',
       payment_method: finalPaymentMethodId,
       confirm: true,
@@ -172,7 +170,7 @@ async function processStripePayment(userId, userEmail, amount, paymentData) {
   } catch (error) {
     console.error('Stripe payment processing error:', error);
     
-    // טיפול בשגיאות ספציפיות של Stripe
+    // handle specific Stripe errors
     if (error.type === 'StripeCardError') {
       return {
         success: false,
@@ -188,11 +186,10 @@ async function processStripePayment(userId, userEmail, amount, paymentData) {
 }
 
 /**
- * מחיקת כרטיס שמור
+ * delete user's saved card
  */
 async function deleteUserCard(userId) {
   try {
-    // קבל את ה-payment method ID
     const [cardData] = await pool.query(`
       SELECT stripe_payment_method_id 
       FROM user_credit_cards 
@@ -200,11 +197,11 @@ async function deleteUserCard(userId) {
     `, [userId]);
 
     if (cardData && cardData.stripe_payment_method_id) {
-      // נתק מ-Stripe
+      // detach from stripe customer
       await stripe.paymentMethods.detach(cardData.stripe_payment_method_id);
     }
 
-    // מחק מה-DB
+    // delete from db
     await pool.query('DELETE FROM user_credit_cards WHERE user_id = ?', [userId]);
 
     return { success: true };

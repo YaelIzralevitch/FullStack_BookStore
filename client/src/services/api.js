@@ -128,8 +128,21 @@ export const getCategoryById = (id) => fetchData(`categories/${id}`);
 
 
 // ספרים
-export const getBooksByCategoryId = (categoryId) => fetchData(`books/category/${categoryId}`);
+export const getAllBooksByCategoryId = (categoryId) => fetchData(`books/category/${categoryId}`);
 export const getBookById = (bookId) => fetchData(`books/${bookId}`)
+
+export const getBooksByCategoryId = async (categoryId, params = {}) => {
+  const searchParams = new URLSearchParams();
+  if (params.limit) searchParams.append("limit", params.limit);
+  if (params.offset) searchParams.append("offset", params.offset);
+
+  const endpoint = searchParams.toString()
+    ? `inventory/categories/${categoryId}/books?${searchParams}`
+    : `inventory/categories/${categoryId}/books`;
+
+  return await fetchData(endpoint);
+};
+
 
 
 // הזמנות

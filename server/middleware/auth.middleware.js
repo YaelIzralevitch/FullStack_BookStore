@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken');
-const SECRET = 'MySecretKey'; // כדאי להעביר ל-.env
+const SECRET = 'MySecretKey'; 
 
 function authenticate(req, res, next) {
-  // קבלת הטוקן מheader Authorization
+  // retrieve token from Authorization header
   const authHeader = req.headers.authorization;
   const token = authHeader && authHeader.startsWith('Bearer ') 
     ? authHeader.substring(7) 
@@ -21,7 +21,7 @@ function authenticate(req, res, next) {
   }
 }
 
-// middleware לבדיקת תפקיד admin
+// check if user is admin
 function requireAdmin(req, res, next) {
   if (req.user.role !== 'admin') {
     return res.status(403).json({ success: false, message: "Admin access required" });
@@ -32,7 +32,7 @@ function requireAdmin(req, res, next) {
 function authorizeOwner(req, res, next) {
   
   const requestedUserId = parseInt(req.params.userId);
-  const currentUserId = req.user.id; // מהטוקן
+  const currentUserId = req.user.id; // from token
   
   if (currentUserId !== requestedUserId) {
     return res.status(403).json({ message: "Access denied" });

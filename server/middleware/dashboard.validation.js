@@ -1,5 +1,5 @@
 /**
- * ולידציה ליצירת הזמנה
+ * validation middleware for dashboard queries
  */
 function validateYear(req, res, next) {
   const year = req.query.year || new Date().getFullYear();
@@ -12,7 +12,6 @@ function validateYear(req, res, next) {
       });
     }
 
-  // קריאה ל-middleware של ולידציית תשלום
   req.year = yearNum;
   
   next();

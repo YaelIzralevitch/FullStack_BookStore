@@ -28,6 +28,14 @@ function CartPage() {
 
   const formatPrice = (price) => `$${parseFloat(price).toFixed(2)}`;
 
+  // חישוב הנחה
+  const DISCOUNT_THRESHOLD = 200;
+  const DISCOUNT_AMOUNT = 10;
+  
+  const subtotal = getCartTotal();
+  const discount = subtotal >= DISCOUNT_THRESHOLD ? DISCOUNT_AMOUNT : 0;
+  const finalTotal = subtotal - discount;
+
   const handleQuantityChange = (bookId, change) => {
     const item = cartItems.find(item => item.id === bookId);
     if (item) {
@@ -60,7 +68,9 @@ function CartPage() {
 
     setOrderData({
         items: cartItems,
-        totalPrice: getCartTotal(),
+        subtotal: subtotal,
+        discount: discount,
+        totalPrice: finalTotal,
         shippingAddress
     });
 
@@ -166,16 +176,27 @@ function CartPage() {
             <h2>Order Summary</h2>
             <div className="summary-line">
               <span>Subtotal:</span>
-              <span>{formatPrice(getCartTotal())}</span>
+              <span>{formatPrice(subtotal)}</span>
             </div>
+            {discount > 0 && (
+              <div className="summary-line discount">
+                <span>Discount (Orders over {formatPrice(DISCOUNT_THRESHOLD)}):</span>
+                <span>-{formatPrice(discount)}</span>
+              </div>
+            )}
             <div className="summary-line">
               <span>Shipping:</span>
               <span>Free</span>
             </div>
             <div className="summary-line total">
               <span>Total:</span>
-              <span>{formatPrice(getCartTotal())}</span>
+              <span>{formatPrice(finalTotal)}</span>
             </div>
+            {subtotal < DISCOUNT_THRESHOLD && subtotal > 0 && (
+              <div className="discount-notice">
+                💡 Add {formatPrice(DISCOUNT_THRESHOLD - subtotal)} more to get $10 off!
+              </div>
+            )}
           </div>
 
           <div className="shipping-address">

@@ -2,40 +2,36 @@ const pool = require("../config/db");
 const bcrypt = require("bcryptjs");
 
 async function createUser({ first_name, last_name, phone, email, password }) {
-  const connection = await pool.getConnection(); // יוצרים חיבור ייחודי לטרנזאקציה
+  const connection = await pool.getConnection(); 
   try {
     await connection.beginTransaction();
 
-    // הוספת משתמש
     const [result] = await connection.query(
       `INSERT INTO users (first_name, last_name, phone, email) VALUES (?, ?, ?, ?)`,
       [first_name, last_name, phone, email]
     );
     const userId = result.insertId;
 
-    // הוספת סיסמה
     const hashed = await bcrypt.hash(password, 10);
     await connection.query(
       `INSERT INTO user_passwords (user_id, password_hash) VALUES (?, ?)`,
       [userId, hashed]
     );
 
-    // הוספת אבטחה
+    // add security 
     await connection.query(
       `INSERT INTO user_login_security (user_id, failed_attempts, is_locked) VALUES (?, ?, ?)`,
       [userId, 0, 0]
     );
 
-    // הכל הצליח - מבצעים commit
     await connection.commit();
     return userId;
+
   } catch (err) {
-    // קרתה שגיאה - מבצעים rollback
     await connection.rollback();
     console.error('ERROR IN createUser:', err);
     throw err;
   } finally {
-    // משחררים את החיבור חזרה לבריכה
     connection.release();
   }
 }
@@ -57,7 +53,7 @@ async function findUserByEmail(email) {
 
 async function findUserPassword(userId) {
     try {
-  // קבלת הסיסמה המוצפנת מטבלת user_passwords לפי user_id
+  // retrieve password hash
   const [[pwd]] = await pool.query(
     `SELECT password_hash FROM user_passwords WHERE user_id = ?`,
     [userId]

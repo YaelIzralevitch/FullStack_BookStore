@@ -1,6 +1,6 @@
 const pool = require('../config/db');
 
-// ===== קטגוריות =====
+// ===== categories =====
 async function getAllCategories() {
   try {
     const [rows] = await pool.query(`SELECT * FROM categories`);
@@ -48,7 +48,7 @@ async function deleteCategory(id) {
   }
 }
 
-// ===== ספרים =====
+// ===== books =====
 async function getBooksByCategory(categoryId) {
   try {
     const [rows] = await pool.query(
@@ -63,6 +63,68 @@ async function getBooksByCategory(categoryId) {
     throw err;
   }
 }
+
+async function getBooksByCategoryWithPagination(options = {}) {
+  try {
+    const {
+      categoryId,
+      search = '',
+      sortBy = 'title',
+      sortOrder = 'ASC',
+      page = 1,
+      limit = 10
+    } = options;
+
+    let whereClause = 'WHERE b.category_id = ?';
+    const queryParams = [categoryId];
+
+    // search by title or author
+    if (search) {
+      whereClause += ` AND (b.title LIKE ? OR b.author LIKE ?)`;
+      queryParams.push(`%${search}%`, `%${search}%`);
+    }
+
+    // offset for pagination
+    const offset = (page - 1) * limit;
+
+    const [books] = await pool.query(`
+      SELECT 
+        b.id,
+        b.title,
+        b.author,
+        b.price,
+        b.stock_quantity,
+        b.description,
+        b.image_url,
+        b.category_id,
+        c.name as category_name
+      FROM books b
+      LEFT JOIN categories c ON b.category_id = c.id
+      ${whereClause}
+      ORDER BY b.${sortBy} ${sortOrder}
+      LIMIT ? OFFSET ?
+    `, [...queryParams, limit, offset]);
+
+    // total count for pagination
+    const [[totalCount]] = await pool.query(`
+      SELECT COUNT(*) as total
+      FROM books b
+      ${whereClause}
+    `, queryParams);
+
+    return {
+      books: books,
+      totalCount: totalCount.total,
+      currentPage: page,
+      totalPages: Math.ceil(totalCount.total / limit),
+      categoryId: categoryId
+    };
+  } catch (error) {
+    console.error('ERROR IN getBooksByCategory:', error);
+    throw error;
+  }
+}
+
 
 async function createBook(data) {
   try {
@@ -110,5 +172,6 @@ module.exports = {
   getBooksByCategory,
   createBook,
   updateBook,
-  deleteBook
+  deleteBook,
+  getBooksByCategoryWithPagination
 };

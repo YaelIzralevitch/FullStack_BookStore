@@ -1,11 +1,11 @@
 
 /**
- * ולידציה ליצירת הזמנה
+ * validation middleware for order operations
  */
 function validateOrderCreation(req, res, next) {
   const { orderData } = req.body;
 
-  // בדיקת נתוני הזמנה
+  // check orderData exists
   if (!orderData) {
     return res.status(400).json({
       success: false,
@@ -13,7 +13,7 @@ function validateOrderCreation(req, res, next) {
     });
   }
 
-  // בדיקת פריטים בהזמנה
+  // check items array
   if (!orderData.items || !Array.isArray(orderData.items) || orderData.items.length === 0) {
     return res.status(400).json({
       success: false,
@@ -21,7 +21,7 @@ function validateOrderCreation(req, res, next) {
     });
   }
 
-  // בדיקת תקינות כל פריט
+  // check each item
   for (let i = 0; i < orderData.items.length; i++) {
     const item = orderData.items[i];
     
@@ -54,7 +54,7 @@ function validateOrderCreation(req, res, next) {
     }
   }
 
-  // בדיקת מחיר כולל
+  // check totalPrice
   if (!orderData.totalPrice || typeof orderData.totalPrice !== 'number' || orderData.totalPrice <= 0) {
     return res.status(400).json({
       success: false,
@@ -62,12 +62,12 @@ function validateOrderCreation(req, res, next) {
     });
   }
 
-  // חישוב ובדיקת תקינות המחיר הכולל
+  // calculate total from items and compare
   const calculatedTotal = orderData.items.reduce((total, item) => {
     return total + (item.price * item.quantity);
   }, 0);
 
-  const tolerance = 0.01; // סובלנות של סנט אחד לטעויות עיגול
+  const tolerance = 0.01; // tolerance for floating point
   if (Math.abs(calculatedTotal - orderData.totalPrice) > tolerance) {
     return res.status(400).json({
       success: false,
@@ -75,7 +75,7 @@ function validateOrderCreation(req, res, next) {
     });
   }
 
-  // בדיקת כתובת משלוח
+  // check shipping address
   if (!orderData.shippingAddress) {
     return res.status(400).json({
       success: false,
@@ -105,14 +105,13 @@ function validateOrderCreation(req, res, next) {
     });
   }
 
-  // קריאה ל-middleware של ולידציית תשלום
   req.orderData = orderData;
   
   next();
 }
 
 /**
- * ולידציה של מזהה הזמנה
+ * validation for order ID in params
  */
 function validateOrderId(req, res, next) {
   const orderId = parseInt(req.params.orderId);
@@ -129,7 +128,7 @@ function validateOrderId(req, res, next) {
 }
 
 /**
- * ולידציה לנתוני תשלום Stripe
+ * validation for payment data in order creation
  */
 function validatePaymentData(req, res, next) {
   const { paymentData } = req.body;
@@ -141,7 +140,7 @@ function validatePaymentData(req, res, next) {
     });
   }
 
-  // בדיקה שיש שדה useSavedCard
+  // check useSavedCard exists and is boolean
   if (typeof paymentData.useSavedCard !== 'boolean') {
     return res.status(400).json({
       success: false,
@@ -150,7 +149,6 @@ function validatePaymentData(req, res, next) {
   }
 
   if (paymentData.useSavedCard === false) {
-    // תשלום עם כרטיס חדש - צריך paymentMethodId
     if (!paymentData.paymentMethodId || typeof paymentData.paymentMethodId !== 'string') {
       return res.status(400).json({
         success: false,
@@ -158,7 +156,7 @@ function validatePaymentData(req, res, next) {
       });
     }
 
-    // בדיקה שה-paymentMethodId נראה תקין (מתחיל ב-pm_)
+    // check paymentMethodId format (basic check)
     if (!paymentData.paymentMethodId.startsWith('pm_')) {
       return res.status(400).json({
         success: false,
@@ -166,7 +164,7 @@ function validatePaymentData(req, res, next) {
       });
     }
 
-    // בדיקה של saveNewCard
+    // check saveNewCard exists and is boolean
     if (typeof paymentData.saveNewCard !== 'boolean') {
       return res.status(400).json({
         success: false,

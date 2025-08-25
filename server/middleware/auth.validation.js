@@ -8,7 +8,7 @@ function validateRegister(req, res, next) {
     });
   }
 
-  // מייל תקין
+  // correct email format
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!email || !emailRegex.test(email)) {
     return res.status(400).json({ 
@@ -17,7 +17,7 @@ function validateRegister(req, res, next) {
     });
   }
 
-  // סיסמה לפחות 6 תווים + אות + מספר
+  // password at least 6 chars, letters and numbers
   const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{6,}$/;
   if (!password || !passwordRegex.test(password)) {
     return res.status(400).json({ 
@@ -26,7 +26,7 @@ function validateRegister(req, res, next) {
     });
   }
 
-  // טלפון (אופציונלי) – אם קיים, שיהיה דיגיטלי בלבד
+  // phone number (optional) - only digits, 7 to 15 chars
   if (phone && !/^\d{7,15}$/.test(phone)) {
     return res.status(400).json({ 
       success: false, 
@@ -47,7 +47,7 @@ function validateLogin(req, res, next) {
     });
   }
 
-  // מייל בצורתו התקינה
+  // match email format
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     return res.status(400).json({ 

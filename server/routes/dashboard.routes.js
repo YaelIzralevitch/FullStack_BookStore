@@ -5,7 +5,7 @@ const { authenticate, requireAdmin } = require("../middleware/auth.middleware");
 const { validateYear } = require("../middleware/dashboard.validation");
 
 /**
- * קבלת נתוני דשבורד
+ * get dashboard data for a specific year
  * GET /api/dashboard?year=2024
  */
 router.get("/", authenticate, requireAdmin, validateYear, async (req, res) => {
@@ -33,7 +33,7 @@ router.get("/", authenticate, requireAdmin, validateYear, async (req, res) => {
 });
 
 /**
- * קבלת שנים זמינות
+ * get available years for dashboard
  * GET /api/dashboard/years
  */
 router.get("/years", authenticate, requireAdmin, async (req, res) => {

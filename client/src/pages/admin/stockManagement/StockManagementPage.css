@@ -196,6 +196,27 @@
   border-color: var(--sage-green);
 }
 
+.selected-category-header {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}
+
+.selected-category-header h3 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.edit-category-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+
+
 /* Books Section */
 .books-section {
   border-radius: 16px;

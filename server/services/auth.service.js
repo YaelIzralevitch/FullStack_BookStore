@@ -4,11 +4,11 @@ const bcrypt = require("bcryptjs");
 const SECRET = "MySecretKey";
 
 async function login({ email, password }) {
-  // מחפשים משתמש רגיל
+  // search for user (regular user only)
   const user = await authController.findUserByEmail(email);
 
   if (user) {
-    // משתמש רגיל - בודקים סיסמא מ-user_passwords
+    // regular user found - check password
     const sec = await authController.getUserSecurity(user.id);
     if (sec.is_locked && new Date() < new Date(sec.locked_until)) {
       return { code: 403, msg: "Account locked. Try later" };
@@ -37,7 +37,6 @@ async function login({ email, password }) {
     };
   }
 
-  // לא נמצא בכלל
   return { code: 401, msg: `User with email ${email} does not exist` };
 }
 
