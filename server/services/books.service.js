@@ -1,7 +1,7 @@
 const booksController = require('../controllers/books.controller');
 
 async function getBooksByCategory(categoryId) {
-  return await booksController.getBooksByCategoryId(categoryId);
+  return await booksController.getAllBooksByCategoryId(categoryId);
 }
 
 async function getBookById(bookId) {

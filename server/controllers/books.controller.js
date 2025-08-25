@@ -1,6 +1,6 @@
 const pool = require('../config/db');
 
-async function getBooksByCategoryId(categoryId) {
+async function getAllBooksByCategoryId(categoryId) {
   try {
     const [rows] = await pool.query(
     `SELECT id, title, author, price, stock_quantity, image_url, category_id 
@@ -10,7 +10,7 @@ async function getBooksByCategoryId(categoryId) {
     );
     return rows;
   } catch (err) {
-    console.error('ERROR IN getBooksByCategoryId:', err);
+    console.error('ERROR IN getAllBooksByCategoryId:', err);
     throw err;
   }
 }
@@ -33,6 +33,6 @@ async function getBookById(bookId) {
 
 
 module.exports = {
-  getBooksByCategoryId,
+  getAllBooksByCategoryId,
   getBookById,
 };
