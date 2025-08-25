@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from 'react';
-import { getUser } from '../utils/localStorage';
+import { getUser, isTokenValid } from '../utils/localStorage';
 
 const AuthContext = createContext(null);
 
@@ -9,6 +9,13 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const user = getUser();
+    if(user){
+      const isValid = isTokenValid();
+      if (!isValid) {
+        logout(); 
+        return;
+      }
+    }
     setCurrentUser(user);
     setLoading(false);
   }, []);

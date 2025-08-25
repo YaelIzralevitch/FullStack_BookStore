@@ -12,7 +12,7 @@ async function createUser({ first_name, last_name, phone, email, password }) {
     );
     const userId = result.insertId;
 
-    const hashed = await bcrypt.hash(password, 10);
+    const hashed = await bcrypt.hash(password, process.env.SALT);
     await connection.query(
       `INSERT INTO user_passwords (user_id, password_hash) VALUES (?, ?)`,
       [userId, hashed]
