@@ -94,7 +94,9 @@ function BookDetailsPage() {
         <img src="\src\assets\icon-back.png" alt="Back"/>
       </button>
       {message && <div className="success-message">{message}</div>}
-      <img src={book.image_url} alt={book.title} className="book-details-image" />
+      <img src={book.image_url || "https://i.pinimg.com/736x/b8/a1/e0/b8a1e02c6fda8e39200d7b6fb6fb36b0.jpg"}
+           alt={book.title} 
+           className="book-details-image" />
       <div className="book-details-info">
         <h2>{book.title}</h2>
         <p><strong>Author:</strong> {book.author}</p>
