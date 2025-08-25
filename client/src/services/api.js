@@ -133,16 +133,17 @@ export const getBookById = (bookId) => fetchData(`books/${bookId}`)
 
 export const getBooksByCategoryId = async (categoryId, params = {}) => {
   const searchParams = new URLSearchParams();
-  if (params.limit) searchParams.append("limit", params.limit);
-  if (params.offset) searchParams.append("offset", params.offset);
-
-  const endpoint = searchParams.toString()
-    ? `inventory/categories/${categoryId}/books?${searchParams}`
-    : `inventory/categories/${categoryId}/books`;
-
+  searchParams.append('categoryId', categoryId);
+  
+  Object.keys(params).forEach(key => {
+    if (params[key] !== undefined && params[key] !== '') {
+      searchParams.append(key, params[key]);
+    }
+  });
+  
+  const endpoint = `books?${searchParams}`;
   return await fetchData(endpoint);
 };
-
 
 
 // הזמנות

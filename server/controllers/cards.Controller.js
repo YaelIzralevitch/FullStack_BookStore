@@ -68,7 +68,6 @@ async function saveCard(userId, userEmail, paymentMethodId) {
 
     const stripeCustomerId = await getOrCreateStripeCustomer(userId, userEmail);
 
-    console.log("paymentMethodId", paymentMethodId);
     // add payment method to customer in stripe
     await stripe.paymentMethods.attach(paymentMethodId, {
       customer: stripeCustomerId

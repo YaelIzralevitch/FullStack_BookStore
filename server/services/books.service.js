@@ -20,7 +20,24 @@ async function getBookById(bookId) {
   }
 }
 
+async function getBooksByCategoryWithPagination(options) {
+  try {
+    console.log('Options received in books service:', options);
+    const result = await booksController.getBooksByCategoryWithPagination(options);
+    console.log('Result from books controller:', result);
+    
+    return { code: 200, data: result };
+  } catch (error) {
+    console.error('ERROR IN getBooksByCategoryWithPagination books service:', error);
+    return { 
+      code: 500, 
+      msg: error.message || "Failed to retrieve books" 
+    };
+  }
+}
+
 module.exports = {
   getBooksByCategory,
   getBookById,
+  getBooksByCategoryWithPagination
 };

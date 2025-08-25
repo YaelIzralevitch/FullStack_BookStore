@@ -41,10 +41,16 @@ function OrdersPage() {
       top: 0,
     });
   }, [currentPage]);
-  
+
   useEffect(() => {
     if (!hasFetched.current) {
       hasFetched.current = true;
+      fetchOrders();
+    }
+  }, []); 
+  
+  useEffect(() => {
+    if (totalCount) {
       fetchOrders();
     }
   }, [currentPage, statusFilter, sortBy, sortOrder, searchTerm]); 

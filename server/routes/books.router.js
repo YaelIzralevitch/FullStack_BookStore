@@ -31,4 +31,64 @@ router.get('/:bookId', authenticate, async (req, res) => {
   }
 });
 
+router.get("/", authenticate, async (req, res) => {
+  try {
+    const options = {
+      categoryId: parseInt(req.query.categoryId),
+      page: parseInt(req.query.page) || 1,
+      limit: parseInt(req.query.limit) || 10,
+      sortBy: req.query.sortBy || '',
+      sortOrder: req.query.sortOrder || 'ASC'
+    };
+
+    console.log('Options received in books/category route:', options);
+
+    if (!options.categoryId || isNaN(options.categoryId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Valid category ID is required"
+      });
+    }
+
+    const validSortFields = ['title', 'price', ''];
+    const validSortOrders = ['ASC', 'DESC'];
+    
+    if (!validSortFields.includes(options.sortBy)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid sort field"
+      });
+    }
+
+    if (!validSortOrders.includes(options.sortOrder.toUpperCase())) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid sort order"
+      });
+    }
+
+    options.sortOrder = options.sortOrder.toUpperCase();
+
+    const result = await booksService.getBooksByCategoryWithPagination(options);
+    
+    if (result.code !== 200) {
+      return res.status(result.code).json({
+        success: false,
+        message: result.msg
+      });
+    }
+
+    res.json({
+      success: true,
+      data: result.data
+    });
+  } catch (error) {
+    console.error('ERROR IN GET /books/category:', error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error"
+    });
+  }
+});
+
 module.exports = router;

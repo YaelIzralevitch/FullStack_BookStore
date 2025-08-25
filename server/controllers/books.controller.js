@@ -31,8 +31,71 @@ async function getBookById(bookId) {
   }
 }
 
+async function getBooksByCategoryWithPagination(options = {}) {
+  try {
+    const {
+      categoryId,
+      sortBy = '',
+      sortOrder = 'ASC',
+      page = 1,
+      limit = 10
+    } = options;
+
+    let whereClause = 'WHERE b.category_id = ?';
+    const queryParams = [categoryId];
+
+    // offset for pagination
+    const offset = (page - 1) * limit;
+
+    // Build the ORDER BY clause based on sortBy - אם אין sortBy, לא נוסיף מיון
+    let orderByClause = '';
+    if (sortBy === 'title') {
+      orderByClause = `ORDER BY b.title ${sortOrder}`;
+    } else if (sortBy === 'price') {
+      orderByClause = `ORDER BY b.price ${sortOrder}`;
+    }
+    // אם sortBy ריק או לא מוכר, לא נוסיף ORDER BY (מיון טבעי של הטבלה)
+
+    const [books] = await pool.query(`
+      SELECT 
+        b.id,
+        b.title,
+        b.author,
+        b.price,
+        b.stock_quantity,
+        b.description,
+        b.image_url,
+        b.category_id,
+        c.name as category_name
+      FROM books b
+      LEFT JOIN categories c ON b.category_id = c.id
+      ${whereClause}
+      ${orderByClause}
+      LIMIT ? OFFSET ?
+    `, [...queryParams, limit, offset]);
+
+    // total count for pagination
+    const [[totalCount]] = await pool.query(`
+      SELECT COUNT(*) as total
+      FROM books b
+      ${whereClause}
+    `, queryParams);
+
+    return {
+      books: books,
+      totalCount: totalCount.total,
+      currentPage: page,
+      totalPages: Math.ceil(totalCount.total / limit),
+      categoryId: categoryId
+    };
+  } catch (error) {
+    console.error('ERROR IN getBooksByCategoryWithPagination books controller:', error);
+    throw error;
+  }
+}
 
 module.exports = {
   getAllBooksByCategoryId,
   getBookById,
+  getBooksByCategoryWithPagination
 };
