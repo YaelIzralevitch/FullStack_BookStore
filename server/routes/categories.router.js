@@ -7,7 +7,7 @@ const { authenticate } = require("../middleware/auth.middleware");
 router.get("/", authenticate, async (req, res) => {
   try {
     const categories = await categoriesService.listCategories();
-    res.json({ success: true, data: categories });
+    res.json({ success: true, data: categories.data });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -20,7 +20,7 @@ router.get("/:id", authenticate, async (req, res) => {
     if (!category) {
       return res.status(404).json({ success: false, message: "Category not found" });
     }
-    res.json({ success: true, data: category });
+    res.json({ success: true, data: category.data });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

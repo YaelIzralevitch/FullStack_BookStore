@@ -84,9 +84,7 @@ async function deleteBook(id) {
 
 async function getBooksByCategoryWithPagination(options) {
   try {
-    console.log('Options received in service:', options);
     const result = await stockManagmentController.getBooksByCategoryWithPagination(options);
-    console.log('Result from controller:', result);
     
     return { code: 200, data: result};
   } catch (error) {

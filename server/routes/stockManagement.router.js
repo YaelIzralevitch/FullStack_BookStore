@@ -118,8 +118,7 @@ router.get("/category", authenticate, requireAdmin, requireAdmin, async (req, re
     options.sortOrder = options.sortOrder.toUpperCase();
 
     const result = await inventoryService.getBooksByCategoryWithPagination(options);
-    console.log('Result from service:', result.data);
-
+    
     if (result.code !== 200) {
       return res.status(result.code).json({
         success: false,

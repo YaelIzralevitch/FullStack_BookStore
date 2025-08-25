@@ -98,7 +98,6 @@ function StockManagementPage() {
       };
 
       const response = await getBooksByCategoryWithPagination(selectedCategoryId, params);
-      console.log('Books fetched:', response.data);
       
       if (response.success) {
         setBooks(response.data.books);

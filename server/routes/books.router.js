@@ -8,7 +8,7 @@ router.get('/category/:categoryId', authenticate, async (req, res) => {
   try {
     const { categoryId } = req.params;
     const books = await booksService.getBooksByCategory(categoryId);
-    res.json({ success: true, data: books });
+    res.json({ success: true, data: books.data });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -24,7 +24,7 @@ router.get('/:bookId', authenticate, async (req, res) => {
       return res.status(404).json({ success: false, message: 'Book not found' });
     }
 
-    res.json({ success: true, data: book });
+    res.json({ success: true, data: book.data });
   } catch (err) {
     console.error('ERROR IN getBookById route:', err);
     res.status(500).json({ success: false, message: 'Server error' });

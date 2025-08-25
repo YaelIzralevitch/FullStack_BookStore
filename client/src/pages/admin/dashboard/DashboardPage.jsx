@@ -65,7 +65,6 @@ function DashboardPage() {
       
       if (response.success) {
         setDashboardData(response.data);
-        console.log('Dashboard data fetched successfully:', response.data);
       } else {
         setError(response.message || 'Failed to fetch dashboard data');
       }
