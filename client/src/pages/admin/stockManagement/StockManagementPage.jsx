@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import debounce from 'lodash.debounce';
 import { 
   getCategories, 
-  getBooksByCategoryWithPagination,  // השתמש בפונקציה החדשה
+  getBooksByCategoryWithPagination,  
   createBookInInventory, 
   updateBookInInventory, 
   createInventoryCategory, 
@@ -16,7 +16,7 @@ import './StockManagementPage.css';
 
 function StockManagementPage() {
   const [categories, setCategories] = useState([]);
-  const [books, setBooks] = useState([]); // שינוי לarray פשוט במקום object
+  const [books, setBooks] = useState([]); 
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -35,7 +35,7 @@ function StockManagementPage() {
 
   const hasFetched = useRef(false);
 
-  // דיליי בשליחת הבקשה רק עבור החיפוש
+  // delay search input
   const debouncedSearch = useCallback(
     debounce((value) => {
       setSearchTerm(value);
@@ -50,7 +50,7 @@ function StockManagementPage() {
     };
   }, [debouncedSearch]);
 
-  // טעינת קטגוריות בלבד בהתחלה
+
   useEffect(() => {
     if (hasFetched.current) return;
     hasFetched.current = true;
@@ -76,7 +76,7 @@ function StockManagementPage() {
     fetchCategories();
   }, []);
 
-  // טעינת ספרים כשמשתנים הפילטרים או הקטגוריה
+
   useEffect(() => {
     if (selectedCategoryId) {
       fetchBooks();
@@ -114,7 +114,7 @@ function StockManagementPage() {
     }
   };
 
-  // שינוי קטגוריה
+  // change selected category
   const handleCategoryChange = (category) => {
     setSelectedCategoryId(category.id);
     setSelectedCategory(category);
@@ -124,7 +124,7 @@ function StockManagementPage() {
     setSortOrder('ASC');
   };
 
-  // --- ניהול ספרים
+  // handle add book 
   const handleAddBook = (category) => {
     setSelectedBook({ category_id: category.id }); 
     setShowBookModal(true);
@@ -143,14 +143,14 @@ function StockManagementPage() {
         await createBookInInventory(bookData);
       }
 
-      // אם הקטגוריה השתנתה, עבור לקטגוריה החדשה
+      // if category changed - switch to it
       if (bookData.category_id !== selectedCategoryId) {
         const newCat = categories.find(c => c.id === bookData.category_id);
         setSelectedCategoryId(bookData.category_id);
         setSelectedCategory(newCat);
         setCurrentPage(1);
       } else {
-        // רענן את הרשימה הנוכחית
+        
         await fetchBooks();
       }
 
@@ -170,14 +170,14 @@ function StockManagementPage() {
         setSelectedBook(null);
       }
       await deleteBookInInventory(book.id);
-      await fetchBooks(); // רענן את הרשימה
+      await fetchBooks(); 
     } catch (err) {
       console.error('Error deleting book:', err);
       alert('Failed to delete book');
     }
   };
 
-  // --- ניהול קטגוריות
+  // handle category operations
   const handleAddCategory = () => {
     setSelectedCategory({});
     setShowCategoryModal(true);

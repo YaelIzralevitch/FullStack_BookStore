@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
-import { getBooksByCategoryId } from '../../../services/api';
+import { getAllBooksByCategoryId } from '../../../services/api';
 import './CategoryBooksPage.css';
 
 // Cache
@@ -44,7 +44,7 @@ function CategoryBooksPage() {
         }
 
         // If not in cache - fetch from server
-        const response = await getBooksByCategoryId(categoryId);
+        const response = await getAllBooksByCategoryId(categoryId);
         const booksData = response.data || [];
         
         categoryBooksCache.set(categoryId, booksData);
