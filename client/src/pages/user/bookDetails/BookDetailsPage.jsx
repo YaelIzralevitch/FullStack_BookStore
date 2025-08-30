@@ -21,6 +21,7 @@ function BookDetailsPage() {
     async function fetchBook() {
       try {
         setLoading(true);
+        setError(null);
 
         const bookFromState = location.state?.book;
 

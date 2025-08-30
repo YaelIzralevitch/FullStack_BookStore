@@ -28,7 +28,7 @@ function CartPage() {
 
   const formatPrice = (price) => `$${parseFloat(price).toFixed(2)}`;
 
-  // חישוב הנחה
+  // Discount calculation
   const DISCOUNT_THRESHOLD = 200;
   const DISCOUNT_AMOUNT = 10;
   

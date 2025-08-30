@@ -54,7 +54,7 @@ function validateOrderCreation(req, res, next) {
     }
   }
 
-  // check totalPrice
+  // check totalPrice exists
   if (!orderData.totalPrice || typeof orderData.totalPrice !== 'number' || orderData.totalPrice <= 0) {
     return res.status(400).json({
       success: false,
@@ -62,16 +62,59 @@ function validateOrderCreation(req, res, next) {
     });
   }
 
-  // calculate total from items and compare
-  const calculatedTotal = orderData.items.reduce((total, item) => {
+  // Calculate subtotal from items
+  const calculatedSubtotal = orderData.items.reduce((total, item) => {
     return total + (item.price * item.quantity);
   }, 0);
 
-  const tolerance = 0.01; // tolerance for floating point
+  // Discount logic (same as client-side)
+  const DISCOUNT_THRESHOLD = 200;
+  const DISCOUNT_AMOUNT = 10;
+  const calculatedDiscount = calculatedSubtotal >= DISCOUNT_THRESHOLD ? DISCOUNT_AMOUNT : 0;
+  const calculatedTotal = calculatedSubtotal - calculatedDiscount;
+
+  // Validate discount field if provided
+  if (orderData.discount !== undefined) {
+    if (typeof orderData.discount !== 'number' || orderData.discount < 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid discount value. Must be a non-negative number"
+      });
+    }
+
+    const tolerance = 0.01;
+    if (Math.abs(orderData.discount - calculatedDiscount) > tolerance) {
+      return res.status(400).json({
+        success: false,
+        message: "Discount amount doesn't match server calculation"
+      });
+    }
+  }
+
+  // Validate subtotal if provided
+  if (orderData.subtotal !== undefined) {
+    if (typeof orderData.subtotal !== 'number' || orderData.subtotal <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid subtotal. Must be a positive number"
+      });
+    }
+
+    const tolerance = 0.01;
+    if (Math.abs(orderData.subtotal - calculatedSubtotal) > tolerance) {
+      return res.status(400).json({
+        success: false,
+        message: "Subtotal doesn't match calculated sum of items"
+      });
+    }
+  }
+
+  // Compare final total with calculated total (including discount)
+  const tolerance = 0.01;
   if (Math.abs(calculatedTotal - orderData.totalPrice) > tolerance) {
     return res.status(400).json({
       success: false,
-      message: "Total price doesn't match calculated sum of items"
+      message: `Total price doesn't match calculated total. Expected: ${calculatedTotal.toFixed(2)}, Received: ${orderData.totalPrice.toFixed(2)}`
     });
   }
 
@@ -105,7 +148,13 @@ function validateOrderCreation(req, res, next) {
     });
   }
 
-  req.orderData = orderData;
+  // Add calculated values to req for further use if needed
+  req.orderData = {
+    ...orderData,
+    calculatedSubtotal,
+    calculatedDiscount,
+    calculatedTotal
+  };
   
   next();
 }

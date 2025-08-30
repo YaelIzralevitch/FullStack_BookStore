@@ -1,5 +1,4 @@
 import { useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import debounce from 'lodash.debounce';
 import { searchBooksAndCategories } from '../../services/api';
 import './NavSearch.css';
@@ -7,7 +6,6 @@ import './NavSearch.css';
 function NavSearch() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
-  const navigate = useNavigate();
 
   const fetchResults = async (value) => {
     if (!value.trim()) {
@@ -37,9 +35,9 @@ function NavSearch() {
     setQuery('');
     setResults([]);
     if (item.type === 'book') {
-      navigate(`/home/categories/${item.category_id}/books/${item.id}`);
+      window.location.href = `/home/categories/${item.category_id}/books/${item.id}`;
     } else if (item.type === 'category') {
-      navigate(`/home/categories/${item.id}`);
+      window.location.href = `/home/categories/${item.id}`;
     }
   };
 

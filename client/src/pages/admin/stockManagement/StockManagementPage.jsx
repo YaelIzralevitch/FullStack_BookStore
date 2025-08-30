@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import debounce from 'lodash.debounce';
 import { 
   getCategories, 
@@ -34,6 +35,7 @@ function StockManagementPage() {
   const [totalCount, setTotalCount] = useState(0);
 
   const hasFetched = useRef(false);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // delay search input
   const debouncedSearch = useCallback(
@@ -50,6 +52,12 @@ function StockManagementPage() {
     };
   }, [debouncedSearch]);
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+    });
+  }, [currentPage, selectedCategoryId]);
+
 
   useEffect(() => {
     if (hasFetched.current) return;
@@ -63,8 +71,19 @@ function StockManagementPage() {
         setCategories(categoriesData);
 
         if (categoriesData.length > 0) {
-          setSelectedCategoryId(categoriesData[0].id);
-          setSelectedCategory(categoriesData[0]);
+          const urlCategoryId = searchParams.get('categoryId');
+          const categoryFromUrl = urlCategoryId 
+            ? categoriesData.find(cat => cat.id === parseInt(urlCategoryId))
+            : null;
+
+          if (categoryFromUrl) {
+            setSelectedCategoryId(categoryFromUrl.id);
+            setSelectedCategory(categoryFromUrl);
+          } else {
+            setSelectedCategoryId(categoriesData[0].id);
+            setSelectedCategory(categoriesData[0]);
+            setSearchParams({ categoryId: categoriesData[0].id.toString() });
+          }
         }
       } catch (err) {
         console.error(err);
@@ -116,6 +135,7 @@ function StockManagementPage() {
   // change selected category
   const handleCategoryChange = (category) => {
     setSelectedCategoryId(category.id);
+    setSearchParams({ categoryId: category.id.toString() });
     setSelectedCategory(category);
     setCurrentPage(1);
     setSearchTerm('');
@@ -149,7 +169,6 @@ function StockManagementPage() {
         setSelectedCategory(newCat);
         setCurrentPage(1);
       } else {
-        
         await fetchBooks();
       }
 
@@ -318,6 +337,9 @@ function StockManagementPage() {
 
         {selectedCategoryId && selectedCategory && (
           <div className="selected-category-header">
+            <div className='stoke-cat-img-preview-wrapper'>
+              <img className="image-preview" src={selectedCategory.image_url}  alt="search"/>
+            </div>
             <h3 className="category-title">{selectedCategory.name}</h3>
             <button 
               className="edit-category-btn" 

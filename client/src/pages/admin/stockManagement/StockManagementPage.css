@@ -204,6 +204,20 @@
   justify-content: center;
 }
 
+.stoke-cat-img-preview-wrapper {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 3px solid var(--mint-cream);
+  overflow: hidden;
+  position: relative;
+  background-color: var(--mint-cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
 .selected-category-header h3 {
   margin: 0;
   font-size: 2rem;
@@ -390,6 +404,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  padding: 0;
 }
 
 .delete-book-btn:hover {
@@ -493,6 +508,11 @@
   .sort-controls {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .stoke-cat-img-preview-wrapper {
+    width: 50px;
+    height: 50px;
   }
   
   .book-row {

@@ -71,6 +71,7 @@ function PaymentForm({ orderData, onClose, onSuccess }) {
 
         if (!cardElement) {
           setError('Please enter card details');
+          setProcessing(false);
           return;
         }
 
@@ -82,6 +83,7 @@ function PaymentForm({ orderData, onClose, onSuccess }) {
 
         if (error) {
           setError(error.message);
+          setProcessing(false);
           return;
         }
 

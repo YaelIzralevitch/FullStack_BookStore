@@ -17,7 +17,7 @@ export const CartProvider = ({ children }) => {
       const existingItem = prevItems.find(item => item.id === book.id);
 
       if (existingItem) {
-        // ✅ מחשבים את הכמות החדשה, בלי לעבור את המלאי
+        
         const newQuantity = Math.min(
           existingItem.quantity + quantity,
           book.stock_quantity
@@ -29,7 +29,7 @@ export const CartProvider = ({ children }) => {
             : item
         );
       } else {
-        // ✅ במידה וזה מוצר חדש, דואגים שלא לעבור את המלאי
+        
         const initialQuantity = Math.min(quantity, book.stock_quantity);
         return [...prevItems, { ...book, quantity: initialQuantity }];
       }
@@ -48,7 +48,7 @@ export const CartProvider = ({ children }) => {
               ...item,
               quantity: Math.min(
                 newQuantity,
-                item.stock_quantity // ✅ לא לעבור מלאי
+                item.stock_quantity
               )
             }
           : item
