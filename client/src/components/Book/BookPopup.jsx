@@ -102,7 +102,6 @@ function BookPopup({ book, onClose, onSave, categories }) {
                     value={formData.category_id || ''}
                     onChange={handleChange}
                   >
-                    <option value="">-- Select Category --</option>
                     {categories.map(cat => (
                       <option key={cat.id} value={cat.id}>{cat.name}</option>
                     ))}

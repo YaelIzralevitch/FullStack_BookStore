@@ -56,6 +56,10 @@ function CartPage() {
 
   const handleCheckout = () => {
     setError('');
+    window.scrollTo({
+      top: 0,
+    });
+    
     if (cartItems.length === 0) {
       setError('Your cart is empty');
       return;

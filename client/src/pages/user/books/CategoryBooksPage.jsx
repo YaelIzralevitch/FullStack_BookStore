@@ -10,12 +10,13 @@ function CategoryBooksPage() {
   const [categoryName, setCategoryName] = useState(location.state?.categoryName || ''); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [sortOption, setSortOption] = useState('');
+  const [sortOption, setSortOption] = useState('az');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
 
   const hasFetched = useRef(false);
+  const hasFetchedCategory = useRef(false);
   const navigate = useNavigate();
 
   // Session storage key for this category
@@ -34,30 +35,15 @@ function CategoryBooksPage() {
         console.error('Error fetching category name:', err);
       }
     }
-    fetchCategoryName();
+    if(!hasFetchedCategory.current){
+      hasFetchedCategory.current = true;
+      fetchCategoryName();
+    }
   }, [categoryId, categoryName]);
 
   useEffect(() => {
     if (!hasFetched.current) {
       hasFetched.current = true;
-      
-      // Load from session storage if available
-      const savedData = sessionStorage.getItem(sessionKey);
-      if (savedData) {
-        try {
-          const parsed = JSON.parse(savedData);
-          setBooks(parsed.books || []);
-          setCurrentPage(parsed.currentPage || 1);
-          setTotalPages(parsed.totalPages || 1);
-          setTotalCount(parsed.totalCount || 0);
-          setSortOption(parsed.sortOption || '');
-          setLoading(false);
-          return;
-        } catch (err) {
-          console.error('Error parsing saved data:', err);
-        }
-      }
-      
       fetchBooks();
     }
   }, []);
@@ -191,7 +177,7 @@ function CategoryBooksPage() {
       // Clean up - remove session data when component unmounts
       // unless we're going to a book details page
       const currentPath = window.location.pathname;
-      if (!currentPath.includes(`/categories/${categoryId}/books/`)) {
+      if (!hasFetched && !currentPath.includes(`/categories/${categoryId}/books/`)) {
         sessionStorage.removeItem(sessionKey);
       }
     };
@@ -221,7 +207,6 @@ function CategoryBooksPage() {
       <div className="sort-container">
         <label>Sort by: </label>
         <select value={sortOption} onChange={handleSortChange}>
-          <option value="">Select</option>
           <option value="az">Title: A → Z</option>
           <option value="za">Title: Z → A</option>
           <option value="priceLowHigh">Price: Low → High</option>

@@ -12,11 +12,17 @@ async function createOrder(userId, orderData) {
     const { items, totalPrice, shippingAddress } = orderData;
 
     const [orderResult] = await connection.query(
-      `
-      INSERT INTO orders (user_id, total_price, order_status, created_at)
-      VALUES (?, ?, 'paid', NOW())
+      `INSERT INTO orders 
+        (user_id, total_price, order_status, created_at, shippingAddress_street, shippingAddress_city, shippingAddress_house_number)
+      VALUES (?, ?, 'paid', NOW(), ?, ?, ?)
       `,
-      [userId, totalPrice]
+      [
+        userId,
+        totalPrice,
+        shippingAddress.street,
+        shippingAddress.city,
+        shippingAddress.house_number
+      ]
     );
 
     const orderId = orderResult.insertId;

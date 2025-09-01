@@ -33,7 +33,7 @@ router.put('/category/:id', authenticate, validateCategoryData, requireAdmin, as
   }
 });
 
-router.delete('/category/:id', requireAdmin, authenticate,async (req, res) => {
+router.delete('/category/:id', authenticate, requireAdmin, async (req, res) => {
   try {
     await inventoryService.deleteCategory(req.params.id);
     res.json({ message: 'Category deleted successfully' });

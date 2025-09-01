@@ -17,16 +17,55 @@ function OrdersPage() {
   const [sortOrder, setSortOrder] = useState('DESC');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [totalCount, setTotalCount] = useState(0);
+  const [totalCount, setTotalCount] = useState(null);
 
   const hasFetched = useRef(false);
+  
+  // Cache system
+  const cache = useRef(new Map());
+  const currentCacheKey = useRef(null);
+
+  // Generate cache key based on current filters
+  const generateCacheKey = () => {
+    return `${searchTerm}|${statusFilter}|${sortBy}|${sortOrder}`;
+  };
+
+  // Clear entire cache
+  const clearCache = () => {
+    cache.current.clear();
+  };
+
+  // Get data from cache
+  const getCachedData = (cacheKey, page) => {
+    const cacheGroup = cache.current.get(cacheKey);
+    return cacheGroup ? cacheGroup.get(page) : null;
+  };
+
+  // Store data in cache
+  const setCachedData = (cacheKey, page, data) => {
+    if (!cache.current.has(cacheKey)) {
+      cache.current.set(cacheKey, new Map());
+    }
+    cache.current.get(cacheKey).set(page, {
+      ...data,
+      timestamp: Date.now()
+    });
+  };
+
+  // Clear cache when component unmounts or when user leaves
+  useEffect(() => {
+    return () => {
+      clearCache();
+    };
+  }, []);
 
   // Delay in sending the request only for the search
   const debouncedSearch = useCallback(
     debounce((value) => {
       setSearchTerm(value);
       setCurrentPage(1);
-    }, 500), // the Delay
+      clearCache(); // Clear cache when search changes
+    }, 500),
     []
   );
 
@@ -47,15 +86,35 @@ function OrdersPage() {
       hasFetched.current = true;
       fetchOrders();
     }
-  }, []); 
+  }, []);
   
   useEffect(() => {
-    if (totalCount) {
+    if (totalCount !== null) {
+      const newCacheKey = generateCacheKey();
+      
+      // If cache key changed (filters/sorting changed), clear cache
+      if (currentCacheKey.current && currentCacheKey.current !== newCacheKey) {
+        clearCache();
+      }
+      
+      currentCacheKey.current = newCacheKey;
       fetchOrders();
     }
   }, [currentPage, statusFilter, sortBy, sortOrder, searchTerm]); 
 
   const fetchOrders = async () => {
+    const cacheKey = generateCacheKey();
+    const cachedData = getCachedData(cacheKey, currentPage);
+    
+    // Check if we have valid cached data
+    if (cachedData) {
+      setOrders(cachedData.orders);
+      setTotalPages(cachedData.totalPages);
+      setTotalCount(cachedData.totalCount);
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       setError('');
@@ -72,9 +131,18 @@ function OrdersPage() {
       const response = await getOrdersForAdmin(params);
       
       if (response.success) {
-        setOrders(response.data.orders);
-        setTotalPages(response.data.totalPages);
-        setTotalCount(response.data.totalCount);
+        const responseData = {
+          orders: response.data.orders,
+          totalPages: response.data.totalPages,
+          totalCount: response.data.totalCount
+        };
+        
+        // Cache the response
+        setCachedData(cacheKey, currentPage, responseData);
+        
+        setOrders(responseData.orders);
+        setTotalPages(responseData.totalPages);
+        setTotalCount(responseData.totalCount);
       } else {
         setError(response.message || 'Failed to fetch orders');
       }
@@ -91,6 +159,7 @@ function OrdersPage() {
       const response = await updateOrderStatus(orderId, newStatus);
       
       if (response.success) {
+        // Update the current state
         setOrders(prevOrders => 
           prevOrders.map(order => 
             order.order_id === orderId 
@@ -98,6 +167,9 @@ function OrdersPage() {
               : order
           )
         );
+
+        // Clear cache because data changed
+        clearCache();
       } else {
         throw new Error(response.message || 'Failed to update status');
       }
@@ -131,6 +203,13 @@ function OrdersPage() {
       setSortOrder('DESC');
     }
     setCurrentPage(1);
+    clearCache(); // Clear cache when sorting changes
+  };
+
+  const handleStatusFilterChange = (value) => {
+    setStatusFilter(value);
+    setCurrentPage(1);
+    clearCache(); // Clear cache when filter changes
   };
 
   if (loading && orders.length === 0) {
@@ -179,10 +258,7 @@ function OrdersPage() {
 
             <select
               value={statusFilter}
-              onChange={(e) => {
-                setStatusFilter(e.target.value);
-                setCurrentPage(1);
-              }}
+              onChange={(e) => handleStatusFilterChange(e.target.value)}
               className="status-filter"
             >
               <option value="">All Statuses</option>
@@ -190,18 +266,6 @@ function OrdersPage() {
               <option value="cancelled">Cancelled</option>
             </select>
           </div>
-
-          {(statusFilter) && (
-            <button 
-              onClick={() => {
-                setStatusFilter('');
-                setCurrentPage(1);
-              }}
-              className="clear-filters-btn"
-            >
-              Clear Filters
-            </button>
-          )}
         </div>
       </div>
 
@@ -258,7 +322,11 @@ function OrdersPage() {
                   <div className="order-details">
                     <div className="books-list">
                       <h3>Ordered Books:</h3>
-                      {order.books.map((book, index) => (
+                      {order.books.length === 0 ? (
+                      <div> Books on this order are no longer available.</div>
+                      )
+                      :
+                      order.books.map((book, index) => (
                         <div key={`${book.book_id}-${index}`} className="order-book-item">
                           <div className="book-img">
                             {book.image_url ? (
@@ -289,7 +357,8 @@ function OrdersPage() {
                             <div className="unit-price">{formatPrice(book.unit_price)} each</div>
                           </div>
                         </div>
-                      ))}
+                      ))
+                    }
                     </div>
                   </div>
                 )}

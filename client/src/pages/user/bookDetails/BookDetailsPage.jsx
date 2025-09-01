@@ -82,6 +82,7 @@ function BookDetailsPage() {
 
   const handleGoBack = () => {
     sessionStorage.setItem("fromBookDetails", "true");
+    sessionStorage.setItem("fromBookDetailsCategory", book.category_id);
     navigate(-1);
  };
 

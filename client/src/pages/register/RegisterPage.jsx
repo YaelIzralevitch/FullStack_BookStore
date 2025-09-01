@@ -21,6 +21,9 @@ const RegisterPage = () => {
     e.preventDefault();
     setError('');
     setLoading(true);
+    window.scrollTo({
+      top: 0,
+    });
     
     // Check for empty fields
     if (!email.trim() || !password.trim() || !passwordVerify.trim() || !first_name.trim() || !last_name.trim() || !phone.trim()) {
@@ -32,6 +35,7 @@ const RegisterPage = () => {
     // Check if passwords match
     if (password !== passwordVerify) {
       setError('Passwords do not match');
+      setLoading(false);
       return;
     }
     

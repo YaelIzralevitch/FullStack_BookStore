@@ -17,7 +17,7 @@ import './StockManagementPage.css';
 
 function StockManagementPage() {
   const [categories, setCategories] = useState([]);
-  const [books, setBooks] = useState([]); 
+  const [books, setBooks] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -37,11 +37,67 @@ function StockManagementPage() {
   const hasFetched = useRef(false);
   const [searchParams, setSearchParams] = useSearchParams();
 
+  // Cache system
+  const cache = useRef(new Map());
+  const currentCacheKey = useRef(null);
+
+  // Generate cache key based on current filters and category
+  const generateCacheKey = () => {
+    return `cat-${selectedCategoryId}|${searchTerm}|${sortBy}|${sortOrder}`;
+  };
+
+  // Clear entire cache
+  const clearCache = () => {
+    cache.current.clear();
+  };
+
+  // Get data from cache
+  const getCachedData = (cacheKey, page) => {
+    const cacheGroup = cache.current.get(cacheKey);
+    return cacheGroup ? cacheGroup.get(page) : null;
+  };
+
+  // Store data in cache
+  const setCachedData = (cacheKey, page, data) => {
+    if (!cache.current.has(cacheKey)) {
+      cache.current.set(cacheKey, new Map());
+    }
+    cache.current.get(cacheKey).set(page, {
+      ...data,
+      timestamp: Date.now()
+    });
+  };
+
+  // Update cached data locally
+  const updateCachedData = (cacheKey, page, updatedBooks, newTotalCount = null) => {
+    if (!cache.current.has(cacheKey)) return;
+    
+    const cacheGroup = cache.current.get(cacheKey);
+    const cachedData = cacheGroup.get(page);
+    
+    if (cachedData) {
+      cacheGroup.set(page, {
+        ...cachedData,
+        books: updatedBooks,
+        totalCount: newTotalCount !== null ? newTotalCount : cachedData.totalCount,
+        timestamp: Date.now()
+      });
+    }
+  };
+
+  // Clear cache when component unmounts
+  useEffect(() => {
+    return () => {
+      clearCache();
+    };
+  }, []);
+
   // delay search input
   const debouncedSearch = useCallback(
     debounce((value) => {
       setSearchTerm(value);
       setCurrentPage(1);
+      clearCache(); // Clear cache when search changes
     }, 500),
     []
   );
@@ -57,7 +113,6 @@ function StockManagementPage() {
       top: 0,
     });
   }, [currentPage, selectedCategoryId]);
-
 
   useEffect(() => {
     if (hasFetched.current) return;
@@ -95,15 +150,34 @@ function StockManagementPage() {
     fetchCategories();
   }, []);
 
-
   useEffect(() => {
     if (selectedCategoryId) {
+      const newCacheKey = generateCacheKey();
+      
+      // If cache key changed (filters/sorting/category changed), clear cache
+      if (currentCacheKey.current && currentCacheKey.current !== newCacheKey) {
+        clearCache();
+      }
+      
+      currentCacheKey.current = newCacheKey;
       fetchBooks();
     }
   }, [selectedCategoryId, currentPage, searchTerm, sortBy, sortOrder]);
 
   const fetchBooks = async () => {
     if (!selectedCategoryId) return;
+
+    const cacheKey = generateCacheKey();
+    const cachedData = getCachedData(cacheKey, currentPage);
+    
+    // Check if we have valid cached data
+    if (cachedData) {
+      setBooks(cachedData.books);
+      setTotalPages(cachedData.totalPages);
+      setTotalCount(cachedData.totalCount);
+      setBooksLoading(false);
+      return;
+    }
 
     try {
       setBooksLoading(true);
@@ -119,9 +193,18 @@ function StockManagementPage() {
       const response = await getBooksByCategoryWithPagination(selectedCategoryId, params);
       
       if (response.success) {
-        setBooks(response.data.books);
-        setTotalPages(response.data.totalPages);
-        setTotalCount(response.data.totalCount);
+        const responseData = {
+          books: response.data.books,
+          totalPages: response.data.totalPages,
+          totalCount: response.data.totalCount
+        };
+        
+        // Cache the response
+        setCachedData(cacheKey, currentPage, responseData);
+        
+        setBooks(responseData.books);
+        setTotalPages(responseData.totalPages);
+        setTotalCount(responseData.totalCount);
       } else {
         console.error('Failed to fetch books:', response.message);
       }
@@ -141,6 +224,7 @@ function StockManagementPage() {
     setSearchTerm('');
     setSortBy('title');
     setSortOrder('ASC');
+    clearCache(); // Clear cache when category changes
   };
 
   // handle add book 
@@ -156,20 +240,63 @@ function StockManagementPage() {
 
   const handleBookSave = async (bookData) => {
     try {
+      let savedBook;
+      
       if (bookData.id) {
+        // עדכון ספר קיים
         await updateBookInInventory(bookData.id, bookData);
+        savedBook = bookData;
+        
+        // עדכון מקומי
+        if (bookData.category_id === selectedCategoryId) {
+          // הספר נשאר באותה קטגוריה - עדכון מקומי
+          const updatedBooks = books.map(book => 
+            book.id === bookData.id ? { ...book, ...bookData } : book
+          );
+          setBooks(updatedBooks);
+          
+          // עדכון הקאש
+          const cacheKey = generateCacheKey();
+          updateCachedData(cacheKey, currentPage, updatedBooks);
+        } else {
+          // הספר עבר לקטגוריה אחרת - הסר אותו מהרשימה הנוכחית
+          const updatedBooks = books.filter(book => book.id !== bookData.id);
+          const newTotalCount = totalCount - 1;
+          
+          setBooks(updatedBooks);
+          setTotalCount(newTotalCount);
+          
+          // עדכון הקאש
+          const cacheKey = generateCacheKey();
+          updateCachedData(cacheKey, currentPage, updatedBooks, newTotalCount);
+        }
       } else {
-        await createBookInInventory(bookData);
+        // הוספת ספר חדש
+        const response = await createBookInInventory(bookData);
+        savedBook = response.data;
+        
+        if (bookData.category_id === selectedCategoryId) {
+          // הספר נוסף לקטגוריה הנוכחית - הוסף אותו לראש הרשימה
+          const updatedBooks = [savedBook, ...books];
+          const newTotalCount = totalCount + 1;
+          
+          setBooks(updatedBooks);
+          setTotalCount(newTotalCount);
+          
+          // עדכון הקאש
+          const cacheKey = generateCacheKey();
+          updateCachedData(cacheKey, currentPage, updatedBooks, newTotalCount);
+        }
       }
 
-      // if category changed - switch to it
+      // אם הקטגוריה השתנתה - עבור לקטגוריה החדשה
       if (bookData.category_id !== selectedCategoryId) {
         const newCat = categories.find(c => c.id === bookData.category_id);
         setSelectedCategoryId(bookData.category_id);
         setSelectedCategory(newCat);
         setCurrentPage(1);
-      } else {
-        await fetchBooks();
+        setSearchParams({ categoryId: bookData.category_id.toString() });
+        clearCache(); // נקה קאש כי עברנו לקטגוריה חדשה
       }
 
       setShowBookModal(false);
@@ -183,12 +310,26 @@ function StockManagementPage() {
     if (!window.confirm(`Are you sure you want to delete "${book.title}"?`)) return;
 
     try {
+      // סגור את המודל אם זה הספר שנמחק
       if (selectedBook?.id === book.id) {
         setShowBookModal(false);
         setSelectedBook(null);
       }
+      
+      // שלח בקשת מחיקה לשרת
       await deleteBookInInventory(book.id);
-      await fetchBooks(); 
+      
+      // עדכון מקומי - הסר את הספר מהרשימה
+      const updatedBooks = books.filter(b => b.id !== book.id);
+      const newTotalCount = totalCount - 1;
+      
+      setBooks(updatedBooks);
+      setTotalCount(newTotalCount);
+      
+      // עדכון הקאש
+      const cacheKey = generateCacheKey();
+      updateCachedData(cacheKey, currentPage, updatedBooks, newTotalCount);
+      
     } catch (err) {
       console.error('Error deleting book:', err);
       alert('Failed to delete book');
@@ -218,6 +359,9 @@ function StockManagementPage() {
         setSelectedCategoryId(categoryData.id);
         setSelectedCategory(categoryData);
         setCurrentPage(1);
+        
+        // Clear cache when new category is created and selected
+        clearCache();
       }
 
       setShowCategoryModal(false);
@@ -233,6 +377,9 @@ function StockManagementPage() {
     try {
       await deleteInventoryCategory(categoryId);
       setCategories(prev => prev.filter(c => c.id !== categoryId));
+      
+      // Clear cache when category is deleted
+      clearCache();
       
       if (selectedCategoryId === categoryId) {
         const remainingCategories = categories.filter(c => c.id !== categoryId);
@@ -258,13 +405,7 @@ function StockManagementPage() {
       setSortOrder('ASC');
     }
     setCurrentPage(1);
-  };
-
-  const clearFilters = () => {
-    setSearchTerm('');
-    setSortBy('title');
-    setSortOrder('ASC');
-    setCurrentPage(1);
+    clearCache(); // Clear cache when sorting changes
   };
 
   if (loading) return <p>Loading inventory management...</p>;
@@ -322,15 +463,6 @@ function StockManagementPage() {
                   Stock {sortBy === 'stock_quantity' && (sortOrder === 'ASC' ? '↑' : '↓')}
                 </button>
               </div>
-
-              {(searchTerm || sortBy !== 'title' || sortOrder !== 'ASC') && (
-                <button 
-                  onClick={clearFilters}
-                  className="clear-filters-btn"
-                >
-                  Clear Filters
-                </button>
-              )}
             </div>
           </div>
         )}
@@ -338,7 +470,7 @@ function StockManagementPage() {
         {selectedCategoryId && selectedCategory && (
           <div className="selected-category-header">
             <div className='stoke-cat-img-preview-wrapper'>
-              <img className="image-preview" src={selectedCategory.image_url}  alt="search"/>
+              <img className="image-preview" src={selectedCategory.image_url || "https://i.pinimg.com/1200x/67/41/01/674101e0187b34ce24feda85191c2ac9.jpg"}  alt="search"/>
             </div>
             <h3 className="category-title">{selectedCategory.name}</h3>
             <button 
@@ -370,7 +502,7 @@ function StockManagementPage() {
 
             {booksLoading && books.length === 0 ? (
               <div className="loading">Loading books...</div>
-            ) : totalCount === 0 ? (
+            ) : totalCount === 0 && searchTerm === '' ? (
               <div className="no-books">
                 <p>There are no books to display in this category...</p>
                 <button 
