@@ -63,6 +63,101 @@ function validateBookData(req, res, next) {
   next();
 }
 
+function validateBookUpdate(req, res, next) {
+  const updateData = req.body;
+
+  
+  if (!updateData || Object.keys(updateData).length === 0) {
+    return res.status(400).json({
+      success: false,
+      message: "No data provided for update"
+    });
+  }
+  
+  
+  // allowed fields for update
+  const allowedFields = [
+    'title',
+    'author',
+    'description',
+    'price',
+    'stock_quantity',
+    'image_url',
+    'category_id'
+  ];
+  const providedFields = Object.keys(updateData);
+
+
+  // check for invalid fields
+  const invalidFields = providedFields.filter(field => !allowedFields.includes(field));
+  if (invalidFields.length > 0) {
+    return res.status(400).json({
+      success: false,
+      message: `Invalid fields: ${invalidFields.join(', ')}`
+    });
+  }
+
+  // check only the fields that were provided
+  if (updateData.title !== undefined) {
+    if (typeof updateData.title !== 'string' || updateData.title.trim().length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Title cannot be empty"
+      });
+    }
+  }
+
+  if (updateData.author !== undefined) {
+    if (typeof updateData.author !== 'string' || updateData.author.trim().length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Author cannot be empty"
+      });
+    }
+  }
+
+  if (updateData.description !== undefined) {
+    if (typeof updateData.description !== 'string') {
+      return res.status(400).json({
+        success: false,
+        message: "Description must be a string"
+      });
+    }
+  }
+
+  if (updateData.price !== undefined) {
+    if (typeof updateData.price !== 'number' || updateData.price < 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Price must be a non-negative number"
+      });
+    }
+  }
+
+  if (updateData.stock_quantity !== undefined) {
+    if (typeof updateData.stock_quantity !== 'number' || updateData.stock_quantity < 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Stock quantity must be a non-negative number"
+      });
+    }
+  }
+
+  if (updateData.category_id !== undefined) {
+    if (typeof updateData.category_id !== 'number') {
+      return res.status(400).json({
+        success: false,
+        message: "Category ID must be a number"
+      });
+    }
+  }
+
+  
+  req.bookUpdate = updateData;
+  next();
+}
+
+
 
 function validateCategoryData(req, res, next) {
   const category = req.body;
@@ -87,5 +182,6 @@ function validateCategoryData(req, res, next) {
 
 module.exports = {
   validateBookData,
+  validateBookUpdate,
   validateCategoryData
 };

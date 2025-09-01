@@ -38,7 +38,7 @@ function UserDetailsPage() {
         window.scrollTo({ top: 0 });
     }, [currentUser]);
 
-    // פונקציה לזיהוי השינויים בפרטי המשתמש
+    // Function to detect changes in user details
     const getChangedUserFields = () => {
         const changes = {};
         const fieldsToCheck = ['first_name', 'last_name', 'email', 'phone', 'city', 'street', 'house_number'];

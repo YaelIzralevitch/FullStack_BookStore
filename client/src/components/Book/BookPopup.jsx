@@ -13,11 +13,14 @@ function BookPopup({ book, onClose, onSave, categories }) {
     stock_quantity: '',
     image_url: ''
   });
-
+  const [originalBook, setOriginalBook] = useState(null);
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    if (book) setFormData(book);
+    if (book) {
+      setFormData(book);
+      setOriginalBook(book);
+    }
   }, [book]);
 
   const handleChange = (e) => {
@@ -28,19 +31,15 @@ function BookPopup({ book, onClose, onSave, categories }) {
 
   const validate = () => {
     const newErrors = {};
-
     if (!formData.category_id || formData.category_id === '') {
       newErrors.category_id = 'Category is required';
     }
-
     if (!formData.title?.trim()) newErrors.title = 'Title is required';
     if (!formData.author?.trim()) newErrors.author = 'Author is required';
     if (!formData.description?.trim()) newErrors.description = 'Description is required';
-
     if (formData.price === '' || isNaN(formData.price) || Number(formData.price) < 0) {
       newErrors.price = 'Incorrect price';
     }
-
     if (formData.stock_quantity === '' || isNaN(formData.stock_quantity) || Number(formData.stock_quantity) < 0) {
       newErrors.stock_quantity = 'Incorrect stock quantity';
     }
@@ -49,15 +48,40 @@ function BookPopup({ book, onClose, onSave, categories }) {
     return Object.keys(newErrors).length === 0;
   };
   
+  const getChangedBookFields = () => {
+    const changes = {};
+    if (!originalBook) return formData; // אם זה ספר חדש
+
+    Object.keys(formData).forEach((key) => {
+      const originalValue = originalBook[key] ?? '';
+      const editedValue = formData[key] ?? '';
+      if (originalValue !== editedValue) {
+        changes[key] = editedValue;
+      }
+    });
+
+    return changes;
+  };
+  
   const handleSubmit = () => {
     if (!validate()) return;
 
-    onSave({
-      ...formData,
-      category_id: Number(formData.category_id),
-      price: parseFloat(formData.price),
-      stock_quantity: parseInt(formData.stock_quantity)
-    });
+    const changedFields = getChangedBookFields();
+
+    if (Object.keys(changedFields).length === 0) {
+      onClose();
+      return;
+    }
+
+    onSave(
+      formData.id,
+      {
+      ...changedFields,
+      ...(changedFields.category_id !== undefined && { category_id: Number(formData.category_id) }),
+      ...(changedFields.price !== undefined && { price: parseFloat(formData.price) }),
+      ...(changedFields.stock_quantity !== undefined && { stock_quantity: parseInt(formData.stock_quantity) })
+      }
+    );
   };
 
   return (

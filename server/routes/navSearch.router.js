@@ -11,8 +11,12 @@ router.get('/', authenticate, async (req, res) => {
       return res.json([]);
     }
 
-    const results = await searchService.searchBooksAndCategories(query);
-    res.json(results);
+    const result = await searchService.searchBooksAndCategories(query);
+
+    res.json({
+      success: true,
+      data: result.data
+    });
   } catch (err) {
     console.error('Error in search route:', err);
     res.status(500).json({ success: false, message: 'Error searching' });

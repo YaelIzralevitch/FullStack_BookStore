@@ -238,71 +238,79 @@ function StockManagementPage() {
     setShowBookModal(true);
   };
 
-  const handleBookSave = async (bookData) => {
+  const handleBookSave = async (bookId, bookData) => {
     try {
       let savedBook;
-      
-      if (bookData.id) {
-        // עדכון ספר קיים
-        await updateBookInInventory(bookData.id, bookData);
-        savedBook = bookData;
-        
-        // עדכון מקומי
-        if (bookData.category_id === selectedCategoryId) {
-          // הספר נשאר באותה קטגוריה - עדכון מקומי
-          const updatedBooks = books.map(book => 
-            book.id === bookData.id ? { ...book, ...bookData } : book
-          );
-          setBooks(updatedBooks);
-          
-          // עדכון הקאש
-          const cacheKey = generateCacheKey();
-          updateCachedData(cacheKey, currentPage, updatedBooks);
-        } else {
-          // הספר עבר לקטגוריה אחרת - הסר אותו מהרשימה הנוכחית
-          const updatedBooks = books.filter(book => book.id !== bookData.id);
+
+      if (bookId) {
+        // שליחת העדכון לשרת
+        await updateBookInInventory(bookId, bookData);
+
+        // עדכון מקומי של הרשימה
+        const updatedBooks = books.map(book =>
+          book.id === bookId ? { ...book, ...bookData } : book
+        );
+        setBooks(updatedBooks);
+
+        // עדכון cache (לפי המצב החדש)
+        const cacheKey = generateCacheKey();
+        updateCachedData(cacheKey, currentPage, updatedBooks);
+
+        savedBook = updatedBooks.find(b => b.id === bookId);
+
+        // בדיקה אם הקטגוריה שונתה
+        if (
+          bookData.category_id !== undefined &&
+          bookData.category_id !== selectedCategoryId
+        ) {
+          const filteredBooks = updatedBooks.filter(book => book.id !== bookId);
           const newTotalCount = totalCount - 1;
-          
-          setBooks(updatedBooks);
+
+          setBooks(filteredBooks);
           setTotalCount(newTotalCount);
-          
-          // עדכון הקאש
-          const cacheKey = generateCacheKey();
-          updateCachedData(cacheKey, currentPage, updatedBooks, newTotalCount);
+
+          updateCachedData(cacheKey, currentPage, filteredBooks, newTotalCount);
+
+          const newCat = categories.find(c => c.id === bookData.category_id);
+          if (newCat) {
+            setSelectedCategoryId(bookData.category_id);
+            setSelectedCategory(newCat);
+            setCurrentPage(1);
+            setSearchParams({ categoryId: bookData.category_id.toString() });
+            clearCache();
+          }
         }
       } else {
-        // הוספת ספר חדש
+        // יצירת ספר חדש
         const response = await createBookInInventory(bookData);
         savedBook = response.data;
-        
+
         if (bookData.category_id === selectedCategoryId) {
-          // הספר נוסף לקטגוריה הנוכחית - הוסף אותו לראש הרשימה
           const updatedBooks = [savedBook, ...books];
           const newTotalCount = totalCount + 1;
-          
+
           setBooks(updatedBooks);
           setTotalCount(newTotalCount);
-          
-          // עדכון הקאש
+
           const cacheKey = generateCacheKey();
           updateCachedData(cacheKey, currentPage, updatedBooks, newTotalCount);
+        } else {
+          // אם הוא שייך לקטגוריה אחרת – נעבור אליה
+          const newCat = categories.find(c => c.id === bookData.category_id);
+          if (newCat) {
+            setSelectedCategoryId(bookData.category_id);
+            setSelectedCategory(newCat);
+            setCurrentPage(1);
+            setSearchParams({ categoryId: bookData.category_id.toString() });
+            clearCache();
+          }
         }
-      }
-
-      // אם הקטגוריה השתנתה - עבור לקטגוריה החדשה
-      if (bookData.category_id !== selectedCategoryId) {
-        const newCat = categories.find(c => c.id === bookData.category_id);
-        setSelectedCategoryId(bookData.category_id);
-        setSelectedCategory(newCat);
-        setCurrentPage(1);
-        setSearchParams({ categoryId: bookData.category_id.toString() });
-        clearCache(); // נקה קאש כי עברנו לקטגוריה חדשה
       }
 
       setShowBookModal(false);
     } catch (err) {
-      console.error('Error saving book:', err);
-      alert('Failed to save book');
+      console.error("Error saving book:", err);
+      alert("Failed to save book");
     }
   };
 
@@ -310,23 +318,19 @@ function StockManagementPage() {
     if (!window.confirm(`Are you sure you want to delete "${book.title}"?`)) return;
 
     try {
-      // סגור את המודל אם זה הספר שנמחק
       if (selectedBook?.id === book.id) {
         setShowBookModal(false);
         setSelectedBook(null);
       }
       
-      // שלח בקשת מחיקה לשרת
       await deleteBookInInventory(book.id);
       
-      // עדכון מקומי - הסר את הספר מהרשימה
       const updatedBooks = books.filter(b => b.id !== book.id);
       const newTotalCount = totalCount - 1;
       
       setBooks(updatedBooks);
       setTotalCount(newTotalCount);
       
-      // עדכון הקאש
       const cacheKey = generateCacheKey();
       updateCachedData(cacheKey, currentPage, updatedBooks, newTotalCount);
       

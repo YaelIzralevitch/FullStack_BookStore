@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const inventoryService = require('../services/stockManagement.service');
 const { authenticate, requireAdmin } = require("../middleware/auth.middleware");
-const { validateBookData, validateCategoryData } = require("../middleware/stockManagement.validation");
+const { validateBookData, validateBookUpdate, validateCategoryData } = require("../middleware/stockManagement.validation");
 
 
 // ====== categories ======
@@ -17,8 +17,11 @@ router.get('/categories', authenticate, requireAdmin, async (req, res) => {
 
 router.post('/category', authenticate, validateCategoryData, requireAdmin, async (req, res) => {
   try {
-    const category = await inventoryService.createCategory(req.body);
-    res.json(category);
+    const result = await inventoryService.createCategory(req.body);
+    res.json({
+      success: true,
+      data: result.data
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -26,56 +29,68 @@ router.post('/category', authenticate, validateCategoryData, requireAdmin, async
 
 router.put('/category/:id', authenticate, validateCategoryData, requireAdmin, async (req, res) => {
   try {
-    const category = await inventoryService.updateCategory(req.params.id, req.body);
-    res.json(category);
+    const result = await inventoryService.updateCategory(req.params.id, req.body);
+    res.json({
+      success: true,
+      data: result.data
+    });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ success: false, message: err.message });
   }
 });
 
 router.delete('/category/:id', authenticate, requireAdmin, async (req, res) => {
   try {
     await inventoryService.deleteCategory(req.params.id);
-    res.json({ message: 'Category deleted successfully' });
+    res.json({ success: true });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ success: false, message: err.message });
   }
 });
 
 // ====== books ======
 router.get('/books/:categoryId', authenticate, requireAdmin, async (req, res) => {
   try {
-    const books = await inventoryService.getBooksByCategory(req.params.categoryId);
-    res.json(books);
+    const result = await inventoryService.getBooksByCategory(req.params.categoryId);
+    res.json({
+      success: true,
+      data: result.data
+    });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ success: false, message: err.message });
   }
 });
 
 router.post('/book', authenticate, validateBookData, requireAdmin, async (req, res) => {
   try {
-    const book = await inventoryService.createBook(req.body);
-    res.json(book);
+    const result = await inventoryService.createBook(req.body);
+    res.json({
+      success: true,
+      data: result.data
+    });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ success: false, message: err.message });
   }
 });
 
-router.put('/book/:id', authenticate, validateBookData, requireAdmin, async (req, res) => {
+router.put('/book/:id', authenticate, validateBookUpdate, requireAdmin, async (req, res) => {
   try {
-    const book = await inventoryService.updateBook(req.params.id, req.body);
-    res.json(book);
+    
+    await inventoryService.updateBook(req.params.id, req.body);
+    res.json({
+      success: true,
+    });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ success: false, message: err.message });
   }
 });
 
 router.delete('/book/:id', authenticate, requireAdmin, async (req, res) => {
   try {
     await inventoryService.deleteBook(req.params.id);
-    res.json({ message: 'Book deleted successfully' });
+    res.json({ success: true });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ success: false, message: err.message });
   }
 });
 

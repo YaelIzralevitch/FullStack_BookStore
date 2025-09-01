@@ -64,8 +64,8 @@ async function createBook(data) {
 
 async function updateBook(id, data) {
   try {
-    const book = await stockManagmentController.updateBook(id, data);
-    return { code: 200, data: book };
+    await stockManagmentController.updateBook(id, data);
+    return { code: 200 };
   } catch (error) {
     console.error('ERROR IN updateBook service:', error);
     return { code: 500, msg: error.message || 'Failed to update book' };

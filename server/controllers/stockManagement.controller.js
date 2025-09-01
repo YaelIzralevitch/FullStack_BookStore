@@ -141,19 +141,49 @@ async function createBook(data) {
   }
 }
 
-async function updateBook(id, data) {
+async function updateBook(id, updateData) {
   try {
-    const { title, author, description, price, stock_quantity, image_url, category_id } = data;
-    await pool.query(
-      `UPDATE books SET title = ?, author = ?, description = ?, price = ?, stock_quantity = ?, image_url = ?, category_id = ? WHERE id = ?`,
-      [title, author, description, price, stock_quantity, image_url, category_id, id]
-    );
-    return { id, ...data };
+    const allowedFields = [
+      'title',
+      'author',
+      'description',
+      'price',
+      'stock_quantity',
+      'image_url',
+      'category_id'
+    ];
+
+    const fieldsToUpdate = [];
+    const values = [];
+
+    // validate and prepare fields for update
+    Object.keys(updateData).forEach(field => {
+      if (allowedFields.includes(field)) {
+        fieldsToUpdate.push(`${field} = ?`);
+        values.push(updateData[field]);
+      }
+    });
+
+    if (fieldsToUpdate.length === 0) {
+      throw new Error('No valid fields to update');
+    }
+
+    values.push(id); // WHERE id = ?
+
+    const query = `UPDATE books SET ${fieldsToUpdate.join(', ')} WHERE id = ?`;
+
+    const [result] = await pool.query(query, values);
+
+    if (result.affectedRows === 0) {
+      throw new Error('Book not found');
+    }
+
   } catch (err) {
     console.error('Error in updateBook:', err);
     throw err;
   }
 }
+
 
 async function deleteBook(id) {
   try {

@@ -3,7 +3,6 @@ const router = express.Router();
 const booksService = require('../services/books.service');
 const { authenticate } = require("../middleware/auth.middleware");
 
-// GET /api/books/category/:categoryId
 router.get('/category/:categoryId', authenticate, async (req, res) => {
   try {
     const { categoryId } = req.params;

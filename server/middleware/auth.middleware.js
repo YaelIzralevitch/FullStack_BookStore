@@ -23,6 +23,7 @@ function authenticate(req, res, next) {
 
 // check if user is admin
 function requireAdmin(req, res, next) {
+  
   if (req.user.role !== 'admin') {
     return res.status(403).json({ success: false, message: "Admin access required" });
   }
