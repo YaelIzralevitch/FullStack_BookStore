@@ -47,14 +47,14 @@ async function getBooksByCategoryWithPagination(options = {}) {
     // offset for pagination
     const offset = (page - 1) * limit;
 
-    // Build the ORDER BY clause based on sortBy - אם אין sortBy, לא נוסיף מיון
+    // Build the ORDER BY clause based on sortBy - if there is no sortBy, we will not add a sort
     let orderByClause = '';
     if (sortBy === 'title') {
       orderByClause = `ORDER BY b.title ${sortOrder}`;
     } else if (sortBy === 'price') {
       orderByClause = `ORDER BY b.price ${sortOrder}`;
     }
-    // אם sortBy ריק או לא מוכר, לא נוסיף ORDER BY (מיון טבעי של הטבלה)
+    //If sortBy is empty or unknown, we will not add ORDER BY (natural sorting of the table)
 
     const [books] = await pool.query(`
       SELECT 
@@ -65,7 +65,6 @@ async function getBooksByCategoryWithPagination(options = {}) {
         b.stock_quantity,
         b.description,
         b.image_url,
-        b.category_id,
         c.name as category_name
       FROM books b
       LEFT JOIN categories c ON b.category_id = c.id
@@ -86,7 +85,6 @@ async function getBooksByCategoryWithPagination(options = {}) {
       totalCount: totalCount.total,
       currentPage: page,
       totalPages: Math.ceil(totalCount.total / limit),
-      categoryId: categoryId
     };
   } catch (error) {
     console.error('ERROR IN getBooksByCategoryWithPagination books controller:', error);

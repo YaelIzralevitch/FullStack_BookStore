@@ -1,15 +1,13 @@
 import { createContext, useState, useEffect } from 'react';
+import LS from '../utils/localStorage';
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState(() => {
-    const savedCart = localStorage.getItem('cart');
-    return savedCart ? JSON.parse(savedCart) : [];
-  });
+  const [cartItems, setCartItems] = useState(() => LS.getCart() );
 
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cartItems));
+    LS.saveCart(cartItems);
   }, [cartItems]);
 
   const addToCart = (book, quantity = 1) => {

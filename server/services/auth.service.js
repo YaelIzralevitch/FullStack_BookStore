@@ -22,7 +22,7 @@ async function login({ email, password }) {
     if (!ok) {
       await authController.increaseFailOrLock(user.id, sec.failed_attempts);
       if ( sec.failed_attempts + 1 >=3 ){
-        return { code: 401, msg: `Invalid Password. 3 failed attempts. Account will be blocked for ${process.env.JWT_EXPIRES_IN}.` };  
+        return { code: 401, msg: `Invalid Password. 3 failed attempts. Account will be blocked for ${process.env.LOCKED_UNTIL}.` };  
       }
       return { code: 401, msg: `Invalid Password. You have ${3 - (sec.failed_attempts + 1)} more attempts left.` };
     }

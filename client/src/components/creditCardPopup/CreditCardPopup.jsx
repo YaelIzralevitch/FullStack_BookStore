@@ -71,7 +71,7 @@ function CreditCardPopup({ userId, setShowCreditCardPopup }) {
   };
 
   return (
-    <Elements stripe={stripePromise}>
+    <Elements stripe={stripePromise} options={{ locale: "en" }}>
       <div className="popup-overlay">
         <div className="credit-card-popup">
           <button 

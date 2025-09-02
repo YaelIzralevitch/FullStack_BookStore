@@ -23,12 +23,9 @@ async function getUserById(userId) {
  */
 async function updateUserDetails(userId, updateData) {
   try {
-    const updatedUser = await usersController.updateUserDetails(userId, updateData);
+    await usersController.updateUserDetails(userId, updateData);
     
-    return {
-      code: 200,
-      data: updatedUser,
-    };
+    return { code: 200 };
   } catch (error) {
     console.error('ERROR IN updateUserDetails service:', error);
     

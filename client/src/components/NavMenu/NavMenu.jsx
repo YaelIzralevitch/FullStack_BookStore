@@ -50,10 +50,8 @@ function NavMenu({ userId }) {
     
     if (option.label === 'Logout') {
       logout();
-      navigate(option.value);
-    } else {
-      navigate(option.value);
     }
+    navigate(option.value);
   };
 
   return (

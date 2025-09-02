@@ -50,7 +50,7 @@ function BookPopup({ book, onClose, onSave, categories }) {
   
   const getChangedBookFields = () => {
     const changes = {};
-    if (!originalBook) return formData; // אם זה ספר חדש
+    if (!originalBook) return formData;
 
     Object.keys(formData).forEach((key) => {
       const originalValue = originalBook[key] ?? '';

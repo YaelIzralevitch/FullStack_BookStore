@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getUser, isTokenValid } from '../utils/localStorage';
+import LS from '../utils/localStorage';
 
 const AuthContext = createContext(null);
 
@@ -10,9 +10,9 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const user = getUser();
+    const user = LS.getUser();
     if(user){
-      const isValid = isTokenValid();
+      const isValid = LS.isTokenValid();
       if (!isValid) {
         logout();
         navigate('/login')
@@ -25,14 +25,14 @@ export const AuthProvider = ({ children }) => {
 
   const login = (user) => {
     setCurrentUser(user);
-    localStorage.setItem('user', JSON.stringify(user));
+    LS.saveUser(user);
   };
 
   const logout = () => {
     setCurrentUser(null);
-    localStorage.removeItem('user');
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('cart');
+    LS.removeUser();
+    LS.removeAuthToken();
+    LS.clearCart();
   };
 
 

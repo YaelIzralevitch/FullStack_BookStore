@@ -195,7 +195,7 @@ router.get("/admin/:orderId", authenticate, requireAdmin, validateOrderId, async
  * update order status (for admin)
  * PUT /api/orders/admin/:orderId/status
  */
-router.put("/admin/:orderId/status", authenticate, requireAdmin, validateOrderId, async (req, res) => {
+router.put("/admin/status/:orderId", authenticate, requireAdmin, validateOrderId, async (req, res) => {
   try {
     const orderId = req.orderId; // middleware
     const { status } = req.body;
@@ -226,7 +226,6 @@ router.put("/admin/:orderId/status", authenticate, requireAdmin, validateOrderId
 
     res.json({
       success: true,
-      data: result.data
     });
   } catch (error) {
     console.error('ERROR IN PUT /orders/admin/:orderId/status:', error);

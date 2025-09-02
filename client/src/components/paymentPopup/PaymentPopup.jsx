@@ -223,7 +223,7 @@ function PaymentForm({ orderData, onClose, onSuccess }) {
 
 function PaymentPopup({ orderData, onClose, onSuccess }) {
   return (
-    <Elements stripe={stripePromise}>
+    <Elements stripe={stripePromise} options={{ locale: "en" }}>
       <PaymentForm 
         orderData={orderData}
         onClose={onClose}

@@ -121,12 +121,10 @@ async function getOrdersForAdmin(options) {
  */
 async function updateOrderStatus(orderId, newStatus) {
   try {
-    const result = await ordersController.updateOrderStatus(orderId, newStatus);
+    await ordersController.updateOrderStatus(orderId, newStatus);
     
-    return {
-      code: 200,
-      data: result
-    };
+    return { code: 200 };
+    
   } catch (error) {
     console.error('ERROR IN updateOrderStatus service:', error);
     return { 

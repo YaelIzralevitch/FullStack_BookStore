@@ -36,8 +36,8 @@ function AdminLayout() {
             {navigationOptions.map((option, index) => (
               <button
                 key={index}
-                className={`admin-nav-btn ${location.pathname === option.value ? 'active' : ''} ${option.label === 'Logout' ? 'logout-btn' : ''}`}
-                onClick={option.label === 'Logout' ? () => { logout(); handleNavigation(option);} : () => handleNavigation(option)}
+                className={`admin-nav-btn ${location.pathname === option.value ? 'active' : ''}`}
+                onClick={() => handleNavigation(option)}
               >
                 {option.label}
               </button>

@@ -28,7 +28,6 @@ const LoginPage = () => {
 
     try
     {
-      // Check if user exists
       const res = await Login({ email, password });
       
       // Successful login

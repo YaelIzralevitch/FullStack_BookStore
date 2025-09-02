@@ -243,22 +243,19 @@ function StockManagementPage() {
       let savedBook;
 
       if (bookId) {
-        // שליחת העדכון לשרת
         await updateBookInInventory(bookId, bookData);
 
-        // עדכון מקומי של הרשימה
+        // Local update of the list
         const updatedBooks = books.map(book =>
           book.id === bookId ? { ...book, ...bookData } : book
         );
         setBooks(updatedBooks);
 
-        // עדכון cache (לפי המצב החדש)
         const cacheKey = generateCacheKey();
         updateCachedData(cacheKey, currentPage, updatedBooks);
 
         savedBook = updatedBooks.find(b => b.id === bookId);
 
-        // בדיקה אם הקטגוריה שונתה
         if (
           bookData.category_id !== undefined &&
           bookData.category_id !== selectedCategoryId
@@ -281,7 +278,6 @@ function StockManagementPage() {
           }
         }
       } else {
-        // יצירת ספר חדש
         const response = await createBookInInventory(bookData);
         savedBook = response.data;
 
@@ -295,7 +291,7 @@ function StockManagementPage() {
           const cacheKey = generateCacheKey();
           updateCachedData(cacheKey, currentPage, updatedBooks, newTotalCount);
         } else {
-          // אם הוא שייך לקטגוריה אחרת – נעבור אליה
+          // If it belongs to another category – we will move on to it.
           const newCat = categories.find(c => c.id === bookData.category_id);
           if (newCat) {
             setSelectedCategoryId(bookData.category_id);
@@ -342,7 +338,6 @@ function StockManagementPage() {
 
   // handle category operations
   const handleAddCategory = () => {
-    setSelectedCategory({});
     setShowCategoryModal(true);
   };
 
@@ -591,7 +586,7 @@ function StockManagementPage() {
 
       {showCategoryModal && (
         <CategoryPopup 
-          category={selectedCategory} 
+          category={{}}
           onClose={() => setShowCategoryModal(false)} 
           onSave={handleCategorySave} 
         />

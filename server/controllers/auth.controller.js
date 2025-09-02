@@ -83,7 +83,7 @@ async function increaseFailOrLock(userId, currentFails) {
     if (currentFails + 1 >= 3) {
       await pool.query(
         `UPDATE user_login_security SET failed_attempts=0, is_locked=1,
-        locked_until=DATE_ADD(NOW(), INTERVAL 1 DAY) WHERE user_id=?`,
+        locked_until=DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE user_id=?`,
         [userId]
       );
     } else {

@@ -20,12 +20,11 @@ function DashboardPage() {
         setLoading(true);
         setError('');
 
-        // קבלת שנים זמינות
         const yearsResponse = await getAvailableYears();
         if (yearsResponse.success) {
           setAvailableYears(yearsResponse.data);
           
-          // אם השנה הנוכחית לא בזמינות, בחר את השנה הראשונה
+          // If the current year is not available, select the first year.
           const currentYear = new Date().getFullYear();
           const yearToSelect = yearsResponse.data.includes(currentYear) 
             ? currentYear 

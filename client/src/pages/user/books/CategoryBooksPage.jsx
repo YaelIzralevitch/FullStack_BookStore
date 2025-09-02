@@ -60,6 +60,18 @@ function CategoryBooksPage() {
     });
   }, [currentPage]);
 
+   // Clear session storage when navigating away
+  useEffect(() => {
+    return () => {
+      // Clean up - remove session data when component unmounts
+      // unless we're going to a book details page
+      const currentPath = window.location.pathname;
+      if (!currentPath.includes(`/categories/${categoryId}`)) {
+        sessionStorage.removeItem(sessionKey);
+      }
+    };
+  }, [sessionKey, categoryId]);
+
   // Save current state to session storage
   const saveToSession = (booksData, page, totalPgs, totalCnt, sort) => {
     const dataToSave = {
@@ -109,7 +121,6 @@ function CategoryBooksPage() {
         sortBy: getSortByField(),
         sortOrder: getSortOrder()
       };
-
       const response = await getBooksByCategoryId(categoryId, params);
       
       if (response.success) {
@@ -171,17 +182,6 @@ function CategoryBooksPage() {
     setCurrentPage(newPage);
   };
 
-  // Clear session storage when navigating away
-  useEffect(() => {
-    return () => {
-      // Clean up - remove session data when component unmounts
-      // unless we're going to a book details page
-      const currentPath = window.location.pathname;
-      if (!hasFetched && !currentPath.includes(`/categories/${categoryId}/books/`)) {
-        sessionStorage.removeItem(sessionKey);
-      }
-    };
-  }, [sessionKey, categoryId]);
 
   if (loading && books.length === 0) {
     return (
@@ -228,7 +228,7 @@ function CategoryBooksPage() {
                 ? "#"
                 : `/home/categories/${categoryId}/books/${book.id}`
             }
-            state={{ book }}
+            state={{ book: { ...book, category_id: categoryId } }}
             className="book-card"
             onClick={(e) => {
               if (book.stock_quantity === 0) e.preventDefault();
@@ -240,11 +240,7 @@ function CategoryBooksPage() {
             {book.stock_quantity <= 5 && book.stock_quantity > 0 && (
               <div className="low-stock">Only {book.stock_quantity} left!</div>
             )}
-            <div
-              className={`book-content ${
-                book.stock_quantity === 0 ? "disabled" : ""
-              }`}
-            >
+            <div className={`book-content ${ book.stock_quantity === 0 ? "disabled" : "" }`} >
               <img
                 src={book.image_url || "https://i.pinimg.com/736x/b8/a1/e0/b8a1e02c6fda8e39200d7b6fb6fb36b0.jpg"}
                 alt={book.title}

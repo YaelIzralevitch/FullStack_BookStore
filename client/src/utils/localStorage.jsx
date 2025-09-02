@@ -63,7 +63,6 @@ export function addToCart(book, quantity = 1) {
   saveCart(cart);
 }
 
-
 export function removeFromCart(bookId) {
   const cart = getCart().filter(item => item.bookId !== bookId);
   saveCart(cart);
@@ -73,3 +72,18 @@ export function clearCart() {
   localStorage.removeItem('cart');
 }
 
+
+export default {
+  saveUser,
+  getUser,
+  removeUser,
+  setAuthToken,
+  getAuthToken,
+  removeAuthToken,
+  isTokenValid,
+  getCart,
+  saveCart,
+  addToCart,
+  removeFromCart,
+  clearCart,
+};

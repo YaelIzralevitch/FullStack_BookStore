@@ -176,7 +176,7 @@ export const getOrdersForAdmin = async (params = {}) => {
   const endpoint = searchParams.toString() ? `orders/admin?${searchParams}` : 'orders/admin';
   return await fetchData(endpoint);
 };
-export const updateOrderStatus = async (orderId, status) => await updateData('orders/admin', `${orderId}/status`, { status });
+export const updateOrderStatus = async (orderId, status) => await updateData('orders/admin/status', `${orderId}`, { status });
 export const getOrderDetailsForAdmin = async (orderId) => await fetchData(`orders/admin/${orderId}`);
 
 // ניהול מלאי מנהל

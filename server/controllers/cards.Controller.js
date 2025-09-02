@@ -97,10 +97,6 @@ async function saveCard(userId, userEmail, paymentMethodId) {
       card.exp_month,
       card.exp_year
     ]);
-
-    return {
-      success: true
-    };
   } catch (error) {
     console.error('Error saving Stripe card:', error);
     throw error;
@@ -203,7 +199,6 @@ async function deleteUserCard(userId) {
     // delete from db
     await pool.query('DELETE FROM user_credit_cards WHERE user_id = ?', [userId]);
 
-    return { success: true };
   } catch (error) {
     console.error('Error deleting Stripe card:', error);
     throw error;

@@ -50,8 +50,6 @@ async function updateUserDetails(userId, updateData) {
       throw new Error('User not found');
     }
 
-    return { success: true };
-
   } catch (err) {
     console.error('ERROR IN updateUserDetails:', err);
     throw err;

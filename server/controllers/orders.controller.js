@@ -56,7 +56,6 @@ async function createOrder(userId, orderData) {
 
     return {
       orderId,
-      status: "success",
     };
   } catch (error) {
     await connection.rollback();
@@ -279,10 +278,6 @@ async function updateOrderStatus(orderId, newStatus) {
     if (result.affectedRows === 0) {
       throw new Error('Order not found');
     }
-
-    return {
-      success: true
-    };
   } catch (error) {
     console.error('ERROR IN updateOrderStatus:', error);
     throw error;
