@@ -20,6 +20,7 @@ function StockManagementPage() {
   const [books, setBooks] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [popupCategory, setPopupCategory] = useState(null);
   const [loading, setLoading] = useState(true);
   const [booksLoading, setBooksLoading] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
@@ -245,29 +246,10 @@ function StockManagementPage() {
       if (bookId) {
         await updateBookInInventory(bookId, bookData);
 
-        // Local update of the list
-        const updatedBooks = books.map(book =>
-          book.id === bookId ? { ...book, ...bookData } : book
-        );
-        setBooks(updatedBooks);
-
-        const cacheKey = generateCacheKey();
-        updateCachedData(cacheKey, currentPage, updatedBooks);
-
-        savedBook = updatedBooks.find(b => b.id === bookId);
-
         if (
           bookData.category_id !== undefined &&
           bookData.category_id !== selectedCategoryId
         ) {
-          const filteredBooks = updatedBooks.filter(book => book.id !== bookId);
-          const newTotalCount = totalCount - 1;
-
-          setBooks(filteredBooks);
-          setTotalCount(newTotalCount);
-
-          updateCachedData(cacheKey, currentPage, filteredBooks, newTotalCount);
-
           const newCat = categories.find(c => c.id === bookData.category_id);
           if (newCat) {
             setSelectedCategoryId(bookData.category_id);
@@ -276,6 +258,18 @@ function StockManagementPage() {
             setSearchParams({ categoryId: bookData.category_id.toString() });
             clearCache();
           }
+        }
+        else{
+            // Local update of the list
+            const updatedBooks = books.map(book =>
+              book.id === bookId ? { ...book, ...bookData } : book
+            );
+            setBooks(updatedBooks);
+    
+            const cacheKey = generateCacheKey();
+            updateCachedData(cacheKey, currentPage, updatedBooks);
+    
+            savedBook = updatedBooks.find(b => b.id === bookId);
         }
       } else {
         const response = await createBookInInventory(bookData);
@@ -338,6 +332,7 @@ function StockManagementPage() {
 
   // handle category operations
   const handleAddCategory = () => {
+    setPopupCategory({});
     setShowCategoryModal(true);
   };
 
@@ -475,7 +470,7 @@ function StockManagementPage() {
             <button 
               className="edit-category-btn" 
               onClick={() => {
-                setSelectedCategory(selectedCategory);
+                setPopupCategory(selectedCategory);
                 setShowCategoryModal(true);
               }}
               title="Edit category"
@@ -586,7 +581,7 @@ function StockManagementPage() {
 
       {showCategoryModal && (
         <CategoryPopup 
-          category={{}}
+          category={popupCategory}
           onClose={() => setShowCategoryModal(false)} 
           onSave={handleCategorySave} 
         />

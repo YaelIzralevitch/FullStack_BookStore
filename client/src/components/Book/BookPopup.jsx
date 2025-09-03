@@ -76,6 +76,7 @@ function BookPopup({ book, onClose, onSave, categories }) {
     onSave(
       formData.id,
       {
+      ...(!formData.id && {category_id: book.category_id} ),
       ...changedFields,
       ...(changedFields.category_id !== undefined && { category_id: Number(formData.category_id) }),
       ...(changedFields.price !== undefined && { price: parseFloat(formData.price) }),

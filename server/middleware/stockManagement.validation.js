@@ -3,7 +3,6 @@
  */
 function validateBookData(req, res, next) {
   const book = req.body;
-
   if (!book || typeof book !== 'object') {
     return res.status(400).json({
       success: false,

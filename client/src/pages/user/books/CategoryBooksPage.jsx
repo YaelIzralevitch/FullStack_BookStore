@@ -107,7 +107,7 @@ function CategoryBooksPage() {
             setTotalCount(parsed.totalCount || 0);
             setSortOption(parsed.sortOption || '');
             setLoading(false);
-            return;
+            return "restoredFromSession";
           } catch (err) {
             console.error('Error parsing saved data:', err);
           }
