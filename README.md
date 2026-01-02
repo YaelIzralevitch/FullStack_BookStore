@@ -1,7 +1,7 @@
 # Full-Stack Online Bookstore Web Application
 
 An end-to-end full-stack web application for an online bookstore, developed using React, Node.js, Express, and MySQL.  
-The system is based on a client-server architecture and includes business logic, RESTful APIs, and role-based access control.
+The system is based on a client-server architecture and includes business logic, RESTful APIs, role-based access control, and Stripe payment integration.
 
 ## Features
 
@@ -14,6 +14,7 @@ The system is based on a client-server architecture and includes business logic,
 - Shopping cart management
 - Place orders
 - View order history
+- Payment processing via Stripe
 
 ### Admin Features
 - Inventory management (add, update, remove books)
@@ -31,6 +32,7 @@ The system is based on a client-server architecture and includes business logic,
 - Node.js
 - Express
 - REST APIs
+- Integration with external services (Stripe)
 - Business logic implementation
 
 ### Database
