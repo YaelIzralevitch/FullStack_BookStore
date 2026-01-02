@@ -46,3 +46,23 @@ The system is based on a client-server architecture and includes business logic,
 
 This project was developed as part of Computer Science studies, in collaboration with a partner, to gain hands-on experience in full-stack web development, including frontend and backend integration, database design, and real-world business logic.
 
+## Screenshots
+
+### Customer View – Browse & Shopping Cart
+![Customer Books View](screenshots/books.png)
+![Customer Shopping Cart View](screenshots/ShoppingCart.png)
+*Browse books, add to cart, and manage orders.*
+
+### Customer View – Payment
+![Customer Payment](screenshots/CompletePayment.png)
+*Place orders and complete payment using Stripe.*
+
+### Admin View – Inventory & Orders
+![Admin View](screenshots/InventoryManagement2.png)
+*Manage inventory, track orders, and view statistics.*
+
+### Optional: Admin View – Sales Statistics
+![Admin Statistics](screenshots/AdminDashboard2.png)
+*Visualize sales and order data.*
+
+
