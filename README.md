@@ -51,15 +51,15 @@ This project was developed as part of Computer Science studies, in collaboration
 ### Customer View – Browse & Shopping Cart
 ![Customer Books View](screenshots/books.png)
 ![Customer Shopping Cart View](screenshots/ShoppingCart.png)
-*Browse books, add to cart, and manage orders.*
+*Browse books and cart.*
 
 ### Customer View – Payment
 ![Customer Payment](screenshots/CompletePayment.png)
 *Place orders and complete payment using Stripe.*
 
-### Admin View – Inventory & Orders
+### Admin View – Inventory
 ![Admin View](screenshots/InventoryManagement2.png)
-*Manage inventory, track orders, and view statistics.*
+*Manage inventory.*
 
 ### Optional: Admin View – Sales Statistics
 ![Admin Statistics](screenshots/AdminDashboard2.png)
