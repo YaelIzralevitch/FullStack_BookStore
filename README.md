@@ -9,14 +9,14 @@ The system is based on a client-server architecture and includes business logic,
 - User authentication and authorization
 - Role-based access: Customer and Admin
 
-### Customer Features
+#### Customer Features
 - Browse and search books
 - Shopping cart management
 - Place orders
 - View order history
 - Payment processing via Stripe
 
-### Admin Features
+#### Admin Features
 - Inventory management (add, update, remove books)
 - Order tracking
 - View sales statistics and order data
@@ -61,7 +61,7 @@ This project was developed as part of Computer Science studies, in collaboration
 ![Admin View](screenshots/InventoryManagement2.png)
 *Manage inventory.*
 
-### Optional: Admin View – Sales Statistics
+### Admin View – Sales Statistics
 ![Admin Statistics](screenshots/AdminDashboard2.png)
 *Visualize sales and order data.*
 
